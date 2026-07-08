@@ -1,0 +1,25 @@
+﻿-- Phase 1 hardened audit table for TakePOS
+CREATE TABLE IF NOT EXISTS llx_takepos_audit (
+  rowid INT AUTO_INCREMENT PRIMARY KEY,
+  entity INT NOT NULL DEFAULT 1,
+  fk_user INT NULL,
+  login VARCHAR(128) NULL,
+  terminal INT NULL,
+  event_code VARCHAR(80) NOT NULL,
+  severity VARCHAR(16) NOT NULL DEFAULT 'info',
+  object_type VARCHAR(64) NULL,
+  object_id INT NULL,
+  amount_ttc DECIMAL(24,8) NULL,
+  description TEXT NULL,
+  ip_address VARCHAR(64) NULL,
+  request_uri VARCHAR(255) NULL,
+  user_agent VARCHAR(255) NULL,
+  extra_json LONGTEXT NULL,
+  datec DATETIME NOT NULL,
+  tms TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_takepos_audit_entity_date (entity, datec),
+  KEY idx_takepos_audit_user_date (fk_user, datec),
+  KEY idx_takepos_audit_event_date (event_code, datec),
+  KEY idx_takepos_audit_object (object_type, object_id),
+  KEY idx_takepos_audit_severity_date (severity, datec)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

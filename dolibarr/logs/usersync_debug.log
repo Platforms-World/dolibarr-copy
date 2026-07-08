@@ -1,0 +1,8 @@
+2026-06-23 10:05:55 HTTP:200 | Response:{"status":"ok","user_id":3,"merchant_id":11} | Error:
+2026-06-23 10:19:29 HTTP:200 | Response:{"status":"ok","user_id":4,"merchant_id":12} | Error:
+2026-06-23 10:24:33 HTTP:200 | Response:{"status":"ok","user_id":5,"merchant_id":9} | Error:
+2026-06-23 11:47:38 HTTP:200 | Response:{"status":"ok","user_id":6,"merchant_id":9} | Error:
+2026-06-23 11:55:18 HTTP:200 | Response:{"status":"ok","user_id":7,"merchant_id":9} | Error:
+2026-06-24 09:35:59 HTTP:0 | Response: | Error:Failed to connect to 127.0.0.1 port 8000 after 2051 ms: Couldn't connect to server
+2026-06-24 09:41:09 HTTP:0 | Response: | Error:Failed to connect to 127.0.0.1 port 8000 after 2046 ms: Couldn't connect to server
+2026-06-27 14:45:34 HTTP:0 | Response: | Error:Failed to connect to 127.0.0.1 port 8000 after 2024 ms: Couldn't connect to server

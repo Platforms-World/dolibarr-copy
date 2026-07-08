@@ -1,0 +1,49 @@
+# TakePOS Branch Management – English
+# Place in takepos/langs/en_US/takepos_branch.lang
+
+TakeposBranchTitle=Branch Management
+TakeposBranchPlansTitle=Branch Subscription Plans
+TakeposBranchSubscriptionsTitle=Tenant Subscriptions
+TakeposBranchSalesTitle=All-Branches Sales Overview
+
+TakeposBranchPlanCode=Plan Code
+TakeposBranchPlanLabel=Plan Label
+TakeposBranchMaxBranches=Max Branches
+TakeposBranchPrice=Price
+TakeposBranchCurrency=Currency
+
+TakeposBranchCode=Branch Code
+TakeposBranchLabel=Branch Name
+TakeposBranchDescription=Description
+TakeposBranchWarehouse=Warehouse (Stock)
+TakeposBranchStore=TakePOS Store
+TakeposBranchStatus=Status
+TakeposBranchActive=Active
+TakeposBranchDisabled=Disabled
+TakeposBranchUsed=Branches Used
+TakeposBranchMax=Max Allowed
+
+TakeposBranchCreateBranch=Create New Branch
+TakeposBranchDisableBranch=Disable Branch
+TakeposBranchDisableConfirm=Are you sure you want to disable this branch?
+
+TakeposBranchUserRole=Role in Branch
+TakeposBranchRoleCashier=Cashier
+TakeposBranchRoleManager=Branch Manager
+TakeposBranchRoleViewer=Viewer (Read-only)
+TakeposBranchAssignUser=Assign User
+TakeposBranchRemoveUser=Remove User
+TakeposBranchNoUsers=No users assigned to this branch yet.
+
+TakeposBranchSubscriptionActive=ACTIVE
+TakeposBranchSubscriptionSuspended=SUSPENDED
+TakeposBranchSubscriptionCancelled=CANCELLED
+TakeposBranchNoSubscription=No active subscription. Contact your administrator.
+TakeposBranchLimitReached=Branch limit reached. Upgrade your plan to create more branches.
+
+TakeposBranchSalesPeriod=Show last
+TakeposBranchSalesDays=days
+TakeposBranchSalesAllTime=All time
+TakeposBranchSalesNoData=No POS sales data found for the selected period.
+TakeposBranchSalesInvoices=Invoices
+TakeposBranchSalesTotal=Total (incl. VAT)

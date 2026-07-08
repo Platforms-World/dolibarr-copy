@@ -1,0 +1,103 @@
+# Module ChWhatsAppButton
+Module105004Name = WhatsApp Button
+Module105004Desc = WhatsApp buttons on thirdparties, projects, proposals and invoices
+
+# Permissions
+Permission105004Read = Read WhatsApp templates
+Permission105004Write = Create/modify WhatsApp templates
+Permission105004Delete = Delete WhatsApp templates
+
+# Menu
+WhatsApp = WhatsApp
+WhatsAppTemplates = WhatsApp Templates
+NewTemplate = New Template
+WhatsAppTemplate = WhatsApp Template
+EditTemplate = Edit Template
+
+# Fields
+Ref = Reference
+Label = Label
+Description = Description
+MessageText = Message Text
+EntityType = Entity Type
+Active = Active
+Inactive = Inactive
+Default = Default
+Position = Position
+Status = Status
+
+# Entity Types
+ThirdParty = Third Party
+Project = Project
+Proposal = Proposal
+Invoice = Invoice
+
+# Actions
+SendViaWhatsApp = Send via WhatsApp
+SelectWhatsAppTemplate = Select WhatsApp Template
+SendThisMessage = Send this message
+CustomMessage = Custom Message
+SendCustomMessage = Send custom message
+PleaseEnterMessage = Please enter a message
+SendToWhatsApp = Send WhatsApp to
+Phone = Phone
+SelectTemplate = Select a template
+OrWriteCustomMessage = Or write a custom message
+OpenWhatsAppConfirm = Open WhatsApp Web to send this message?
+Loading = Loading
+BackToList = Back to list
+
+# Messages
+WhatsAppRequirement = IMPORTANT: You need to have WhatsApp Web or WhatsApp Desktop (Windows/Mac) installed and active to send messages. Do you want to continue?
+NoWhatsAppPhone = No phone number found for this thirdparty
+NoPhoneFound = This contact does not have a WhatsApp number configured
+AvailableSubstitutions = Available substitutions
+RecordSaved = Record saved
+RecordDeleted = Record deleted
+ErrorFieldRequired = Field %s is required
+CouldNotDetermineEntityId = Could not determine entity ID
+ErrorLoadingTemplates = Error loading templates
+TemplateNotFound = Error: Could not load template message
+PleaseWriteMessage = Please write a message
+
+# Help
+HelpWhatsAppButton = This module adds WhatsApp buttons on thirdparty, project, proposal and invoice cards. Buttons only appear if the thirdparty or main contact has a phone number configured.
+HelpTemplates = Templates allow you to create predefined messages with variables that are automatically substituted according to the context.
+HelpSubstitutions = Available variables by entity type:\n- Thirdparties: __THIRDPARTY_NAME__, __THIRDPARTY_CODE__\n- Projects: __PROJECT_REF__, __PROJECT_TITLE__\n- Proposals: __PROPAL_REF__, __PROPAL_TOTAL_TTC__\n- Invoices: __INVOICE_REF__, __INVOICE_TOTAL_TTC__
+
+# Configuration
+EnableWhatsAppButton = Enable WhatsApp buttons
+Information = Information
+HowToUse = How to use
+ConfigureTemplates = Configure message templates
+EnsurePhoneNumbers = Ensure thirdparties have phone numbers
+UseButtonsInCards = Use buttons in entity cards
+Requirements = Requirements
+WhatsAppWebOrDesktop = WhatsApp Web or WhatsApp Desktop installed
+PhoneNumberInThirdparty = Phone number configured in thirdparty
+ActiveTemplates = Active templates available
+
+# Default Templates
+Template_THIRDPARTY_DEFAULT_Label = General message to thirdparty
+Template_THIRDPARTY_DEFAULT_Desc = Default template for thirdparties
+Template_THIRDPARTY_DEFAULT_Message = Hello __THIRDPARTY_NAME__,\n\nWe hope everything is going well.\n\nBest regards.
+
+Template_PROJECT_UPDATE_Label = Project update
+Template_PROJECT_UPDATE_Desc = Notify project progress
+Template_PROJECT_UPDATE_Message = Hello __THIRDPARTY_NAME__,\n\nI'm writing about the project: __PROJECT_REF__ - __PROJECT_TITLE__\n\n[Write your message here]\n\nBest regards.
+
+Template_PROPAL_SEND_Label = Send proposal
+Template_PROPAL_SEND_Desc = Notify proposal sent
+Template_PROPAL_SEND_Message = Hello __THIRDPARTY_NAME__,\n\nWe have sent you the proposal __PROPAL_REF__ for an amount of __PROPAL_TOTAL_TTC__.\n\nWe remain at your disposal for any questions.\n\nBest regards.
+
+Template_INVOICE_SEND_Label = Send invoice
+Template_INVOICE_SEND_Desc = Notify invoice sent
+Template_INVOICE_SEND_Message = Hello __THIRDPARTY_NAME__,\n\nWe inform you that invoice __INVOICE_REF__ for an amount of __INVOICE_TOTAL_TTC__ is available.\n\nThank you for your trust.\n\nBest regards.
+
+Template_PAYMENT_REMINDER_Label = Payment reminder
+Template_PAYMENT_REMINDER_Desc = Remind pending payment
+Template_PAYMENT_REMINDER_Message = Hello __THIRDPARTY_NAME__,\n\nWe remind you that invoice __INVOICE_REF__ for __INVOICE_TOTAL_TTC__ is pending payment.\n\nIf you have already made the payment, please ignore this message.\n\nThank you.
+
+Template_PROPAL_FOLLOWUP_Label = Proposal follow-up
+Template_PROPAL_FOLLOWUP_Desc = Follow up on sent proposal
+Template_PROPAL_FOLLOWUP_Message = Hello __THIRDPARTY_NAME__,\n\nHave you had a chance to review the proposal __PROPAL_REF__ we sent you?\n\nWe are available for any questions or clarifications.\n\nBest regards.

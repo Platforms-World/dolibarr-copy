@@ -1,0 +1,2 @@
+Get-ChildItem -Path 'C:\Users\deyaa_h\OneDrive - miyahuna.com.jo\codex_ERP\takepos\api\v1' -Filter *.php | ForEach-Object {  
+    Select-String -Path $_.FullName -Pattern '\\\\\"' ^| ForEach-Object { Write-Output ^($_.Path + ':' + $_.LineNumber + ':' + $_.Line.Trim^(^)^) } & >> tmp_find_backslash_quotes.ps1 echo } & C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -NoProfile -File tmp_find_backslash_quotes.ps1 & del /q tmp_find_backslash_quotes.ps1

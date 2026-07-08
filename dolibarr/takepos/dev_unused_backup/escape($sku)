@@ -1,0 +1,1 @@
+    if ($line -like '*$sql .= \\\" AND p.ref =*'^) { & >> tmp_fix_products.ps1 echo         \"if ($sku !== '') $sql .= ' AND p.ref = ' . chr(39) . $db- . chr(39);\" & >> tmp_fix_products.ps1 echo     } elseif ^($line -like '*$sql .= \\\" AND (p.barcode =*') { 

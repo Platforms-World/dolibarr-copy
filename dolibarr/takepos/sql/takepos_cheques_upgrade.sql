@@ -1,0 +1,25 @@
+-- TakePOS cheque tracking schema
+CREATE TABLE IF NOT EXISTS llx_takepos_cheque (
+    rowid INT AUTO_INCREMENT PRIMARY KEY,
+    entity INT NOT NULL DEFAULT 1,
+    ref VARCHAR(32) NOT NULL,
+    cheque_number VARCHAR(64) NOT NULL,
+    fk_supplier INT NOT NULL DEFAULT 0,
+    fk_purchase INT NOT NULL DEFAULT 0,
+    bank_name VARCHAR(128) NOT NULL DEFAULT '',
+    amount DOUBLE(24,8) NOT NULL DEFAULT 0,
+    cheque_date DATE DEFAULT NULL,
+    collection_date DATE DEFAULT NULL,
+    status VARCHAR(24) NOT NULL DEFAULT 'pending',
+    note_private TEXT DEFAULT NULL,
+    fk_user_author INT NOT NULL DEFAULT 0,
+    fk_user_modif INT NOT NULL DEFAULT 0,
+    datec DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    tms TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_takepos_cheque_entity_ref (entity, ref),
+    KEY idx_takepos_cheque_entity_status (entity, status),
+    KEY idx_takepos_cheque_entity_supplier (entity, fk_supplier),
+    KEY idx_takepos_cheque_entity_purchase (entity, fk_purchase),
+    KEY idx_takepos_cheque_entity_cheque_date (entity, cheque_date),
+    KEY idx_takepos_cheque_entity_collection_date (entity, collection_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

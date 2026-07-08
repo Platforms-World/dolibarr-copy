@@ -1,0 +1,1183 @@
+{
+    "info":  {
+                 "_postman_id":  "4a2c7aae-8bab-4efd-9917-629fcaeb85af",
+                 "name":  "TakePOS API v1 - Full Postman Collection",
+                 "description":  "TakePOS API v1 collection generated from the current codebase.\\n\\nSetup:\\n1. Import this collection and the matching environment file.\\n2. Set {{baseUrl}} to your real TakePOS API path, for example: https://your-host.example.com/dolibarr/takepos/api/v1\\n3. Fill {{login}} and {{password}}.\\n4. Run \u0027Auth Login - Issue Token\u0027.\\n5. Use the remaining requests in order.\\n\\nNotes:\\n- All official requests use Bearer {{token}} automatically.\\n- The login request stores token and basic identifiers into the environment.\\n- Several requests auto-save ids such as cartId, invoiceId, lineId, heldSaleId, paymentId.",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "auth":  {
+                 "type":  "bearer",
+                 "bearer":  [
+                                {
+                                    "key":  "token",
+                                    "value":  "{{token}}",
+                                    "type":  "string"
+                                }
+                            ]
+             },
+    "item":  [
+                 {
+                     "name":  "01 Authentication",
+                     "item":  [
+                                  {
+                                      "name":  "Auth Login - Issue Token",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/auth_login.php",
+                                                      "description":  "Authenticate with a TakePOS user login and issue a Bearer token. The token scopes are derived from the logged-in user permissions.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"login\": \"{{login}}\",\n  \"password\": \"{{password}}\",\n  \"label\": \"{{tokenLabel}}\",\n  \"scopes\": [\"{{requestedScope}}\"]\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "auth":  {
+                                                                   "type":  "noauth",
+                                                                   "noauth":  [
+
+                                                                              ]
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Login request succeeded\", function () {",
+                                                                                    "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                                                                                    "});",
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "if (json \u0026\u0026 json.success \u0026\u0026 json.data) {",
+                                                                                    "    if (json.data.token) pm.environment.set(\"token\", json.data.token);",
+                                                                                    "    if (json.meta \u0026\u0026 json.meta.entity) pm.environment.set(\"entity\", String(json.meta.entity));",
+                                                                                    "    if (json.data.user \u0026\u0026 json.data.user.id) pm.environment.set(\"apiUserId\", String(json.data.user.id));",
+                                                                                    "    if (json.data.user \u0026\u0026 json.data.user.login) pm.environment.set(\"apiUserLogin\", String(json.data.user.login));",
+                                                                                    "    if (Array.isArray(json.data.scopes)) pm.environment.set(\"tokenScopes\", json.data.scopes.join(\",\"));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "02 Master Data",
+                     "item":  [
+                                  {
+                                      "name":  "Products - Search",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/products.php?q={{searchQuery}}\u0026limit={{limit}}\u0026offset={{offset}}\u0026active_only=1",
+                                                      "description":  "Search products by label, ref, primary barcode, or alias barcode."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (Array.isArray(data) \u0026\u0026 data.length \u003e 0) {",
+                                                                                    "    if (data[0].id) pm.environment.set(\"productId\", String(data[0].id));",
+                                                                                    "    if (data[0].barcode) pm.environment.set(\"barcode\", String(data[0].barcode));",
+                                                                                    "} else if (data \u0026\u0026 data.id) {",
+                                                                                    "    pm.environment.set(\"productId\", String(data.id));",
+                                                                                    "    if (data.barcode) pm.environment.set(\"barcode\", String(data.barcode));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Product - By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/products.php?id={{productId}}",
+                                                      "description":  "Fetch one product by id."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (Array.isArray(data) \u0026\u0026 data.length \u003e 0) {",
+                                                                                    "    if (data[0].id) pm.environment.set(\"productId\", String(data[0].id));",
+                                                                                    "    if (data[0].barcode) pm.environment.set(\"barcode\", String(data[0].barcode));",
+                                                                                    "} else if (data \u0026\u0026 data.id) {",
+                                                                                    "    pm.environment.set(\"productId\", String(data.id));",
+                                                                                    "    if (data.barcode) pm.environment.set(\"barcode\", String(data.barcode));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Product - By Barcode",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/products.php?barcode={{barcode}}",
+                                                      "description":  "Fetch a product by primary or alias barcode. When exactly one product matches, the API returns the single product object."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (Array.isArray(data) \u0026\u0026 data.length \u003e 0) {",
+                                                                                    "    if (data[0].id) pm.environment.set(\"productId\", String(data[0].id));",
+                                                                                    "    if (data[0].barcode) pm.environment.set(\"barcode\", String(data[0].barcode));",
+                                                                                    "} else if (data \u0026\u0026 data.id) {",
+                                                                                    "    pm.environment.set(\"productId\", String(data.id));",
+                                                                                    "    if (data.barcode) pm.environment.set(\"barcode\", String(data.barcode));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Stores - List",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/stores.php?active_only=1",
+                                                      "description":  "List stores visible to the authenticated entity."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (Array.isArray(data) \u0026\u0026 data.length \u003e 0 \u0026\u0026 data[0].id) {",
+                                                                                    "    pm.environment.set(\"storeId\", String(data[0].id));",
+                                                                                    "} else if (data \u0026\u0026 data.id) {",
+                                                                                    "    pm.environment.set(\"storeId\", String(data.id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Store - By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/stores.php?id={{storeId}}",
+                                                      "description":  "Fetch one store by id."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (Array.isArray(data) \u0026\u0026 data.length \u003e 0 \u0026\u0026 data[0].id) {",
+                                                                                    "    pm.environment.set(\"storeId\", String(data[0].id));",
+                                                                                    "} else if (data \u0026\u0026 data.id) {",
+                                                                                    "    pm.environment.set(\"storeId\", String(data.id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Terminals - List",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/terminals.php?store_id={{storeId}}\u0026active_only=1",
+                                                      "description":  "List terminals, optionally filtered by store."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (Array.isArray(data) \u0026\u0026 data.length \u003e 0) {",
+                                                                                    "    if (data[0].id) pm.environment.set(\"terminalId\", String(data[0].id));",
+                                                                                    "    if (data[0].default_customer_id) pm.environment.set(\"thirdpartyId\", String(data[0].default_customer_id));",
+                                                                                    "} else if (data \u0026\u0026 data.id) {",
+                                                                                    "    pm.environment.set(\"terminalId\", String(data.id));",
+                                                                                    "    if (data.default_customer_id) pm.environment.set(\"thirdpartyId\", String(data.default_customer_id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Terminal - By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/terminals.php?id={{terminalId}}",
+                                                      "description":  "Fetch one terminal by id."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (Array.isArray(data) \u0026\u0026 data.length \u003e 0) {",
+                                                                                    "    if (data[0].id) pm.environment.set(\"terminalId\", String(data[0].id));",
+                                                                                    "    if (data[0].default_customer_id) pm.environment.set(\"thirdpartyId\", String(data[0].default_customer_id));",
+                                                                                    "} else if (data \u0026\u0026 data.id) {",
+                                                                                    "    pm.environment.set(\"terminalId\", String(data.id));",
+                                                                                    "    if (data.default_customer_id) pm.environment.set(\"thirdpartyId\", String(data.default_customer_id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Shifts - List",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/shifts.php?terminal_id={{terminalId}}\u0026status=open\u0026limit={{limit}}",
+                                                      "description":  "List shifts, typically filtered by terminal and status."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (Array.isArray(data) \u0026\u0026 data.length \u003e 0 \u0026\u0026 data[0].id) {",
+                                                                                    "    pm.environment.set(\"shiftId\", String(data[0].id));",
+                                                                                    "} else if (data \u0026\u0026 data.id) {",
+                                                                                    "    pm.environment.set(\"shiftId\", String(data.id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Shift - By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/shifts.php?id={{shiftId}}",
+                                                      "description":  "Fetch one shift by id."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (Array.isArray(data) \u0026\u0026 data.length \u003e 0 \u0026\u0026 data[0].id) {",
+                                                                                    "    pm.environment.set(\"shiftId\", String(data[0].id));",
+                                                                                    "} else if (data \u0026\u0026 data.id) {",
+                                                                                    "    pm.environment.set(\"shiftId\", String(data.id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "03 Cart and Checkout",
+                     "item":  [
+                                  {
+                                      "name":  "Carts - List",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/carts.php?terminal_id={{terminalId}}\u0026status=draft\u0026limit={{limit}}\u0026offset={{offset}}",
+                                                      "description":  "List TakePOS carts for the selected terminal."
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Cart - Create",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/carts.php",
+                                                      "description":  "Create a new TakePOS cart for a terminal and customer.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"terminal_id\": {{terminalId}},\n  \"thirdparty_id\": {{thirdpartyId}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"cartId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.thirdparty_id) pm.environment.set(\"thirdpartyId\", String(data.thirdparty_id));",
+                                                                                    "if (data \u0026\u0026 Array.isArray(data.items) \u0026\u0026 data.items.length \u003e 0 \u0026\u0026 data.items[0].id) {",
+                                                                                    "    pm.environment.set(\"lineId\", String(data.items[0].id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Cart - By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/carts.php?id={{cartId}}",
+                                                      "description":  "Fetch one cart by id."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"cartId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.thirdparty_id) pm.environment.set(\"thirdpartyId\", String(data.thirdparty_id));",
+                                                                                    "if (data \u0026\u0026 Array.isArray(data.items) \u0026\u0026 data.items.length \u003e 0 \u0026\u0026 data.items[0].id) {",
+                                                                                    "    pm.environment.set(\"lineId\", String(data.items[0].id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Cart Item - Add",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/cart_items.php",
+                                                      "description":  "Add one product line to the current cart.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"cart_id\": {{cartId}},\n  \"product_id\": {{productId}},\n  \"qty\": {{qty}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"cartId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.thirdparty_id) pm.environment.set(\"thirdpartyId\", String(data.thirdparty_id));",
+                                                                                    "if (data \u0026\u0026 Array.isArray(data.items) \u0026\u0026 data.items.length \u003e 0 \u0026\u0026 data.items[0].id) {",
+                                                                                    "    pm.environment.set(\"lineId\", String(data.items[0].id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Cart Item - Update",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/cart_items.php?id={{lineId}}",
+                                                      "description":  "Update a cart line quantity, price, or discount.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"qty\": {{qty}},\n  \"discount_percent\": {{discountPercent}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"cartId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.thirdparty_id) pm.environment.set(\"thirdpartyId\", String(data.thirdparty_id));",
+                                                                                    "if (data \u0026\u0026 Array.isArray(data.items) \u0026\u0026 data.items.length \u003e 0 \u0026\u0026 data.items[0].id) {",
+                                                                                    "    pm.environment.set(\"lineId\", String(data.items[0].id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Cart Item - Delete",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/cart_items.php?id={{lineId}}",
+                                                      "description":  "Delete one line from the current cart."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"cartId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.thirdparty_id) pm.environment.set(\"thirdpartyId\", String(data.thirdparty_id));",
+                                                                                    "if (data \u0026\u0026 Array.isArray(data.items) \u0026\u0026 data.items.length \u003e 0 \u0026\u0026 data.items[0].id) {",
+                                                                                    "    pm.environment.set(\"lineId\", String(data.items[0].id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Held Sales - Hold Current Cart",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/held_sales.php",
+                                                      "description":  "Put the current draft cart on hold. Requires an open shift for the cart terminal.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"cart_id\": {{cartId}},\n  \"note\": \"{{holdNote}}\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"heldSaleId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.cart_id) pm.environment.set(\"cartId\", String(data.cart_id));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Held Sales - List",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/held_sales.php?terminal_id={{terminalId}}\u0026shift_id={{shiftId}}\u0026limit={{limit}}\u0026offset={{offset}}",
+                                                      "description":  "List held sales for the active shift."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"heldSaleId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.cart_id) pm.environment.set(\"cartId\", String(data.cart_id));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Held Sales - Resume",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/held_sales.php?action=resume",
+                                                      "description":  "Resume one held sale by id.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"held_sale_id\": {{heldSaleId}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"cartId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.thirdparty_id) pm.environment.set(\"thirdpartyId\", String(data.thirdparty_id));",
+                                                                                    "if (data \u0026\u0026 Array.isArray(data.items) \u0026\u0026 data.items.length \u003e 0 \u0026\u0026 data.items[0].id) {",
+                                                                                    "    pm.environment.set(\"lineId\", String(data.items[0].id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Checkout - Readiness",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/checkout.php?cart_id={{cartId}}",
+                                                      "description":  "Validate whether the cart is ready to be converted into an invoice."
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Invoices - Validate Cart",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/invoices_validate.php",
+                                                      "description":  "Validate the draft cart into an invoice.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"cart_id\": {{cartId}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.invoice_id) pm.environment.set(\"invoiceId\", String(data.invoice_id));",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"invoiceId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 Array.isArray(data.items) \u0026\u0026 data.items.length \u003e 0 \u0026\u0026 data.items[0].id) {",
+                                                                                    "    pm.environment.set(\"lineId\", String(data.items[0].id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Invoices - By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/invoices.php?id={{invoiceId}}",
+                                                      "description":  "Fetch one invoice by id."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.invoice_id) pm.environment.set(\"invoiceId\", String(data.invoice_id));",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"invoiceId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 Array.isArray(data.items) \u0026\u0026 data.items.length \u003e 0 \u0026\u0026 data.items[0].id) {",
+                                                                                    "    pm.environment.set(\"lineId\", String(data.items[0].id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Invoices - List",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/invoices.php?terminal_id={{terminalId}}\u0026status=all\u0026limit={{limit}}\u0026offset={{offset}}",
+                                                      "description":  "List invoices for the selected terminal."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.invoice_id) pm.environment.set(\"invoiceId\", String(data.invoice_id));",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"invoiceId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 Array.isArray(data.items) \u0026\u0026 data.items.length \u003e 0 \u0026\u0026 data.items[0].id) {",
+                                                                                    "    pm.environment.set(\"lineId\", String(data.items[0].id));",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Payments - Apply Payment",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/payments.php",
+                                                      "description":  "Apply one payment to a validated invoice. Supported methods currently include cash and card.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"invoice_id\": {{invoiceId}},\n  \"method\": \"{{paymentMethod}}\",\n  \"amount\": {{amount}},\n  \"terminal_id\": {{terminalId}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.payment_id) pm.environment.set(\"paymentId\", String(data.payment_id));",
+                                                                                    "if (data \u0026\u0026 data.invoice_id) pm.environment.set(\"invoiceId\", String(data.invoice_id));",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"invoiceId\", String(data.id));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Checkout Pay - Validate and Full Pay",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/checkout_pay.php",
+                                                      "description":  "Validate the cart if still draft, then fully pay the invoice in one step.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"cart_id\": {{cartId}},\n  \"method\": \"{{paymentMethod}}\",\n  \"terminal_id\": {{terminalId}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.payment_id) pm.environment.set(\"paymentId\", String(data.payment_id));",
+                                                                                    "if (data \u0026\u0026 data.invoice_id) pm.environment.set(\"invoiceId\", String(data.invoice_id));",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"invoiceId\", String(data.id));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Cart - Cancel",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/carts.php?action=cancel",
+                                                      "description":  "Cancel and delete a draft cart.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"cart_id\": {{cartId}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "04 Loyalty and Refunds",
+                     "item":  [
+                                  {
+                                      "name":  "Loyalty - List Accounts",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/loyalty.php?limit={{limit}}",
+                                                      "description":  "List loyalty accounts if the loyalty feature is enabled for the entity."
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Loyalty - Customer Summary",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/loyalty.php?customer_id={{customerId}}\u0026limit={{limit}}",
+                                                      "description":  "Fetch loyalty summary and transactions for one customer."
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Refunds - List",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/refunds.php?invoice_id={{invoiceId}}\u0026limit={{limit}}",
+                                                      "description":  "List refunds, optionally filtered by original invoice."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"refundId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.invoice_id) pm.environment.set(\"invoiceId\", String(data.invoice_id));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Refund - By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/refunds.php?id={{refundId}}",
+                                                      "description":  "Fetch one refund by id."
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"refundId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.invoice_id) pm.environment.set(\"invoiceId\", String(data.invoice_id));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Refund - Create Basic Refund",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/refunds.php",
+                                                      "description":  "Create a basic refund linked to an invoice.",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"invoice_id\": {{invoiceId}},\n  \"amount\": {{refundAmount}},\n  \"reason\": \"{{refundReason}}\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "response":  [
+
+                                                   ],
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "var json = {};",
+                                                                                    "try { json = pm.response.json(); } catch (e) { json = {}; }",
+                                                                                    "var data = json.data;",
+                                                                                    "if (data \u0026\u0026 data.id) pm.environment.set(\"refundId\", String(data.id));",
+                                                                                    "if (data \u0026\u0026 data.invoice_id) pm.environment.set(\"invoiceId\", String(data.invoice_id));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 }
+             ]
+}

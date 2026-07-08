@@ -1,0 +1,12 @@
+Module105500Name=إدارة نقاط البيع
+Module105500Desc=إدارة نقاط البيع متكاملة مع saascore
+POSSettings=إعدادات نقاط البيع
+POSDashboard=لوحة نقاط البيع
+Terminals=نقاط البيع
+Cashiers=الكاشيرات
+Shifts=الشفتات
+ReceiptProfiles=ملفات الإيصالات
+NewTerminal=إضافة نقطة بيع
+NewCashier=إضافة كاشير
+POSTerminalCard=بطاقة نقطة البيع
+CashierCard=بطاقة الكاشير

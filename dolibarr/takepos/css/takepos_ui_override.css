@@ -1,0 +1,1103 @@
+/*
+ * TakePOS — Modern UI Override for Dolibarr
+ * ==========================================
+ * Drop this file in:  htdocs/takepos/css/takepos_override.css
+ * Then add this line to your Dolibarr appearance custom CSS field
+ * OR link it from takepos/index.php after existing stylesheets.
+ *
+ * This file ONLY changes visual styles — all PHP logic is untouched.
+ */
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --tp-bg-app:         #f1f4f9;
+  --tp-bg-panel:       #ffffff;
+  --tp-bg-soft:        #f6f8fc;
+  --tp-bg-hover:       #eef2f8;
+  --tp-bg-active:      #e4ebf5;
+  --tp-bg-dark:        #0f172a;
+  --tp-bg-dark-soft:   #1e293b;
+  --tp-border:         #e2e8f0;
+  --tp-border-strong:  #cbd5e1;
+  --tp-border-focus:   #94a3b8;
+  --tp-text:           #0f172a;
+  --tp-text-muted:     #475569;
+  --tp-text-soft:      #94a3b8;
+  --tp-text-on-dark:   #e2e8f0;
+  --tp-primary:        #1e40af;
+  --tp-primary-hover:  #1e3a8a;
+  --tp-primary-soft:   #eff6ff;
+  --tp-success:        #047857;
+  --tp-success-soft:   #ecfdf5;
+  --tp-warning:        #b45309;
+  --tp-warning-soft:   #fffbeb;
+  --tp-danger:         #b91c1c;
+  --tp-danger-soft:    #fef2f2;
+  --tp-radius:         8px;
+  --tp-radius-sm:      6px;
+  --tp-radius-lg:      12px;
+  --tp-shadow-xs:      0 1px 2px rgba(15,23,42,0.04);
+  --tp-shadow-sm:      0 2px 4px rgba(15,23,42,0.05), 0 1px 2px rgba(15,23,42,0.04);
+  --tp-shadow:         0 4px 12px rgba(15,23,42,0.06), 0 2px 4px rgba(15,23,42,0.04);
+  --tp-shadow-lg:      0 12px 32px rgba(15,23,42,0.10), 0 4px 8px rgba(15,23,42,0.05);
+  --tp-shadow-pop:     0 20px 50px rgba(15,23,42,0.15), 0 8px 16px rgba(15,23,42,0.08);
+  --tp-font-ar:        "IBM Plex Sans Arabic", "Segoe UI", system-ui, sans-serif;
+  --tp-font-en:        "Inter", "Segoe UI", system-ui, sans-serif;
+  --tp-font-num:       "JetBrains Mono", "Courier New", monospace;
+}
+
+/* ============================================================
+   GOOGLE FONTS IMPORT (injected via @import so no PHP needed)
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+
+/* ============================================================
+   GLOBAL RESET FOR TAKEPOS BODY
+   ============================================================ */
+body.takepospagebody,
+body[class*="takepos"] {
+  font-family: var(--tp-font-ar) !important;
+  background: var(--tp-bg-app) !important;
+  color: var(--tp-text) !important;
+  font-size: 13.5px !important;
+  -webkit-font-smoothing: antialiased !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ============================================================
+   TOP BAR  (#poslogodiv / #posmenubar)
+   ============================================================ */
+#poslogodiv,
+.takeposbar,
+#takepos-topbar,
+.posmenubar,
+#posmenubar {
+  height: 48px !important;
+  background: var(--tp-bg-dark) !important;
+  color: var(--tp-text-on-dark) !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 14px !important;
+  gap: 10px !important;
+  font-size: 12.5px !important;
+  position: relative !important;
+  z-index: 10 !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Brand / logo zone */
+#poslogodiv .logo-text,
+#poslogodiv a,
+.posmenubar .brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+/* Search bar in top */
+#poslogodiv input[type=text],
+#poslogodiv input[type=search],
+.posmenubar input[type=text] {
+  height: 32px !important;
+  padding: 0 32px 0 12px !important;
+  border: 1px solid #334155 !important;
+  border-radius: 6px !important;
+  background: #1e293b !important;
+  color: #fff !important;
+  font-size: 12.5px !important;
+  outline: none !important;
+  font-family: var(--tp-font-ar) !important;
+  min-width: 200px !important;
+  transition: all 0.15s !important;
+}
+#poslogodiv input[type=text]:focus,
+#poslogodiv input[type=search]:focus {
+  border-color: #3b82f6 !important;
+  background: #0f172a !important;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.2) !important;
+}
+
+/* Buttons in top bar */
+#poslogodiv button,
+.posmenubar button,
+#posmenubar button {
+  height: 32px !important;
+  padding: 0 10px !important;
+  border-radius: 6px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  font-size: 12.5px !important;
+  font-family: var(--tp-font-ar) !important;
+  transition: all 0.15s !important;
+  white-space: nowrap !important;
+}
+#poslogodiv button:hover,
+.posmenubar button:hover {
+  background: #1e293b !important;
+  color: #fff !important;
+  border-color: #334155 !important;
+}
+
+/* Terminal / date info text in bar */
+#terminal1span,
+.terminalspan,
+#poslogodiv .terminalinfo {
+  font-size: 12px !important;
+  color: #94a3b8 !important;
+  font-family: var(--tp-font-num) !important;
+  font-weight: 600 !important;
+}
+
+/* ============================================================
+   SHIFT WARNING BANNER
+   ============================================================ */
+.shiftwarning,
+#shiftwarning,
+.shiftalert {
+  margin: 8px 16px !important;
+  padding: 10px 14px !important;
+  background: linear-gradient(180deg, #fef3c7, #fde68a) !important;
+  border: 1px solid #f59e0b !important;
+  border-radius: var(--tp-radius) !important;
+  color: #78350f !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+/* ============================================================
+   MAIN LAYOUT WRAPPER
+   ============================================================ */
+#posmaindiv,
+.posmaindiv,
+#takepos-main {
+  display: grid !important;
+  grid-template-columns: 340px 1fr !important;
+  height: calc(100vh - 48px) !important;
+  background: var(--tp-bg-app) !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+}
+
+/* ============================================================
+   LEFT PANEL — INVOICE / CART
+   ============================================================ */
+#invoicediv,
+.invoicediv,
+#cart-panel {
+  background: var(--tp-bg-panel) !important;
+  border-right: 1px solid var(--tp-border) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  height: 100% !important;
+}
+
+/* Invoice header */
+#invoicediv .invoice-header,
+#invoicediv .invoiceheader,
+.invoicediv .invoiceheader,
+#posheader {
+  padding: 12px 16px 10px !important;
+  border-bottom: 1px solid var(--tp-border) !important;
+  background: linear-gradient(180deg, #fafbfd, var(--tp-bg-panel)) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Invoice title h2 */
+#invoicediv h2,
+#invoicediv h3,
+.invoicediv h2 {
+  margin: 0 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: var(--tp-text) !important;
+  letter-spacing: -0.2px !important;
+}
+
+/* Invoice number badge */
+#invoicenumber,
+.invoicenumber,
+#pos-invoice-num {
+  font-family: var(--tp-font-num) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--tp-text-muted) !important;
+  background: var(--tp-bg-soft) !important;
+  padding: 2px 8px !important;
+  border-radius: 4px !important;
+  border: 1px solid var(--tp-border) !important;
+}
+
+/* Customer selector row */
+#thirdpartydiv,
+#customerselect,
+.customerdiv {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 9px 16px !important;
+  background: #f0f7ff !important;
+  border-bottom: 1px solid var(--tp-border) !important;
+  cursor: pointer !important;
+  font-size: 12.5px !important;
+  flex-shrink: 0 !important;
+  transition: background 0.15s !important;
+}
+#thirdpartydiv:hover { background: #e6f0ff !important; }
+
+/* Invoice lines table / container */
+#invoicelines,
+.invoicelines,
+#pos-lines-container {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 0 !important;
+}
+#invoicelines::-webkit-scrollbar { width: 5px !important; }
+#invoicelines::-webkit-scrollbar-thumb { background: var(--tp-border-strong) !important; border-radius: 3px !important; }
+
+/* Individual invoice line */
+.invoiceline,
+#invoicelines tr,
+.invoicelines tr {
+  border-bottom: 1px solid var(--tp-border) !important;
+  cursor: pointer !important;
+  transition: background 0.12s !important;
+}
+.invoiceline:hover,
+#invoicelines tr:hover { background: var(--tp-bg-soft) !important; }
+.invoiceline.selected,
+#invoicelines tr.selected,
+#invoicelines tr.even.selected,
+#invoicelines tr.odd.selected {
+  background: var(--tp-primary-soft, #eff6ff) !important;
+}
+
+/* Invoice line cells */
+#invoicelines td,
+.invoiceline td {
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  color: var(--tp-text) !important;
+  border: none !important;
+  vertical-align: middle !important;
+}
+
+/* Line description (product name) */
+.linedesc,
+td.linedesc {
+  font-weight: 600 !important;
+  color: var(--tp-text) !important;
+  font-size: 13px !important;
+}
+
+/* Quantity cells */
+.lineqty,
+td.lineqty,
+.qty-cell {
+  font-family: var(--tp-font-num) !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  color: var(--tp-text) !important;
+}
+
+/* Price / total cells */
+.lineprice,
+td.lineprice,
+.linetotalprice,
+td.linetotalprice {
+  font-family: var(--tp-font-num) !important;
+  font-weight: 700 !important;
+  color: var(--tp-text) !important;
+  white-space: nowrap !important;
+  text-align: right !important;
+}
+
+/* Discount badge on line */
+.linediscount,
+td.linediscount {
+  font-size: 11px !important;
+  color: var(--tp-warning) !important;
+  background: var(--tp-warning-soft) !important;
+  border-radius: 3px !important;
+  padding: 1px 5px !important;
+  font-weight: 700 !important;
+}
+
+/* ============================================================
+   TOTALS / SUMMARY PANEL
+   ============================================================ */
+#totalparts,
+#invoicetotals,
+.totalparts,
+.invoicetotals {
+  border-top: 1px solid var(--tp-border) !important;
+  padding: 10px 16px !important;
+  background: var(--tp-bg-soft) !important;
+  flex-shrink: 0 !important;
+}
+
+/* Total rows */
+#totalparts .total-row,
+.totalrow,
+#invoicetotals tr {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 3px 0 !important;
+  font-size: 12.5px !important;
+  color: var(--tp-text-muted) !important;
+  border: none !important;
+}
+
+#totalparts .total-row .label,
+.totalrow .label,
+#invoicetotals td.labeltotal {
+  color: var(--tp-text-muted) !important;
+  font-size: 12.5px !important;
+}
+
+#totalparts .total-row .value,
+.totalrow .value,
+#invoicetotals td.valuetotal {
+  font-family: var(--tp-font-num) !important;
+  font-weight: 600 !important;
+  color: var(--tp-text) !important;
+}
+
+/* Grand total block */
+#totaldiv,
+#grandtotal,
+.grandtotal {
+  margin-top: 8px !important;
+  padding: 12px 14px !important;
+  background: var(--tp-bg-dark) !important;
+  color: #fff !important;
+  border-radius: var(--tp-radius) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+#totaldiv .total-label,
+#grandtotal .label,
+.grandtotal .label {
+  font-size: 13px !important;
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+}
+
+#totaldiv .total-amount,
+#grandtotalprice,
+#grandtotalttc,
+.grandtotal .amount {
+  font-family: var(--tp-font-num) !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.5px !important;
+  color: #fff !important;
+}
+
+/* ============================================================
+   BOTTOM ACTION BUTTONS (Pay, Hold, Clear)
+   ============================================================ */
+#buttonspayment,
+.buttonspayment,
+#pos-cart-actions {
+  padding: 10px 16px 14px !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+  background: var(--tp-bg-panel) !important;
+  border-top: 1px solid var(--tp-border) !important;
+  flex-shrink: 0 !important;
+}
+
+/* Generic POS button reset */
+#buttonspayment button,
+.buttonspayment button,
+#pos-cart-actions button,
+.posbutton {
+  height: 38px !important;
+  border-radius: var(--tp-radius) !important;
+  border: 1px solid var(--tp-border) !important;
+  font-weight: 600 !important;
+  font-size: 12.5px !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  transition: all 0.15s !important;
+  font-family: var(--tp-font-ar) !important;
+  background: var(--tp-bg-soft) !important;
+  color: var(--tp-text) !important;
+}
+#buttonspayment button:hover,
+.posbutton:hover {
+  background: var(--tp-bg-hover) !important;
+  border-color: var(--tp-border-strong) !important;
+}
+
+/* PAY button (full width / primary green) */
+#buttonpay,
+button.buttonpay,
+.btn-pay-pos,
+#buttonspayment button[name="pay"],
+#buttonspayment button.pay {
+  grid-column: 1 / -1 !important;
+  height: 50px !important;
+  background: linear-gradient(180deg, #16a34a, #15803d) !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(21,128,61,0.25), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+  letter-spacing: -0.2px !important;
+  border-radius: var(--tp-radius) !important;
+}
+#buttonpay:hover,
+button.buttonpay:hover {
+  background: linear-gradient(180deg, #15803d, #166534) !important;
+  box-shadow: 0 6px 16px rgba(21,128,61,0.35) !important;
+  transform: translateY(-1px) !important;
+}
+#buttonpay:active { transform: translateY(0) !important; }
+
+/* Delete / Cancel button */
+#buttondelete,
+button.buttondelete,
+#buttonspayment button[name="delete"],
+#buttonspayment button.delete {
+  color: var(--tp-danger) !important;
+  border-color: #fecaca !important;
+  background: transparent !important;
+}
+#buttondelete:hover { background: var(--tp-danger-soft) !important; }
+
+/* ============================================================
+   NUMPAD (right side keypad)
+   ============================================================ */
+#numpad,
+.numpad,
+#pos-numpad {
+  background: var(--tp-bg-panel) !important;
+  border-left: 1px solid var(--tp-border) !important;
+  padding: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+}
+
+/* Mode tabs (Qty / Price / Discount) */
+#numpad .numpad-modes,
+.numpad-modes {
+  display: flex !important;
+  background: var(--tp-bg-soft) !important;
+  border: 1px solid var(--tp-border) !important;
+  border-radius: 6px !important;
+  padding: 2px !important;
+  gap: 2px !important;
+  margin-bottom: 8px !important;
+}
+.numpad-modes button,
+#numpad button.mode {
+  flex: 1 !important;
+  height: 28px !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.12s !important;
+  color: var(--tp-text-muted) !important;
+  font-family: var(--tp-font-ar) !important;
+}
+.numpad-modes button.active,
+#numpad button.mode.selected {
+  background: var(--tp-bg-panel) !important;
+  color: var(--tp-text) !important;
+  box-shadow: var(--tp-shadow-xs) !important;
+}
+
+/* Numpad display */
+#numpad .display,
+#numpad #numpad-display,
+.numpad-display {
+  background: var(--tp-bg-soft) !important;
+  border: 1px solid var(--tp-border) !important;
+  border-radius: var(--tp-radius) !important;
+  padding: 10px 12px !important;
+  margin-bottom: 8px !important;
+  font-family: var(--tp-font-num) !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: var(--tp-text) !important;
+  text-align: center !important;
+  letter-spacing: -0.5px !important;
+}
+
+/* Numpad key buttons */
+#numpad button,
+.numpadkey,
+.numpad button {
+  height: 46px !important;
+  border: 1px solid var(--tp-border) !important;
+  background: var(--tp-bg-soft) !important;
+  border-radius: var(--tp-radius) !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--tp-text) !important;
+  font-family: var(--tp-font-num) !important;
+  transition: all 0.1s !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+#numpad button:hover,
+.numpadkey:hover { background: var(--tp-bg-hover) !important; border-color: var(--tp-border-strong) !important; }
+#numpad button:active { background: var(--tp-bg-active) !important; transform: scale(0.96) !important; }
+
+/* Special numpad action buttons */
+#numpad button.qty,
+#numpad button[name="qty"],
+.numpadkey.qty {
+  background: var(--tp-primary) !important;
+  color: #fff !important;
+  border-color: var(--tp-primary) !important;
+  font-size: 13px !important;
+}
+#numpad button.qty:hover { background: var(--tp-primary-hover) !important; }
+
+#numpad button.del,
+#numpad button[name="del"],
+.numpadkey.del,
+#numpad button.backspace {
+  color: var(--tp-danger) !important;
+  border-color: #fecaca !important;
+  background: var(--tp-bg-panel) !important;
+  font-size: 16px !important;
+}
+#numpad button.del:hover { background: var(--tp-danger-soft) !important; }
+
+/* BS / backspace */
+#bksp,
+button#bksp {
+  background: #fef2f2 !important;
+  color: var(--tp-danger) !important;
+  border-color: #fecaca !important;
+}
+
+/* ============================================================
+   PRODUCT CATALOG  (#productsdiv / #categories)
+   ============================================================ */
+#productsdiv,
+.productsdiv,
+#pos-catalog {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  background: var(--tp-bg-app) !important;
+}
+
+/* Category tabs / pills */
+#categories,
+.categories-bar,
+#pos-categories {
+  padding: 10px 18px 12px !important;
+  display: flex !important;
+  gap: 6px !important;
+  overflow-x: auto !important;
+  background: var(--tp-bg-panel) !important;
+  border-bottom: 1px solid var(--tp-border) !important;
+  flex-shrink: 0 !important;
+  scrollbar-width: thin !important;
+}
+
+#categories button,
+#categories .catbtn,
+.category-pill {
+  flex-shrink: 0 !important;
+  padding: 7px 14px !important;
+  background: var(--tp-bg-soft) !important;
+  border: 1px solid var(--tp-border) !important;
+  border-radius: var(--tp-radius) !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: var(--tp-text) !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+  white-space: nowrap !important;
+  font-family: var(--tp-font-ar) !important;
+}
+#categories button:hover,
+#categories .catbtn:hover { background: var(--tp-bg-hover) !important; border-color: var(--tp-border-strong) !important; }
+#categories button.selected,
+#categories button.active,
+#categories .catbtn.selected,
+.category-pill.active {
+  background: var(--tp-bg-dark) !important;
+  border-color: var(--tp-bg-dark) !important;
+  color: #fff !important;
+}
+
+/* Products grid */
+#products,
+#productslist,
+.products-grid {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 14px 18px 18px !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+  gap: 10px !important;
+  align-content: start !important;
+  background: var(--tp-bg-app) !important;
+}
+#products::-webkit-scrollbar { width: 8px !important; }
+#products::-webkit-scrollbar-thumb { background: var(--tp-border-strong) !important; border-radius: 4px !important; }
+
+/* Individual product card */
+.productdiv,
+.product-card-pos,
+#products .product {
+  background: var(--tp-bg-panel) !important;
+  border: 1px solid var(--tp-border) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-shadow: var(--tp-shadow-xs) !important;
+  position: relative !important;
+  text-align: center !important;
+}
+.productdiv:hover,
+#products .product:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--tp-shadow) !important;
+  border-color: var(--tp-primary) !important;
+}
+.productdiv:active { transform: translateY(0) !important; }
+
+/* Product image area */
+.productdiv img,
+.product-img-pos,
+#products .product img {
+  width: 100% !important;
+  aspect-ratio: 1 !important;
+  object-fit: cover !important;
+  background: var(--tp-bg-soft) !important;
+  display: block !important;
+}
+
+/* Product image placeholder (no image) */
+.productdiv .no-image,
+.product-noimg {
+  aspect-ratio: 1 !important;
+  background: linear-gradient(135deg, var(--tp-bg-soft), var(--tp-bg-hover)) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--tp-text-soft) !important;
+  font-size: 32px !important;
+}
+
+/* Price badge overlay */
+.productdiv .price,
+.product-price-badge {
+  position: absolute !important;
+  top: 6px !important;
+  left: 6px !important;
+  background: var(--tp-bg-dark) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  padding: 3px 8px !important;
+  border-radius: 6px !important;
+  font-weight: 700 !important;
+  font-family: var(--tp-font-num) !important;
+  box-shadow: var(--tp-shadow-sm) !important;
+  z-index: 1 !important;
+  letter-spacing: -0.3px !important;
+}
+
+/* Product name */
+.productdiv .name,
+.productdiv .label,
+.productdiv h3,
+.product-name-pos {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--tp-text) !important;
+  line-height: 1.3 !important;
+  padding: 8px 10px 4px !important;
+  margin: 0 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  min-height: 31px !important;
+  text-align: left !important;
+}
+
+/* Product ref */
+.productdiv .ref,
+.product-ref-pos {
+  font-size: 10px !important;
+  color: var(--tp-text-soft) !important;
+  font-family: var(--tp-font-num) !important;
+  padding: 0 10px 8px !important;
+  text-align: left !important;
+}
+
+/* Product info footer */
+.productdiv .product-info,
+.productdiv footer {
+  padding: 8px 10px 9px !important;
+  border-top: 1px solid var(--tp-border) !important;
+  background: var(--tp-bg-panel) !important;
+}
+
+/* Barcode tooltip / popup */
+.productdiv .barcode-tooltip,
+#barcodetooltip {
+  position: absolute !important;
+  bottom: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: var(--tp-bg-dark) !important;
+  color: #fff !important;
+  font-size: 10.5px !important;
+  padding: 4px 8px !important;
+  border-radius: 5px !important;
+  white-space: nowrap !important;
+  font-family: var(--tp-font-num) !important;
+  pointer-events: none !important;
+  z-index: 99 !important;
+}
+
+/* Pagination bar */
+#productspaginationdiv,
+.products-pagination-bar {
+  background: var(--tp-bg-panel) !important;
+  border-top: 1px solid var(--tp-border) !important;
+  padding: 8px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  flex-shrink: 0 !important;
+}
+#productspaginationdiv button,
+.pagination-btn-pos {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 6px !important;
+  border: 1px solid var(--tp-border) !important;
+  background: var(--tp-bg-panel) !important;
+  cursor: pointer !important;
+  color: var(--tp-text) !important;
+  font-size: 13px !important;
+  transition: all 0.12s !important;
+}
+#productspaginationdiv button:hover { background: var(--tp-bg-soft) !important; }
+#productspaginationdiv button:disabled { opacity: 0.4 !important; cursor: not-allowed !important; }
+
+/* ============================================================
+   RIGHT SIDEBAR  (F1-F12 shortcut buttons)
+   ============================================================ */
+#rightmenu,
+.rightmenu,
+#pos-sidebar {
+  background: var(--tp-bg-panel) !important;
+  border-left: 1px solid var(--tp-border) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding: 10px 0 !important;
+  gap: 2px !important;
+  overflow-y: auto !important;
+  width: 56px !important;
+  flex-shrink: 0 !important;
+}
+
+#rightmenu button,
+.rightmenu button,
+.pos-sidebar-btn {
+  width: 44px !important;
+  border: none !important;
+  background: transparent !important;
+  border-radius: var(--tp-radius) !important;
+  padding: 8px 4px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 3px !important;
+  color: var(--tp-text-muted) !important;
+  transition: all 0.15s !important;
+  font-family: var(--tp-font-ar) !important;
+  font-size: 8.5px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+}
+#rightmenu button:hover,
+.pos-sidebar-btn:hover {
+  background: var(--tp-bg-soft) !important;
+  color: var(--tp-text) !important;
+}
+#rightmenu button.active,
+.pos-sidebar-btn.active {
+  background: var(--tp-primary-soft, #eff6ff) !important;
+  color: var(--tp-primary) !important;
+}
+
+/* Separator between sidebar groups */
+#rightmenu hr,
+.pos-sidebar-sep {
+  width: 28px !important;
+  height: 1px !important;
+  background: var(--tp-border) !important;
+  border: none !important;
+  margin: 4px 0 !important;
+}
+
+/* ============================================================
+   PAYMENT DIALOG / MODAL
+   ============================================================ */
+#paymentdiv,
+.paymentdiv,
+#pos-payment-modal {
+  background: var(--tp-bg-panel) !important;
+  border-radius: 16px !important;
+  max-width: 480px !important;
+  width: 95vw !important;
+  max-height: 90vh !important;
+  overflow: hidden !important;
+  box-shadow: var(--tp-shadow-pop) !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Payment modal header */
+#paymentdiv .modal-header,
+.paymentdiv h2,
+.paymentdiv h3,
+#pos-payment-modal .header {
+  padding: 16px 20px !important;
+  background: var(--tp-bg-dark) !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-radius: 16px 16px 0 0 !important;
+}
+
+/* Payment total in modal */
+#paymentdiv .total-due,
+#paymenttotal,
+.payment-total {
+  font-family: var(--tp-font-num) !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: #4ade80 !important;
+}
+
+/* Payment method buttons */
+#paymentdiv .payment-method,
+.payment-method-btn {
+  padding: 14px 10px !important;
+  border: 2px solid var(--tp-border) !important;
+  border-radius: 10px !important;
+  background: var(--tp-bg-soft) !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  transition: all 0.15s !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+}
+.payment-method-btn:hover { border-color: var(--tp-primary) !important; background: var(--tp-primary-soft) !important; }
+.payment-method-btn.selected { border-color: var(--tp-primary) !important; background: var(--tp-primary-soft) !important; box-shadow: 0 0 0 3px rgba(30,64,175,0.1) !important; }
+
+/* Confirm payment button */
+#paymentdiv button[type=submit],
+#paymentdiv .confirm-btn,
+button.confirmpayment {
+  width: 100% !important;
+  height: 52px !important;
+  border-radius: 10px !important;
+  border: none !important;
+  background: linear-gradient(180deg, #16a34a, #15803d) !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 16px rgba(21,128,61,0.3) !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+  font-family: var(--tp-font-ar) !important;
+}
+button.confirmpayment:hover { background: linear-gradient(180deg, #15803d, #166534) !important; transform: translateY(-1px) !important; }
+
+/* Change display */
+#paymentchange,
+.payment-change {
+  padding: 12px 16px !important;
+  background: var(--tp-success-soft) !important;
+  border: 1px solid #6ee7b7 !important;
+  border-radius: var(--tp-radius) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 13px !important;
+  color: var(--tp-success) !important;
+  font-weight: 600 !important;
+}
+
+/* ============================================================
+   MODALS / DIALOGS (jQuery UI / custom)
+   ============================================================ */
+.ui-dialog,
+.pos-modal {
+  border-radius: 16px !important;
+  border: none !important;
+  box-shadow: var(--tp-shadow-pop) !important;
+  overflow: hidden !important;
+  font-family: var(--tp-font-ar) !important;
+}
+.ui-dialog-titlebar {
+  background: var(--tp-bg-dark) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 14px 18px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  border-radius: 0 !important;
+}
+.ui-dialog-titlebar-close {
+  background: rgba(255,255,255,0.08) !important;
+  border: none !important;
+  border-radius: 6px !important;
+  color: #fff !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+.ui-dialog-content {
+  padding: 20px !important;
+  font-family: var(--tp-font-ar) !important;
+  font-size: 13px !important;
+  color: var(--tp-text) !important;
+}
+.ui-dialog-buttonpane {
+  padding: 12px 20px !important;
+  border-top: 1px solid var(--tp-border) !important;
+  background: var(--tp-bg-soft) !important;
+}
+.ui-dialog-buttonpane button {
+  border-radius: var(--tp-radius) !important;
+  font-family: var(--tp-font-ar) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  padding: 8px 18px !important;
+  border: 1px solid var(--tp-border) !important;
+  background: var(--tp-bg-panel) !important;
+  color: var(--tp-text) !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+}
+.ui-dialog-buttonpane button.ui-priority-primary {
+  background: var(--tp-primary) !important;
+  color: #fff !important;
+  border-color: var(--tp-primary) !important;
+}
+
+/* ============================================================
+   FORMS / INPUTS inside TakePOS
+   ============================================================ */
+#posmaindiv input[type=text],
+#posmaindiv input[type=number],
+#posmaindiv input[type=email],
+#posmaindiv select,
+.paymentdiv input {
+  height: 38px !important;
+  border: 1px solid var(--tp-border) !important;
+  border-radius: var(--tp-radius-sm) !important;
+  padding: 0 10px !important;
+  font-family: var(--tp-font-ar) !important;
+  font-size: 13px !important;
+  color: var(--tp-text) !important;
+  background: var(--tp-bg-soft) !important;
+  outline: none !important;
+  transition: border-color 0.15s !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+#posmaindiv input:focus,
+.paymentdiv input:focus {
+  border-color: var(--tp-primary) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 3px rgba(30,64,175,0.1) !important;
+}
+
+/* ============================================================
+   ALERTS / NOTIFICATIONS
+   ============================================================ */
+.pos-alert,
+.alert-pos,
+#posalert {
+  margin: 8px 16px !important;
+  padding: 10px 14px !important;
+  border-radius: var(--tp-radius) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.pos-alert.warning { background: var(--tp-warning-soft) !important; border: 1px solid #f59e0b !important; color: var(--tp-warning) !important; }
+.pos-alert.danger  { background: var(--tp-danger-soft) !important;  border: 1px solid #fca5a5 !important; color: var(--tp-danger) !important; }
+.pos-alert.success { background: var(--tp-success-soft) !important; border: 1px solid #6ee7b7 !important; color: var(--tp-success) !important; }
+
+/* ============================================================
+   SCROLLBAR (global for pos page)
+   ============================================================ */
+body.takepospagebody ::-webkit-scrollbar { width: 6px; height: 6px; }
+body.takepospagebody ::-webkit-scrollbar-track { background: transparent; }
+body.takepospagebody ::-webkit-scrollbar-thumb { background: var(--tp-border-strong); border-radius: 3px; }
+
+/* ============================================================
+   RESPONSIVE — narrow screens
+   ============================================================ */
+@media (max-width: 900px) {
+  #posmaindiv,
+  .posmaindiv { grid-template-columns: 280px 1fr !important; }
+  .productdiv { min-width: 120px !important; }
+}
+@media (max-width: 700px) {
+  #posmaindiv,
+  .posmaindiv { grid-template-columns: 1fr !important; }
+  #invoicediv { height: 40vh !important; }
+  #productsdiv { height: 60vh !important; }
+}

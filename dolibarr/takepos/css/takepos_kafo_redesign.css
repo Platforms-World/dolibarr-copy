@@ -1,0 +1,160 @@
+/* ============================================================================
+   takepos_kafo_redesign.css  —  Kafo POS · إعادة التصميم (الخطوة 1)
+   ----------------------------------------------------------------------------
+   يُحمَّل آخِر ملف CSS حتى يفوز على الباقي. لا يلمس أي منطق حفظ أو JS.
+   عمله: (1) إعادة تعريف متغيّرات --tp-* بلوحة Kafo الفاتحة المعتمدة،
+         (2) تحويل الشريط العلوي ولوحة الإجمالي من الداكن إلى الفاتح،
+         (3) صقل شارات المخزون وزر الدفع وبطاقات المنتجات.
+   كل القواعد مقيّدة بـ body.takepos-v2 فلا تؤثر خارج نقطة البيع.
+   ============================================================================ */
+
+/* ─── 1) التوكنز (هذا وحده يعيد تلوين أغلب الواجهة) ───────────────────────── */
+body.takepos-v2 {
+    --tp-bg-app:        #eef2f8 !important;
+    --tp-bg-panel:      #ffffff !important;
+    --tp-bg-soft:       #f6f8fc !important;
+    --tp-bg-hover:      #eef3fb !important;
+    --tp-bg-active:     #e5edfb !important;
+
+    --tp-border:        #e3e9f2 !important;
+    --tp-border-strong: #cdd7e6 !important;
+    --tp-border-focus:  #1d4ed8 !important;
+
+    --tp-text:          #0f1d33 !important;
+    --tp-text-muted:    #465775 !important;
+    --tp-text-soft:     #8294b0 !important;
+
+    --tp-primary:       #1d4ed8 !important;
+    --tp-primary-hover: #1740b8 !important;
+    --tp-primary-soft:  #eaf1ff !important;
+    --tp-primary-50:    #f4f8ff !important;
+
+    --tp-success:       #16a34a !important;
+    --tp-success-soft:  #e9f9ef !important;
+    --tp-warning:       #d97706 !important;
+    --tp-warning-soft:  #fff7ea !important;
+    --tp-danger:        #dc2626 !important;
+    --tp-danger-soft:   #fdecec !important;
+    --tp-info:          #0e7490 !important;
+    --tp-info-soft:     #e6f6fa !important;
+
+    --tp-radius:        12px !important;
+    --tp-radius-sm:     9px  !important;
+    --tp-radius-lg:     16px !important;
+
+    --tp-shadow-xs:     0 1px 2px rgba(13,26,48,.04) !important;
+    --tp-shadow-sm:     0 1px 3px rgba(13,26,48,.06), 0 1px 2px rgba(13,26,48,.04) !important;
+    --tp-shadow:        0 4px 16px rgba(13,26,48,.06), 0 1px 3px rgba(13,26,48,.05) !important;
+    --tp-shadow-lg:     0 28px 64px rgba(13,26,48,.16), 0 10px 22px rgba(13,26,48,.08) !important;
+    --tp-shadow-pop:    0 28px 64px rgba(13,26,48,.18), 0 10px 22px rgba(13,26,48,.10) !important;
+
+    /* لون علامة Kafo الموحّد للاستعمال الداخلي في هذا الملف */
+    --kafo-brand:       #1d4ed8;
+    --kafo-pay:         #16a34a;
+    --kafo-accent-bar:  linear-gradient(90deg,#1d4ed8,#22c55e);
+}
+
+/* ─── 2) الشريط العلوي: من الداكن إلى الفاتح + خط لوني علوي ──────────────── */
+body.takepos-v2 .header .topnav {
+    background: #ffffff !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+    box-shadow: var(--tp-shadow-xs) !important;
+    position: relative !important;
+}
+body.takepos-v2 .header .topnav::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important; right: 0 !important; top: 0 !important;
+    height: 3px !important;
+    background: var(--kafo-accent-bar) !important;
+}
+/* نص وأيقونات الشريط تصبح داكنة/هادئة بدل الأبيض */
+body.takepos-v2 .topnav a,
+body.takepos-v2 #topnav-left .topnav-terminalhour,
+body.takepos-v2 #topnav-right a .hideonsmartphone {
+    color: var(--tp-text-muted) !important;
+}
+body.takepos-v2 #topnav-left .topnav-terminalhour b,
+body.takepos-v2 #topnav-left .topnav-terminalhour strong {
+    color: var(--tp-text) !important;
+}
+body.takepos-v2 .topnav a:hover:not(.nohover) {
+    background: var(--tp-bg-soft) !important;
+    color: var(--tp-text) !important;
+}
+/* الأيقونات الملوّنة الفاقعة (كانت لخلفية داكنة) → لون العلامة الهادئ */
+body.takepos-v2 #topnav-left .topnav-terminalhour .fa-cash-register,
+body.takepos-v2 #topnav-right a .fa-id-card,
+body.takepos-v2 #topnav-right a .fa-desktop,
+body.takepos-v2 #topnav-right a .fas.fa-home,
+body.takepos-v2 #topnav-right a .fa-expand-arrows-alt,
+body.takepos-v2 #topnav-right a .fa-language,
+body.takepos-v2 #topnav-right a .fa-coins {
+    color: var(--kafo-brand) !important;
+}
+
+/* ─── 3) لوحة الإجمالي المستحق: فاتحة بلمسة العلامة + خط علوي ───────────── */
+body.takepos-v2 .tpv2-grand-total {
+    background: linear-gradient(180deg,#ffffff,var(--tp-primary-soft)) !important;
+    border: 1px solid #dbe6fb !important;
+    color: var(--tp-text) !important;
+    border-radius: 14px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: var(--tp-shadow-sm) !important;
+}
+body.takepos-v2 .tpv2-grand-total::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important; right: 0 !important; top: 0 !important;
+    height: 3px !important;
+    background: var(--kafo-accent-bar) !important;
+}
+body.takepos-v2 .tpv2-grand-total-label { color: var(--tp-text-muted) !important; }
+body.takepos-v2 .tpv2-grand-total-value { color: var(--tp-text) !important; }
+
+/* ─── 4) زر الدفع: أخضر العلامة بوضوح ───────────────────────────────────── */
+body.takepos-v2 #takepos-action-payment.actionbutton,
+body.takepos-v2 .div3 button.actionbutton.poscolorgreen {
+    background: linear-gradient(180deg,#1bb154,var(--kafo-pay)) !important;
+    border-color: var(--kafo-pay) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 20px rgba(22,163,74,.30) !important;
+}
+body.takepos-v2 #takepos-action-payment.actionbutton:hover,
+body.takepos-v2 .div3 button.actionbutton.poscolorgreen:hover {
+    filter: brightness(1.05) !important;
+}
+
+/* ─── 5) شارات المخزون: حبّات ناعمة بدل الصلبة ──────────────────────────── */
+body.takepos-v2 .div5 .tp-stock-badge {
+    border-radius: 999px !important;
+    padding: 2px 8px !important;
+    font-weight: 700 !important;
+    box-shadow: var(--tp-shadow-xs) !important;
+}
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-ok  { background: var(--tp-success-soft) !important; color: #13863e !important; }
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-low { background: var(--tp-warning-soft) !important; color: var(--tp-warning) !important; }
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-out { background: var(--tp-danger-soft)  !important; color: var(--tp-danger)  !important; }
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-na  { background: var(--tp-bg-soft)      !important; color: var(--tp-text-soft) !important; }
+
+/* ─── 6) بطاقات المنتجات: حواف أنظف وحركة رفع عند المرور ─────────────────── */
+body.takepos-v2 .div5 .wrapper2 {
+    border-radius: var(--tp-radius) !important;
+    border: 1px solid var(--tp-border) !important;
+    box-shadow: var(--tp-shadow-xs) !important;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease !important;
+}
+body.takepos-v2 .div5 .wrapper2:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: var(--tp-shadow) !important;
+    border-color: #c9d6ec !important;
+}
+body.takepos-v2 .div5 .productprice {
+    font-family: var(--tp-font-num) !important;
+    font-weight: 700 !important;
+    color: var(--tp-text) !important;
+}
+
+/* ─── 7) أزرار السلة السفلية: انحناء أنعم متناسق ─────────────────────────── */
+body.takepos-v2 .tpv2-btn { border-radius: 11px !important; }

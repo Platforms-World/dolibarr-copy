@@ -1,0 +1,7 @@
+[15-Mar-2026 08:08:06 UTC] PHP Warning:  require(../../main.inc.php): Failed to open stream: No such file or directory in /home/kafoerp/public_html/dolibarr/custom/kafoerpcontrol/api/bootstrap.php on line 7
+[15-Mar-2026 08:08:06 UTC] PHP Warning:  require(../../main.inc.php): Failed to open stream: No such file or directory in /home/kafoerp/public_html/dolibarr/custom/kafoerpcontrol/api/bootstrap.php on line 7
+[15-Mar-2026 08:08:06 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../../main.inc.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/kafoerp/public_html/dolibarr/custom/kafoerpcontrol/api/bootstrap.php:7
+Stack trace:
+#0 /home/kafoerp/public_html/dolibarr/custom/kafoerpcontrol/api/users.php(2): require()
+#1 {main}
+  thrown in /home/kafoerp/public_html/dolibarr/custom/kafoerpcontrol/api/bootstrap.php on line 7

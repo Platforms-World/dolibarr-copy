@@ -1,0 +1,24 @@
+kafo-ERP-Control=kafo-ERP-Control
+kafo-ERP-ControlIntro=Central entitlement registry and tenant assignment layer for kafo-ERP-Control modules.
+ModulesCatalog=Modules Catalog
+FeaturesCatalog=Features Catalog
+LimitsCatalog=Limits Catalog
+PermissionsCatalog=Permissions Catalog
+PermissionsControl=Permissions Control
+BundlesCatalog=Bundles Catalog
+RolesCatalog=Roles Catalog
+TenantConfiguration=Tenant Configuration
+AuditLog=Audit Log
+ActivityReports=Activity Reports
+General=General
+RoleGroups=Role Groups
+CreateNewGroup=Create New Group
+GroupPermissions=Group Permissions
+UsersInGroup=Users in Group
+
+API=API
+
+API=API
+ApiManagement=API Management
+ApiToken=API Token
+ApiEnabled=API Enabled

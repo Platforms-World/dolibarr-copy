@@ -1,0 +1,280 @@
+/*
+ * TakePOS — Professional No-Image Product Card v6
+ * Install: <dolibarr>/htdocs/takepos/css/takepos_product_noimg.css
+ * In index.php after takepos_redesign_v2.css:
+ *   $arrayofcss[] = '/takepos/css/takepos_product_noimg.css?v=6';
+ */
+
+/* ━━━ 1. KILL IMAGES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 img.imgwrapper {
+    display: none !important;
+    width: 0 !important; height: 0 !important; flex: 0 0 0 !important;
+}
+body.takepos-v2 .div5 div.wrapper2::before { display: none !important; }
+body.takepos-v2 .div5 .takepos-missing-product-image-badge { display: none !important; }
+
+/* ━━━ 2. GRID ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 #takepos-main-layout .div5 {
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)) !important;
+    grid-auto-rows: 130px !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+    align-content: start !important;
+}
+
+/* ━━━ 3. CARD — fixed height, flex column ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.wrapper2 {
+    float: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 10px 11px 36px 11px !important;
+    /* bottom padding reserves space for the stock badge */
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 10px !important;
+    background: var(--tp-bg-panel) !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.07) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    transition: box-shadow 0.15s, transform 0.12s !important;
+    gap: 0 !important;
+}
+
+/* ━━━ 4. TOP COLOUR BAR ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty)::after {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important; left: 0 !important; right: 0 !important;
+    height: 3px !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+    border-radius: 10px 10px 0 0 !important;
+}
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+1)::after { background: linear-gradient(90deg,#38bdf8,#7dd3fc) !important; }
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+2)::after { background: linear-gradient(90deg,#f59e0b,#fbbf24) !important; }
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+3)::after { background: linear-gradient(90deg,#10b981,#34d399) !important; }
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+4)::after { background: linear-gradient(90deg,#8b5cf6,#a78bfa) !important; }
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+5)::after { background: linear-gradient(90deg,#f43f5e,#fb7185) !important; }
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n)::after   { background: linear-gradient(90deg,#ec4899,#f472b6) !important; }
+
+/* ━━━ 5. HOVER / ACTIVE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.wrapper2:hover {
+    box-shadow: 0 6px 20px rgba(15,23,42,0.13) !important;
+    transform: translateY(-2px) !important;
+    border-color: #cbd5e1 !important;
+}
+body.takepos-v2 .div5 div.wrapper2:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.07) !important;
+}
+
+/* ━━━ 6. PRICE — reorder to top using flex order ━━━━━━━━━━━━━━━━━━━━━━━
+   DOM order: #proprice THEN .description
+   We want: ref+name on top, price at bottom
+   Solution: description order:1, proprice order:2 + margin-top:auto
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div[id^="proprice"] {
+    order: 2 !important;
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding-top: 6px !important;
+    border-top: 1px solid var(--tp-border) !important;
+}
+body.takepos-v2 .div5 .productprice {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: var(--tp-text) !important;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    font-family: var(--tp-font-num) !important;
+    letter-spacing: -0.3px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    top: auto !important; left: auto !important;
+    right: auto !important; bottom: auto !important;
+    z-index: auto !important;
+}
+
+/* ━━━ 7. DESCRIPTION (name + ref) — top of card ━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.description {
+    order: 1 !important;
+    position: static !important;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    border-top: none !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+body.takepos-v2 .div5 div.description_content {
+    font-size: 11.5px !important;
+    font-weight: 500 !important;
+    line-height: 1.35 !important;
+    color: var(--tp-text) !important;
+    padding: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    word-break: break-word !important;
+    text-align: left !important;
+}
+body.takepos-v2.tp-rtl .div5 div.description_content,
+body.takepos-v2[dir="rtl"] .div5 div.description_content { text-align: right !important; }
+
+/* Ref number <b> */
+body.takepos-v2 .div5 div.description_content b {
+    font-size: 8.5px !important;
+    font-weight: 400 !important;
+    color: var(--tp-text-soft) !important;
+    font-family: var(--tp-font-num) !important;
+    display: block !important;
+    margin-bottom: 3px !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* ━━━ 8. STOCK BADGE — injected by takepos_stock_badges.js ━━━━━━━━━━━━━
+   The JS creates .tp-stock-badge-wrap at bottom:0 left:0 right:0
+   We keep it there but style it to fit neatly in the 36px bottom padding
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 .tp-stock-badge-wrap {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    padding: 6px 11px 8px !important;
+    background: transparent !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    z-index: 3 !important;
+    pointer-events: none !important;
+}
+body.takepos-v2 .div5 .tp-stock-badge {
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    padding: 2px 8px !important;
+    border-radius: 20px !important;
+    line-height: 1.5 !important;
+    letter-spacing: 0.2px !important;
+}
+/* Override JS-injected inline colours with nicer pills */
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-ok {
+    background: #ecfdf5 !important;
+    color: #047857 !important;
+    border: 1px solid rgba(4,120,87,0.18) !important;
+}
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-low {
+    background: #fffbeb !important;
+    color: #b45309 !important;
+    border: 1px solid rgba(180,83,9,0.18) !important;
+}
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-out {
+    background: #fef2f2 !important;
+    color: #b91c1c !important;
+    border: 1px solid rgba(185,28,28,0.18) !important;
+}
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-na {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+    border: 1px solid rgba(100,116,139,0.18) !important;
+}
+
+/* ━━━ 9. Hide old catwatermark (replaced by JS badge system) ━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.catwatermark { display: none !important; }
+
+/* ━━━ 10. productbutton fallback (TAKEPOS_HIDE_PRODUCT_IMAGES=on) ━━━━━━ */
+body.takepos-v2 .div5 button.productbutton {
+    order: 1 !important;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    font-size: 11.5px !important;
+    font-weight: 500 !important;
+    color: var(--tp-text) !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    line-height: 1.35 !important;
+    word-break: break-word !important;
+    white-space: normal !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: flex-start !important;
+}
+
+/* ━━━ 11. ARROW / PAGINATION tiles ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.wrapper2.arrow {
+    grid-column: 1 / -1 !important;
+    height: 48px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transform: none !important;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow::before,
+body.takepos-v2 .div5 div.wrapper2.arrow::after { display: none !important; }
+body.takepos-v2 .div5 div.wrapper2.arrow:hover {
+    background: transparent !important; box-shadow: none !important; transform: none !important;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow .fa-chevron-left,
+body.takepos-v2 .div5 div.wrapper2.arrow .fa-chevron-right {
+    display: inline-flex !important;
+    align-items: center !important; justify-content: center !important;
+    width: 34px !important; height: 34px !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--tp-border) !important;
+    background: var(--tp-bg-panel) !important;
+    color: var(--tp-text-muted) !important;
+    font-size: 13px !important;
+    transition: all 0.15s !important;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow:hover .fa-chevron-left,
+body.takepos-v2 .div5 div.wrapper2.arrow:hover .fa-chevron-right {
+    background: var(--tp-bg-dark) !important;
+    border-color: var(--tp-bg-dark) !important;
+    color: #fff !important;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow.takepos-page-disabled {
+    visibility: hidden !important; pointer-events: none !important;
+}
+
+/* ━━━ 12. EMPTY tiles ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.wrapper2.divempty {
+    visibility: hidden !important;
+    pointer-events: none !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}

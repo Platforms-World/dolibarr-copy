@@ -1,0 +1,12 @@
+Module105500Name=POS Management
+Module105500Desc=POS management integrated with saascore
+POSSettings=POS Settings
+POSDashboard=POS Dashboard
+Terminals=Terminals
+Cashiers=Cashiers
+Shifts=Shifts
+ReceiptProfiles=Receipt Profiles
+NewTerminal=New Terminal
+NewCashier=New Cashier
+POSTerminalCard=POS Terminal
+CashierCard=Cashier

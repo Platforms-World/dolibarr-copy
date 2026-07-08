@@ -1,0 +1,21 @@
+2026-04-28 06:17:16 DEBUG   127.0.0.1         43940        - check: Dolibarr install/upgrade process started
+2026-04-28 06:17:16 DEBUG   127.0.0.1         43940        check: conf file '../conf/conf.php' already defined
+2026-04-28 06:17:16 WARNING 127.0.0.1         43940        A 'htdocs/conf/conf.php' file exists with a dolibarr_main_document_root to /home/kafoerp/public_html/dolibarr that seems wrong. Try to fix or remove the 'htdocs/conf/conf.php' file.
+2026-04-28 06:17:16 DEBUG   127.0.0.1         43940        Scan sql files for migration files in ../install/mysql/migration/
+2026-04-28 06:17:16 DEBUG   127.0.0.1         43940        - check: end
+2026-04-28 06:18:42 DEBUG   127.0.0.1         43940        - check: Dolibarr install/upgrade process started
+2026-04-28 06:18:42 DEBUG   127.0.0.1         43940        check: conf file '../conf/conf.php' already defined
+2026-04-28 06:18:42 DEBUG   127.0.0.1         43940        DoliDBMysqli::connect host=localhost, port=0, login=root, passwd=--hidden--, name=
+2026-04-28 06:18:42 DEBUG   127.0.0.1         43940        DoliDBMysqli::select_db database=kafoerp_erp
+2026-04-28 06:18:42 WARNING 127.0.0.1         43940        DoliDBMysqli::DoliDBMysqli You should set the $dolibarr_main_db_character_set and $dolibarr_main_db_collation for the PHP to the same as the database default, so to utf8mb4 or upgrade database default to utf8.
+2026-04-28 06:18:42 DEBUG   127.0.0.1         43940        Conf::setValues
+2026-04-28 06:18:42 DEBUG   127.0.0.1         43940        Scan sql files for migration files in ../install/mysql/migration/
+2026-04-28 06:18:42 DEBUG   127.0.0.1         43940        - check: end
+2026-04-28 06:20:21 DEBUG   127.0.0.1         31464        - check: Dolibarr install/upgrade process started
+2026-04-28 06:20:21 DEBUG   127.0.0.1         31464        check: conf file '../conf/conf.php' already defined
+2026-04-28 06:20:21 DEBUG   127.0.0.1         31464        DoliDBMysqli::connect host=localhost, port=0, login=root, passwd=--hidden--, name=
+2026-04-28 06:20:21 DEBUG   127.0.0.1         31464        DoliDBMysqli::select_db database=kafoerp_erp
+2026-04-28 06:20:21 WARNING 127.0.0.1         31464        DoliDBMysqli::DoliDBMysqli You should set the $dolibarr_main_db_character_set and $dolibarr_main_db_collation for the PHP to the same as the database default, so to utf8mb4 or upgrade database default to utf8.
+2026-04-28 06:20:21 DEBUG   127.0.0.1         31464        Conf::setValues
+2026-04-28 06:20:21 DEBUG   127.0.0.1         31464        Scan sql files for migration files in ../install/mysql/migration/
+2026-04-28 06:20:21 DEBUG   127.0.0.1         31464        - check: end

@@ -1,0 +1,121 @@
+ref,label,barcode,price_ht,tva_tx,qty,category_ref,warehouse_ref,image,description
+10001,Coca cola zero 300ml can MFD10/04/2025,3948764111259,1.533,16,63,DRINKS,MAIN,10001.jpg,Soft drink can
+10002,Coca cola Original Taste 300ml can,8901764011252,1.722,16,91,DRINKS,MAIN,10002.jpg,Soft drink can
+10003,Coca cola can cokes LG,0049000006346,0.763,16,154,DRINKS,MAIN,10003.jpg,Soft drink can
+10004,Coca cola mini cans cola,0049000067217,0.540,16,154,DRINKS,MAIN,10004.jpg,Soft drink can
+10005,Chips Paysannes,3770032551043,3.412,16,72,SNACKS,MAIN,10005.jpg,Potato chips
+10006,Sweet Chilli & Sour Cream Potato Chips,5017764130787,2.326,16,58,SNACKS,MAIN,10006.jpg,Potato chips
+10007,Sour Cream and Onion,5053990179039,0.307,16,105,SNACKS,MAIN,10007.jpg,Potato chips
+10008,Lay's Oven baked mediterranean herbs,8710398160850,1.038,16,56,SNACKS,MAIN,10008.jpg,Potato chips
+10009,Assil vanille,6111032001003,2.140,4,113,DAIRY,MAIN,10009.jpg,Yogurt
+10010,raibi jaoda,6111242100930,2.574,4,83,DAIRY,MAIN,10010.jpg,Yogurt
+10011,Activia Céréales,6111032002208,1.083,4,105,DAIRY,MAIN,10011.jpg,Yogurt
+10012,Ghani,6111242102187,1.262,4,30,DAIRY,MAIN,10012.jpg,Yogurt
+10013,Pain De Mie Bio,3760049790214,1.969,4,40,BAKERY,MAIN,10013.jpg,Packaged bakery item
+10014,Grandes tranches céréales et graines,3760049794298,1.836,4,63,BAKERY,MAIN,10014.jpg,Packaged bakery item
+10015,Brioche tressée à la main sans additifs,3228857001231,0.911,4,47,BAKERY,MAIN,10015.jpg,Packaged bakery item
+10016,Pain de mie grandes tranches Toastiligne complet,3760049790252,2.406,4,63,BAKERY,MAIN,10016.jpg,Packaged bakery item
+10017,Chips,3336972006014,1.742,16,68,FROZEN,MAIN,10017.jpg,Frozen food
+10018,Lays,3168930171683,1.713,16,64,FROZEN,MAIN,10018.jpg,Frozen food
+10019,Oven Baked Sweet Potato Fries,5391528180073,4.400,16,25,FROZEN,MAIN,10019.jpg,Frozen food
+10020,Chips Saveur Barbecue,3336972103058,5.068,16,88,FROZEN,MAIN,10020.jpg,Frozen food
+10021,"Sucre poudre cassonade, étui bec verseur, 1kg",3256225134656,1.461,4,83,GROCERY,MAIN,10021.jpg,Grocery staple
+10022,"Etui Bec Verseur ""Doré de Canne"" Equitable Saint Louis 1kg",3220035230211,1.144,4,72,GROCERY,MAIN,10022.jpg,Grocery staple
+10023,NESTLE® Lait Concentré Sucré à pâtisser lait entier boîte 1kg,3033710050000,6.323,4,114,GROCERY,MAIN,10023.jpg,Grocery staple
+10024,Fairtrade Demerara Cane Sugar 1kg,00087186,6.710,4,81,GROCERY,MAIN,10024.jpg,Grocery staple
+10025,Atún claro en aceite de oliva,8480000180025,3.067,16,120,CANNED,MAIN,10025.jpg,Canned tuna
+10026,TAM THON,3341430551449,0.985,16,114,CANNED,MAIN,10026.jpg,Canned tuna
+10027,Thon entier au nature,3019081239626,1.634,16,67,CANNED,MAIN,10027.jpg,Canned tuna
+10028,Thon entier au naturel Albacore,3019081239640,4.739,16,59,CANNED,MAIN,10028.jpg,Canned tuna
+10029,Coconut Milk,8001090662231,8.798,16,68,PERSONALCARE,MAIN,10029.jpg,Personal care item
+10030,SHAMPOO,8001090662057,3.502,16,66,PERSONALCARE,MAIN,10030.jpg,Personal care item
+10031,Johnsons,6223000659243,2.464,16,65,PERSONALCARE,MAIN,10031.jpg,Personal care item
+10032,garnier,3600542370110,2.886,16,54,PERSONALCARE,MAIN,10032.jpg,Personal care item
+10033,Taina Eco friendly best quality tissue paper,8901435006969,5.181,16,29,HOUSEHOLD,MAIN,10033.jpg,Household paper item
+10034,Facial Tissues,0063435711415,4.616,16,41,HOUSEHOLD,MAIN,10034.jpg,Household paper item
+10035,Papier toilette ultra confort,4056489172215,4.158,16,51,HOUSEHOLD,MAIN,10035.jpg,Household paper item
+10036,"Bathroom Tissue, ECO 2",0627735018607,1.897,16,68,HOUSEHOLD,MAIN,10036.jpg,Household paper item
+10037,Long Grain Parboiled Rice in Bag,20053970,2.420,4,106,RICEPASTA,MAIN,10037.jpg,Rice or pasta item
+10038,Boil In The Bag Long Grain Rice,5000119415318,4.929,4,53,RICEPASTA,MAIN,10038.jpg,Rice or pasta item
+10039,Boil in Bag Long Grain Rice,5410673052001,4.908,4,32,RICEPASTA,MAIN,10039.jpg,Rice or pasta item
+10040,4 steam bags white & wild rice with mixed vegetables,5051277785140,2.174,4,29,RICEPASTA,MAIN,10040.jpg,Rice or pasta item
+10041,Ketchup star 310 g,6111184004730,4.323,16,76,SAUCES,MAIN,10041.jpg,Sauce product
+10042,Tomato Ketchup BIO,8715700407760,1.905,16,52,SAUCES,MAIN,10042.jpg,Sauce product
+10043,Tomato Ketchup,87157215,4.809,16,65,SAUCES,MAIN,10043.jpg,Sauce product
+10044,Tomato ketchup 50% moins de sucres & de sel,8715700423913,1.657,16,88,SAUCES,MAIN,10044.jpg,Sauce product
+10045,Yellow Label,8720608007417,5.654,16,78,TEA_COFFEE,MAIN,10045.jpg,Tea or coffee item
+10046,The de ceylan 20 sachets,5055953902586,3.000,16,37,TEA_COFFEE,MAIN,10046.jpg,Tea or coffee item
+10047,Peach Ice Tea,5000118047817,4.090,16,88,TEA_COFFEE,MAIN,10047.jpg,Tea or coffee item
+10048,Thé Earl grey,3760091720122,4.259,16,74,TEA_COFFEE,MAIN,10048.jpg,Tea or coffee item
+10049,Agua mineral grande,8411547001085,1.098,16,182,WATER,MAIN,10049.jpg,Bottled water
+10050,Font Vella,8410055150018,0.562,16,115,WATER,MAIN,10050.jpg,Bottled water
+10051,AQUA CARPATICA,5942326402272,0.710,16,103,WATER,MAIN,10051.jpg,Bottled water
+10052,Blackcurrant Flavored Drink with Nata de Coco,8850389115367,0.956,16,108,WATER,MAIN,10052.jpg,Bottled water
+10053,Pressup Orange 1l,6111242104198,0.936,16,60,JUICE,MAIN,10053.jpg,Fruit juice
+10054,Orangensaft,3502110009449,2.343,16,94,JUICE,MAIN,10054.jpg,Fruit juice
+10055,Jus d'Orange avec Pulpe,3502110009401,1.912,16,89,JUICE,MAIN,10055.jpg,Fruit juice
+10056,Orange Intense Dark Chocolate,3046920028370,1.440,16,99,JUICE,MAIN,10056.jpg,Fruit juice
+10057,COCA COLA CAN TRAY,5449000283894,1.329,16,130,DRINKS,MAIN,10057.jpg,Soft drink can
+10058,Lightly Salted Potato Chips,5017764003111,3.299,16,52,SNACKS,MAIN,10058.jpg,Potato chips
+10059,Nature aux Amandes,5411188118961,2.509,4,44,DAIRY,MAIN,10059.jpg,Yogurt
+10060,PAIN MIE SANDWICH BIO* COMPLET Sans sucres ajoutés 500G,3760049794373,1.800,4,88,BAKERY,MAIN,10060.jpg,Packaged bakery item
+10061,Côté Brasserie,8710438107944,5.180,16,63,FROZEN,MAIN,10061.jpg,Frozen food
+10062,Etui Bec Verseur Doré de Canne Saint Louis 1kg,3220035230006,1.370,4,90,GROCERY,MAIN,10062.jpg,Grocery staple
+10063,Tuna in vegetable oil,3341430490380,1.348,16,30,CANNED,MAIN,10063.jpg,Canned tuna
+10064,Argan oil shampoo,8480000443373,9.584,16,53,PERSONALCARE,MAIN,10064.jpg,Personal care item
+10065,Naranjas,8480012001561,6.829,16,42,HOUSEHOLD,MAIN,10065.jpg,Household paper item
+10066,BOIL,7037610035248,3.846,4,38,RICEPASTA,MAIN,10066.jpg,Rice or pasta item
+10067,Tomatketchup 342g Heinz,87157635,4.617,16,63,SAUCES,MAIN,10067.jpg,Sauce product
+10068,Thé du Darjeeling,5055953902470,10.338,16,84,TEA_COFFEE,MAIN,10068.jpg,Tea or coffee item
+10069,Ain sais kids 33cl,6111128000903,0.809,16,119,WATER,MAIN,10069.jpg,Bottled water
+10070,Fanta Orange,5449000004840,1.423,16,60,JUICE,MAIN,10070.jpg,Fruit juice
+10071,Coca,5449000224088,1.348,16,159,DRINKS,MAIN,10071.jpg,Soft drink can
+10072,Lorenz Barbecue Potato Chips 100G.,4018077695032,3.521,16,50,SNACKS,MAIN,10072.jpg,Potato chips
+10073,Greek Style Yogurt,20047559,2.257,4,92,DAIRY,MAIN,10073.jpg,Yogurt
+10074,Harrys brioche tranchee pepites de chocolat sans additif 485g,3228857001347,0.343,4,66,BAKERY,MAIN,10074.jpg,Packaged bakery item
+10075,Alumettes Just au Four,8710438123784,5.857,16,59,FROZEN,MAIN,10075.jpg,Frozen food
+10076,Tate Lyle Jam Sugar Fairtrade 1kg,5010115926831,2.252,4,65,GROCERY,MAIN,10076.jpg,Grocery staple
+10077,Thon entier au naturel,3019081239237,4.300,16,40,CANNED,MAIN,10077.jpg,Canned tuna
+10078,Anti dandruff shampoo,3337871330262,1.771,16,82,PERSONALCARE,MAIN,10078.jpg,Personal care item
+10079,Winners tissue paper 100 x 1ply,6091308800700,5.878,16,88,HOUSEHOLD,MAIN,10079.jpg,Household paper item
+10080,Brown rice,0011110901361,5.395,4,41,RICEPASTA,MAIN,10080.jpg,Rice or pasta item
+10081,Amora,8722700113348,3.669,16,46,SAUCES,MAIN,10081.jpg,Sauce product
+10082,Lipton Thé Noir Bio Russian Earl Grey 150g,8717163842942,4.283,16,74,TEA_COFFEE,MAIN,10082.jpg,Tea or coffee item
+10083,Agua mineral natural,8420887021509,1.164,16,218,WATER,MAIN,10083.jpg,Bottled water
+10084,Zumo pura naranja con pulpa,8480000390325,2.262,16,128,JUICE,MAIN,10084.jpg,Fruit juice
+10085,Coca Cola 375ml can (no sugar),9300675079938,0.722,16,99,DRINKS,MAIN,10085.jpg,Soft drink can
+10086,Leader Chips salée,6111242040793,1.636,16,145,SNACKS,MAIN,10086.jpg,Potato chips
+10087,double zéro Cerise,6111032010135,1.758,4,96,DAIRY,MAIN,10087.jpg,Yogurt
+10088,Pain de mie Bio petites tranches complet & levain sans sucres ajoutés 280g,3760049797909,1.293,4,51,BAKERY,MAIN,10088.jpg,Packaged bakery item
+10089,Potato Wedges sült krumpli,20047900,2.391,16,63,FROZEN,MAIN,10089.jpg,Frozen food
+10090,1KG Sucre Morceaux Poly Sol,3220034075004,0.745,4,105,GROCERY,MAIN,10090.jpg,Grocery staple
+10091,Thunfisch Filets in Sonnenblumenöl,4056489254676,1.643,16,58,CANNED,MAIN,10091.jpg,Canned tuna
+10092,Vitaïa,6111242926486,1.065,16,27,PERSONALCARE,MAIN,10092.jpg,Personal care item
+10093,Paper Holder Clear,6414301066865,2.297,16,24,HOUSEHOLD,MAIN,10093.jpg,Household paper item
+10094,boil in the bag easy cook long grain rice by Sains,00181730,5.958,4,34,RICEPASTA,MAIN,10094.jpg,Rice or pasta item
+10095,Heinz Ketchup,50457243,3.014,16,60,SAUCES,MAIN,10095.jpg,Sauce product
+10096,Fuzetea Black Tea Peach Hibiscus,5449000237972,8.524,16,47,TEA_COFFEE,MAIN,10096.jpg,Tea or coffee item
+10097,Bottled Drinking Water,0012000002090,0.739,16,201,WATER,MAIN,10097.jpg,Bottled water
+10098,Juicy Oranges Whole Fruit Squash,5023762000137,1.135,16,100,JUICE,MAIN,10098.jpg,Fruit juice
+10099,Diet Coke No Caffiene 8x330ml Cans,5449000117106,1.844,16,84,DRINKS,MAIN,10099.jpg,Soft drink can
+10100,Lays Barbecue,3168930174653,0.540,16,160,SNACKS,MAIN,10100.jpg,Potato chips
+10101,Yogurt No Added Sugar ananas,6111032010128,1.498,4,82,DAIRY,MAIN,10101.jpg,Yogurt
+10102,Pain mie sandwich bio* cereales 500g,3760049794397,1.327,4,26,BAKERY,MAIN,10102.jpg,Packaged bakery item
+10103,Pommes Dauphine,3599740009925,4.769,16,32,FROZEN,MAIN,10103.jpg,Frozen food
+10104,Mitrphol Refined White Sugar 1KG.,8850256100106,1.018,4,78,GROCERY,MAIN,10104.jpg,Grocery staple
+10105,Thon a huile végétale,6111184003863,3.982,16,43,CANNED,MAIN,10105.jpg,Canned tuna
+10106,Golden Moringa Oil,8001090661999,3.238,16,44,PERSONALCARE,MAIN,10106.jpg,Personal care item
+10107,Boil in the Bag Brown Rice by Sainsbury's,00282925,4.018,4,42,RICEPASTA,MAIN,10107.jpg,Rice or pasta item
+10108,KETCHUP,87157277,2.598,16,60,SAUCES,MAIN,10108.jpg,Sauce product
+10109,Thé noir glacé saveur framboise menthe,5449000040350,6.358,16,29,TEA_COFFEE,MAIN,10109.jpg,Tea or coffee item
+10110,Devin with Miners & Vitamins,3800000602788,0.643,16,220,WATER,MAIN,10110.jpg,Bottled water
+10111,Pulpy Orange,8901764362804,0.815,16,123,JUICE,MAIN,10111.jpg,Fruit juice
+10112,Coca Cola Can (Arabic),6260806400259,2.199,16,167,DRINKS,MAIN,10112.jpg,Soft drink can
+10113,NOISETTES,3560070120451,0.253,16,73,SNACKS,MAIN,10113.jpg,Potato chips
+10114,Velouté Fraise,6111032002888,3.272,4,60,DAIRY,MAIN,10114.jpg,Yogurt
+10115,Brioche tressée nature allegée en sucres sans additifs 450g,3228857002313,0.666,4,82,BAKERY,MAIN,10115.jpg,Packaged bakery item
+10116,Kid Smile,8710438116809,3.751,16,71,FROZEN,MAIN,10116.jpg,Frozen food
+10117,CSR Brown Sugar 1kg,9313010000801,6.827,4,56,GROCERY,MAIN,10117.jpg,Grocery staple
+10118,Thon listao au naturel pêché ligne 140g,3256225454945,2.254,16,79,CANNED,MAIN,10118.jpg,Canned tuna
+10119,L'OREAL ELSEVE,3610340655227,3.387,16,78,PERSONALCARE,MAIN,10119.jpg,Personal care item
+10120,4 golden savoury rice steam bags,5010482836733,2.511,4,96,RICEPASTA,MAIN,10120.jpg,Rice or pasta item

@@ -1,0 +1,373 @@
+:root {
+	--pos-bg-1: #f6f8fc;
+	--pos-bg-2: #eef2f8;
+	--panel-bg: #ffffff;
+	--panel-border: #d9e1ee;
+	--text-main: #17263c;
+	--text-sub: #5f708c;
+	--brand-1: #1f4fa8;
+	--brand-2: #2d77d0;
+	--accent-1: #0f9d7f;
+	--accent-2: #45b694;
+	--danger-1: #bd3d49;
+	--danger-2: #d16873;
+	--shadow-1: 0 8px 24px rgba(22, 41, 69, 0.08);
+	--radius-lg: 14px;
+	--radius-md: 10px;
+}
+
+.takepos-workspace-reports-body {
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+	background: radial-gradient(circle at 10% 0%, #ffffff 0%, var(--pos-bg-1) 45%, var(--pos-bg-2) 100%);
+	font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+	color: var(--text-main);
+}
+
+.takepos-workspace-reports-page {
+	max-width: 1460px;
+	margin: 0 auto;
+	padding: 22px 20px 28px;
+}
+
+.takepos-workspace-title {
+	margin: 0 0 14px;
+	font-size: 32px;
+	line-height: 1.2;
+	font-weight: 800;
+	color: #122849;
+	letter-spacing: 0.2px;
+	display: inline-flex;
+	align-items: baseline;
+	gap: 10px;
+}
+
+.takepos-workspace-title::before {
+	content: "";
+	width: 6px;
+	height: 32px;
+	border-radius: 999px;
+	background: linear-gradient(180deg, var(--brand-2), var(--brand-1));
+	display: inline-block;
+}
+
+.takepos-workspace-title-ar {
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--text-sub);
+}
+
+.takepos-workspace-panel {
+	background: var(--panel-bg);
+	border: 1px solid var(--panel-border);
+	border-radius: var(--radius-lg);
+	padding: 16px;
+	margin-bottom: 14px;
+	box-shadow: var(--shadow-1);
+}
+
+.takepos-workspace-panel h3 {
+	margin: 0 0 14px;
+	font-size: 17px;
+	font-weight: 800;
+	color: #17345e;
+}
+
+.takepos-workspace-filter-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+	gap: 12px;
+}
+
+.takepos-workspace-filter-grid > div {
+	background: #fbfcff;
+	border: 1px solid #e4eaf4;
+	border-radius: var(--radius-md);
+	padding: 8px 10px;
+}
+
+.takepos-workspace-filter-grid label {
+	display: block;
+	font-size: 12px;
+	font-weight: 700;
+	margin-bottom: 5px;
+	color: var(--text-sub);
+}
+
+.takepos-workspace-filter-grid input,
+.takepos-workspace-filter-grid select {
+	width: 100%;
+	box-sizing: border-box;
+	height: 38px;
+	padding: 8px 10px;
+	border: 1px solid #ccd8ea;
+	border-radius: 8px;
+	background: #fff;
+	font-size: 14px;
+	color: var(--text-main);
+	transition: all 0.18s ease;
+}
+
+.takepos-workspace-filter-grid input:focus,
+.takepos-workspace-filter-grid select:focus {
+	outline: none;
+	border-color: #6ea2e4;
+	box-shadow: 0 0 0 3px rgba(46, 118, 207, 0.14);
+}
+
+.takepos-workspace-filter-actions {
+	margin-top: 14px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.takepos-workspace-filter-actions .button {
+	min-height: 40px;
+	padding: 10px 16px;
+	border-radius: 9px !important;
+	font-weight: 700;
+	border: 1px solid #c8d6ea;
+	background: #ffffff;
+	color: #1f3e6c;
+	text-transform: none;
+	letter-spacing: 0.2px;
+	box-shadow: 0 2px 6px rgba(27, 58, 99, 0.08);
+}
+
+#btn_generate {
+	background: linear-gradient(135deg, var(--brand-2), var(--brand-1)) !important;
+	border-color: transparent !important;
+	color: #fff !important;
+}
+
+#btn_reset {
+	background: linear-gradient(135deg, var(--danger-2), var(--danger-1)) !important;
+	border-color: transparent !important;
+	color: #fff !important;
+}
+
+#btn_export {
+	background: linear-gradient(135deg, var(--accent-2), var(--accent-1)) !important;
+	border-color: transparent !important;
+	color: #fff !important;
+}
+
+#btn_print {
+	background: linear-gradient(135deg, #6f7f96, #4f6079) !important;
+	border-color: transparent !important;
+	color: #fff !important;
+}
+
+.takepos-workspace-summary-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 12px;
+}
+
+.takepos-workspace-card {
+	background: linear-gradient(140deg, #f8fbff 0%, #f1f6ff 100%);
+	border: 1px solid #dbe6f8;
+	border-radius: 12px;
+	padding: 12px;
+	position: relative;
+	overflow: hidden;
+}
+
+.takepos-workspace-card::after {
+	content: "";
+	position: absolute;
+	inset: auto -30px -30px auto;
+	width: 90px;
+	height: 90px;
+	border-radius: 50%;
+	background: rgba(56, 120, 205, 0.1);
+}
+
+.takepos-workspace-card-label {
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--text-sub);
+	margin-bottom: 6px;
+}
+
+.takepos-workspace-card-value {
+	font-size: 28px;
+	font-weight: 800;
+	line-height: 1;
+	color: #17345f;
+}
+
+.takepos-workspace-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.takepos-workspace-tab {
+	border: 1px solid #c9d8ef;
+	background: #f4f8ff;
+	color: #23426f;
+	padding: 8px 14px;
+	border-radius: 999px;
+	cursor: pointer;
+	font-weight: 700;
+	transition: all 0.15s ease;
+}
+
+.takepos-workspace-tab:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 4px 8px rgba(33, 64, 110, 0.12);
+}
+
+.takepos-workspace-tab.active {
+	background: linear-gradient(135deg, var(--brand-2), var(--brand-1));
+	border-color: transparent;
+	color: #fff;
+}
+
+.takepos-workspace-table-wrap {
+	overflow-x: auto;
+	border: 1px solid #d9e3f3;
+	border-radius: 12px;
+}
+
+.hidden {
+	display: none;
+}
+
+.takepos-workspace-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+	background: #fff;
+}
+
+.takepos-workspace-table th,
+.takepos-workspace-table td {
+	border-bottom: 1px solid #e3eaf6;
+	padding: 10px 10px;
+	text-align: left;
+	white-space: nowrap;
+}
+
+.takepos-workspace-table thead th {
+	background: #edf3ff;
+	color: #1f3f6d;
+	cursor: pointer;
+	user-select: none;
+	font-weight: 800;
+	position: sticky;
+	top: 0;
+	z-index: 1;
+}
+
+.takepos-workspace-table tbody tr:nth-child(even) {
+	background: #f9fbff;
+}
+
+.takepos-workspace-table tbody tr:hover {
+	background: #eef5ff;
+}
+
+.takepos-workspace-table thead th.num,
+.takepos-workspace-table td.num {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+.takepos-workspace-table td.num {
+	font-weight: 600;
+}
+
+.takepos-workspace-table tfoot td {
+	background: #f2f7ff;
+	font-weight: 800;
+	border-top: 2px solid #c9d9f1;
+}
+
+@media (max-width: 900px) {
+	.takepos-workspace-reports-page {
+		padding: 14px;
+	}
+
+	.takepos-workspace-title {
+		font-size: 24px;
+	}
+
+	.takepos-workspace-card-value {
+		font-size: 22px;
+	}
+
+	.takepos-workspace-filter-actions .button {
+		flex: 1 1 calc(50% - 10px);
+	}
+}
+
+@media print {
+	.takepos-workspace-filter-panel,
+	.takepos-workspace-tabs,
+	.takepos-workspace-filter-actions {
+		display: none;
+	}
+
+	.takepos-workspace-panel {
+		box-shadow: none;
+		border: 1px solid #999;
+	}
+
+	.takepos-workspace-table-wrap {
+		border: 1px solid #999;
+	}
+}
+.takepos-workspace-feedback {
+	margin: 8px 0 12px;
+	padding: 10px 12px;
+	border-radius: 10px;
+	font-weight: 600;
+	border: 1px solid transparent;
+}
+
+.takepos-workspace-feedback.info {
+	color: #123f6a;
+	background: #e7f1ff;
+	border-color: #b9d3f6;
+}
+
+.takepos-workspace-feedback.success {
+	color: #125137;
+	background: #e9f8ef;
+	border-color: #b7e4c9;
+}
+
+.takepos-workspace-feedback.warning {
+	color: #7a4c00;
+	background: #fff7e5;
+	border-color: #f2d796;
+}
+
+.takepos-workspace-feedback.error {
+	color: #7a1621;
+	background: #ffecef;
+	border-color: #f5bec6;
+}
+
+.takepos-workspace-loading {
+	margin: 6px 0 12px;
+	padding: 8px 10px;
+	font-size: 13px;
+	font-weight: 700;
+	color: #1f3f6d;
+	background: #eef5ff;
+	border: 1px dashed #bcd2ef;
+	border-radius: 10px;
+}
+
+.takepos-workspace-table td.takepos-workspace-empty {
+	text-align: center;
+	color: #5f708c;
+	padding: 18px 10px;
+	font-weight: 600;
+}

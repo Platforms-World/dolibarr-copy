@@ -1,0 +1,103 @@
+# Module ChWhatsAppButton
+Module105004Name = Bouton WhatsApp
+Module105004Desc = Boutons WhatsApp sur les tiers, projets, propositions commerciales et factures
+
+# Permissions
+Permission105004Read = Lire les modèles WhatsApp
+Permission105004Write = Créer/modifier les modèles WhatsApp
+Permission105004Delete = Supprimer les modèles WhatsApp
+
+# Menu
+WhatsApp = WhatsApp
+WhatsAppTemplates = Modèles WhatsApp
+NewTemplate = Nouveau Modèle
+WhatsAppTemplate = Modèle WhatsApp
+EditTemplate = Modifier le Modèle
+
+# Fields
+Ref = Référence
+Label = Libellé
+Description = Description
+MessageText = Texte du Message
+EntityType = Type d'Entité
+Active = Actif
+Inactive = Inactif
+Default = Par Défaut
+Position = Position
+Status = Statut
+
+# Entity Types
+ThirdParty = Tiers
+Project = Projet
+Proposal = Proposition Commerciale
+Invoice = Facture
+
+# Actions
+SendViaWhatsApp = Envoyer par WhatsApp
+SelectWhatsAppTemplate = Sélectionner un Modèle WhatsApp
+SendThisMessage = Envoyer ce message
+CustomMessage = Message Personnalisé
+SendCustomMessage = Envoyer un message personnalisé
+PleaseEnterMessage = Veuillez saisir un message
+SendToWhatsApp = Envoyer WhatsApp à
+Phone = Téléphone
+SelectTemplate = Sélectionnez un modèle
+OrWriteCustomMessage = Ou écrivez un message personnalisé
+OpenWhatsAppConfirm = Ouvrir WhatsApp Web pour envoyer ce message ?
+Loading = Chargement
+BackToList = Retour à la liste
+
+# Messages
+WhatsAppRequirement = IMPORTANT : Vous devez avoir WhatsApp Web ou WhatsApp Desktop (Windows/Mac) installé et actif pour envoyer des messages. Voulez-vous continuer ?
+NoWhatsAppPhone = Aucun numéro de téléphone trouvé pour ce tiers
+NoPhoneFound = Ce contact n'a pas de numéro WhatsApp configuré
+AvailableSubstitutions = Substitutions disponibles
+RecordSaved = Enregistrement sauvegardé
+RecordDeleted = Enregistrement supprimé
+ErrorFieldRequired = Le champ %s est obligatoire
+CouldNotDetermineEntityId = Impossible de déterminer l'ID de l'entité
+ErrorLoadingTemplates = Erreur lors du chargement des modèles
+TemplateNotFound = Erreur : Impossible de charger le message du modèle
+PleaseWriteMessage = Veuillez écrire un message
+
+# Help
+HelpWhatsAppButton = Ce module ajoute des boutons WhatsApp sur les fiches des tiers, projets, propositions commerciales et factures. Les boutons n'apparaissent que si le tiers ou le contact principal a un numéro de téléphone configuré.
+HelpTemplates = Les modèles permettent de créer des messages prédéfinis avec des variables qui sont automatiquement substituées selon le contexte.
+HelpSubstitutions = Variables disponibles par type d'entité :\n- Tiers : __THIRDPARTY_NAME__, __THIRDPARTY_CODE__\n- Projets : __PROJECT_REF__, __PROJECT_TITLE__\n- Propositions : __PROPAL_REF__, __PROPAL_TOTAL_TTC__\n- Factures : __INVOICE_REF__, __INVOICE_TOTAL_TTC__
+
+# Configuration
+EnableWhatsAppButton = Activer les boutons WhatsApp
+Information = Information
+HowToUse = Comment utiliser
+ConfigureTemplates = Configurer les modèles de messages
+EnsurePhoneNumbers = S'assurer que les tiers ont des numéros de téléphone
+UseButtonsInCards = Utiliser les boutons dans les fiches d'entités
+Requirements = Prérequis
+WhatsAppWebOrDesktop = WhatsApp Web ou WhatsApp Desktop installé
+PhoneNumberInThirdparty = Numéro de téléphone configuré dans le tiers
+ActiveTemplates = Modèles actifs disponibles
+
+# Default Templates
+Template_THIRDPARTY_DEFAULT_Label = Message général au tiers
+Template_THIRDPARTY_DEFAULT_Desc = Modèle par défaut pour les tiers
+Template_THIRDPARTY_DEFAULT_Message = Bonjour __THIRDPARTY_NAME__,\n\nNous espérons que tout va bien.\n\nCordialement.
+
+Template_PROJECT_UPDATE_Label = Mise à jour du projet
+Template_PROJECT_UPDATE_Desc = Notifier l'avancement du projet
+Template_PROJECT_UPDATE_Message = Bonjour __THIRDPARTY_NAME__,\n\nJe vous écris au sujet du projet : __PROJECT_REF__ - __PROJECT_TITLE__\n\n[Écrivez votre message ici]\n\nCordialement.
+
+Template_PROPAL_SEND_Label = Envoi de proposition commerciale
+Template_PROPAL_SEND_Desc = Notifier l'envoi de la proposition
+Template_PROPAL_SEND_Message = Bonjour __THIRDPARTY_NAME__,\n\nNous vous avons envoyé la proposition commerciale __PROPAL_REF__ pour un montant de __PROPAL_TOTAL_TTC__.\n\nNous restons à votre disposition pour toute question.\n\nCordialement.
+
+Template_INVOICE_SEND_Label = Envoi de facture
+Template_INVOICE_SEND_Desc = Notifier l'envoi de la facture
+Template_INVOICE_SEND_Message = Bonjour __THIRDPARTY_NAME__,\n\nNous vous informons que la facture __INVOICE_REF__ pour un montant de __INVOICE_TOTAL_TTC__ est disponible.\n\nMerci pour votre confiance.\n\nCordialement.
+
+Template_PAYMENT_REMINDER_Label = Rappel de paiement
+Template_PAYMENT_REMINDER_Desc = Rappeler un paiement en attente
+Template_PAYMENT_REMINDER_Message = Bonjour __THIRDPARTY_NAME__,\n\nNous vous rappelons que la facture __INVOICE_REF__ pour __INVOICE_TOTAL_TTC__ est en attente de paiement.\n\nSi vous avez déjà effectué le paiement, veuillez ignorer ce message.\n\nMerci.
+
+Template_PROPAL_FOLLOWUP_Label = Suivi de proposition
+Template_PROPAL_FOLLOWUP_Desc = Faire un suivi sur la proposition envoyée
+Template_PROPAL_FOLLOWUP_Message = Bonjour __THIRDPARTY_NAME__,\n\nAvez-vous eu l'occasion de consulter la proposition __PROPAL_REF__ que nous vous avons envoyée ?\n\nNous sommes disponibles pour toute question ou clarification.\n\nCordialement.

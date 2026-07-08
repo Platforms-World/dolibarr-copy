@@ -1,0 +1,10 @@
+SaaSCoreSetup=SaaSCoreSetup
+SaaSCoreIntro=Central entitlement registry and tenant assignment layer for SaaS modules.
+ModulesCatalog=Modules Catalog
+FeaturesCatalog=Features Catalog
+LimitsCatalog=Limits Catalog
+PermissionsCatalog=Permissions Catalog
+BundlesCatalog=Bundles Catalog
+RolesCatalog=Roles Catalog
+TenantConfiguration=Tenant Configuration
+General=General

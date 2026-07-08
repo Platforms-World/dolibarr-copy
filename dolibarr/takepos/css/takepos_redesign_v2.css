@@ -1,0 +1,3386 @@
+/*
+ * TakePOS Redesign V2 — Mockup-aligned restyle
+ * ----------------------------------------------------------------------------
+ * Pure CSS. No PHP. No JavaScript changes.
+ * Drop at: <dolibarr>/htdocs/takepos/css/takepos_redesign_v2.css
+ *
+ * Goal: take Dolibarr's existing TakePOS DOM (.div1..div5, .wrapper, .wrapper2,
+ * #poslines, .actionbutton, .calcbutton, etc.) and visually push it as close
+ * as CSS can to the takepos_redesign_final.html mockup.
+ *
+ * ALL rules are scoped to body.takepos-v2 so this file is a no-op when V2 is
+ * disabled in index.php. Nothing here renames or restructures DOM, so every
+ * existing JS handler keeps working (LoadProducts, ClickProduct, Search2,
+ * Edit, deleteline, CloseBill, HoldSale, etc.).
+ *
+ * After editing this file, bump the cache-bust query (?v=...) in index.php
+ * so browsers re-fetch.
+ *
+ * Layout map (existing DOM → mockup concept):
+ *   .header                           → appbar (dark slate)
+ *   #takepos-main-layout              → main 3-col grid
+ *     #poslines (.div1)               → cart panel (left, white)
+ *     .div4                           → categories pills strip (top of catalog)
+ *     .div5                           → products grid (catalog)
+ *     .div3                           → action rail (right narrow strip)
+ *     .div2                           → keypad (floating popup, hidden by default)
+ * ============================================================================ */
+
+
+/* ============================================================================
+   STEP 1 — DESIGN TOKENS (mirror the mockup)
+   ============================================================================ */
+body.takepos-v2 {
+    /* Surfaces */
+    --tp-bg-app:        #f1f4f9;
+    --tp-bg-panel:      #ffffff;
+    --tp-bg-soft:       #f6f8fc;
+    --tp-bg-hover:      #eef2f8;
+    --tp-bg-active:     #e4ebf5;
+    --tp-bg-dark:       #0f172a;
+    --tp-bg-dark-soft:  #1e293b;
+
+    /* Borders */
+    --tp-border:        #e2e8f0;
+    --tp-border-strong: #cbd5e1;
+    --tp-border-focus:  #94a3b8;
+
+    /* Text */
+    --tp-text:          #0f172a;
+    --tp-text-muted:    #475569;
+    --tp-text-soft:     #94a3b8;
+    --tp-text-on-dark:  #e2e8f0;
+
+    /* Brand */
+    --tp-primary:       #1e40af;
+    --tp-primary-hover: #1e3a8a;
+    --tp-primary-soft:  #eff6ff;
+    --tp-primary-50:    #f0f7ff;
+
+    /* Status */
+    --tp-success:       #047857;
+    --tp-success-soft:  #ecfdf5;
+    --tp-warning:       #b45309;
+    --tp-warning-soft:  #fffbeb;
+    --tp-danger:        #b91c1c;
+    --tp-danger-soft:   #fef2f2;
+    --tp-info:          #0e7490;
+    --tp-info-soft:     #ecfeff;
+
+    /* Geometry */
+    --tp-radius:        8px;
+    --tp-radius-sm:     6px;
+    --tp-radius-lg:     12px;
+    --tp-shadow-xs:     0 1px 2px rgba(15,23,42,0.04);
+    --tp-shadow-sm:     0 2px 4px rgba(15,23,42,0.05), 0 1px 2px rgba(15,23,42,0.04);
+    --tp-shadow:        0 4px 12px rgba(15,23,42,0.06), 0 2px 4px rgba(15,23,42,0.04);
+    --tp-shadow-lg:     0 12px 32px rgba(15,23,42,0.10), 0 4px 8px rgba(15,23,42,0.05);
+    --tp-shadow-pop:    0 20px 50px rgba(15,23,42,0.15), 0 8px 16px rgba(15,23,42,0.08);
+
+    /* Type */
+    --tp-font-num:      "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    --tp-font-ar:       "IBM Plex Sans Arabic", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+    /* Layout */
+    --tp-appbar-h:      48px;
+    --tp-rail-w:        72px;
+    --tp-cart-w:        380px;
+
+    background: var(--tp-bg-app) !important;
+    color: var(--tp-text);
+    font-size: 13.5px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+}
+
+body.takepos-v2.tp-rtl,
+body.takepos-v2[dir="rtl"] {
+    font-family: var(--tp-font-ar);
+}
+
+
+/* ============================================================================
+   STEP 2 — NEUTRALISE legacy pos.css.php behaviour we don't want
+   ============================================================================ */
+/* Kill the global `button:active { background:black; color:white }` rule. */
+body.takepos-v2 button:active {
+    background: unset;
+    color: unset;
+}
+
+/* Kill float layout — our grid takes over. */
+body.takepos-v2 div.wrapper,
+body.takepos-v2 div.wrapper2 {
+    float: none !important;
+}
+
+/* Kill default <button> backgrounds we restyle below. */
+body.takepos-v2 button.calcbutton,
+body.takepos-v2 button.calcbutton2 {
+    background: transparent;
+    color: inherit;
+}
+body.takepos-v2 button.actionbutton {
+    background: transparent !important;
+    border: none !important;
+}
+body.takepos-v2 button.productbutton {
+    background: transparent !important;
+    border: none !important;
+    color: inherit !important;
+}
+body.takepos-v2.bodytakepos {
+    background: var(--tp-bg-app) !important;
+}
+
+
+/* ============================================================================
+   STEP 3 — APPBAR (dark slate top bar, mirrors mockup .appbar)
+   ============================================================================ */
+
+/* Kill any stray red strip that sometimes appears at the very top of the
+   document (Dolibarr's outer top menu remnant or hr). */
+body.takepos-v2,
+body.takepos-v2.bodytakepos {
+    border-top: none !important;
+}
+body.takepos-v2 > hr,
+body.takepos-v2 #id-top {
+    display: none !important;
+}
+body.takepos-v2 .header::before,
+body.takepos-v2 .header::after {
+    display: none !important;
+}
+
+body.takepos-v2 .header {
+    height: var(--tp-appbar-h) !important;
+    background: var(--tp-bg-dark) !important;
+    color: var(--tp-text-on-dark) !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 50 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    border-bottom: 1px solid #1e293b !important;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+body.takepos-v2 .header .topnav {
+    height: var(--tp-appbar-h) !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 12px !important;
+    gap: 4px !important;
+    background: transparent !important;
+    border: none !important;
+    overflow: visible !important;
+    font-size: 12px !important;
+}
+
+body.takepos-v2 #topnav-left,
+body.takepos-v2 #topnav-right {
+    float: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    height: 100% !important;
+}
+body.takepos-v2 #topnav-right {
+    margin-left: auto !important;
+    gap: 2px !important;
+}
+body.takepos-v2 .header .arrows { display: none !important; }
+
+/* Terminal/cash-register chip on the left — compact, no border */
+body.takepos-v2 #topnav-left .topnav-terminalhour {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 4px 10px !important;
+    border: none !important;
+    color: var(--tp-text-on-dark) !important;
+    font-weight: 600 !important;
+    height: auto !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    border-radius: 6px !important;
+}
+body.takepos-v2 #topnav-left .topnav-terminalhour .fa-cash-register {
+    color: #93c5fd !important;
+    font-size: 13px !important;
+}
+body.takepos-v2 #topnav-left .topnav-terminalhour:hover {
+    background: var(--tp-bg-dark-soft) !important;
+}
+
+/* Generic appbar links — translucent hover, compact icon-button look */
+body.takepos-v2 #topnav-left a,
+body.takepos-v2 #topnav-right a,
+body.takepos-v2 .topnav a {
+    color: var(--tp-text-on-dark) !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 6px 8px !important;
+    text-decoration: none !important;
+    transition: background 0.15s, color 0.15s !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+}
+body.takepos-v2 #topnav-left a:hover:not(.nohover),
+body.takepos-v2 #topnav-right a:hover:not(.nohover),
+body.takepos-v2 .topnav a:hover:not(.nohover) {
+    background: var(--tp-bg-dark-soft) !important;
+    color: #fff !important;
+}
+
+/* Hide text labels in the right-side icon buttons (mockup shows icons only).
+   We use the .hideonsmartphone selector that Dolibarr emits next to most
+   text labels — that's how the legacy code already hides text on phones, and
+   we just extend that to all viewports for clean iconography. We also hide
+   any direct text node by emptying the link's text via specific selectors. */
+body.takepos-v2 #topnav-right a .hideonsmartphone {
+    display: none !important;
+}
+
+/* Specific item polishing: certain icons get a colored tint so they stand
+   out from the slate (Loyalty=amber, Customer Display=cyan, Home=blue, etc.) */
+body.takepos-v2 #topnav-right a .fa-id-card { color: #fbbf24 !important; }
+body.takepos-v2 #topnav-right a .fa-desktop { color: #67e8f9 !important; }
+body.takepos-v2 #topnav-right a .fa-home,
+body.takepos-v2 #topnav-right a .fas.fa-home { color: #93c5fd !important; }
+body.takepos-v2 #topnav-right a .fa-expand-arrows-alt { color: #d1d5db !important; }
+body.takepos-v2 #topnav-right a .fa-language { color: #c4b5fd !important; }
+body.takepos-v2 #topnav-right a .fa-coins { color: #facc15 !important; }
+body.takepos-v2 #topnav-right a .fa-building { color: #86efac !important; }
+body.takepos-v2 #topnav-right a:hover .fa-id-card,
+body.takepos-v2 #topnav-right a:hover .fa-desktop,
+body.takepos-v2 #topnav-right a:hover .fa-home,
+body.takepos-v2 #topnav-right a:hover .fas.fa-home,
+body.takepos-v2 #topnav-right a:hover .fa-expand-arrows-alt,
+body.takepos-v2 #topnav-right a:hover .fa-language,
+body.takepos-v2 #topnav-right a:hover .fa-coins,
+body.takepos-v2 #topnav-right a:hover .fa-building {
+    filter: brightness(1.2);
+}
+body.takepos-v2 #topnav-right a > span.fa,
+body.takepos-v2 #topnav-right a > span.fas,
+body.takepos-v2 #topnav-right a > span.far {
+    font-size: 14px !important;
+}
+
+/* Language toggle pills (AR / EN) — mockup style: tight pill with the bare
+   letter only. Dolibarr renders both an icon AND the short text; we hide the
+   icon and keep the 2-letter code in a small bordered pill. */
+body.takepos-v2 #topnav-right a[href*="lang=ar"],
+body.takepos-v2 #topnav-right a[href*="lang=en"],
+body.takepos-v2 #topnav-right a[href*="ar_JO"],
+body.takepos-v2 #topnav-right a[href*="en_US"] {
+    background: var(--tp-bg-dark-soft) !important;
+    border: 1px solid #334155 !important;
+    border-radius: 6px !important;
+    padding: 0 10px !important;
+    height: 28px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    color: #cbd5e1 !important;
+}
+body.takepos-v2 #topnav-right a[href*="lang=ar"]:hover,
+body.takepos-v2 #topnav-right a[href*="lang=en"]:hover,
+body.takepos-v2 #topnav-right a[href*="ar_JO"]:hover,
+body.takepos-v2 #topnav-right a[href*="en_US"]:hover {
+    background: #334155 !important;
+    color: #fff !important;
+    border-color: #475569 !important;
+}
+/* Inside the language pill, hide the FA icon span (the .fa-language) and
+   keep just the text */
+body.takepos-v2 #topnav-right a[href*="lang=ar"] .fa-language,
+body.takepos-v2 #topnav-right a[href*="lang=en"] .fa-language,
+body.takepos-v2 #topnav-right a[href*="ar_JO"] .fa-language,
+body.takepos-v2 #topnav-right a[href*="en_US"] .fa-language {
+    display: none !important;
+}
+
+/* Search wrapper */
+body.takepos-v2 .login_block_other.takepos {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 4px !important;
+    border: none !important;
+    position: relative !important;
+}
+/* Search input — slate, with magnifier inside via background-image */
+body.takepos-v2 #search,
+body.takepos-v2 #topnav-right input[type="text"]#search {
+    height: 30px !important;
+    padding: 0 32px 0 12px !important;
+    border: 1px solid #334155 !important;
+    border-radius: 6px !important;
+    background: var(--tp-bg-dark-soft) !important;
+    color: #fff !important;
+    font-size: 12px !important;
+    /* FIX (I01): outline managed by *:focus-visible rule above */
+    outline: 2px solid transparent;
+    width: 280px !important;
+    max-width: 320px !important;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s, width 0.2s !important;
+    box-sizing: border-box !important;
+}
+body.takepos-v2.tp-rtl #search,
+body.takepos-v2.tp-rtl #topnav-right input[type="text"]#search,
+body.takepos-v2[dir="rtl"] #search,
+body.takepos-v2[dir="rtl"] #topnav-right input[type="text"]#search {
+    padding: 0 12px 0 32px !important;
+}
+body.takepos-v2 #search::placeholder {
+    color: #64748b !important;
+    font-size: 11.5px !important;
+}
+body.takepos-v2 #search:focus {
+    border-color: #3b82f6 !important;
+    background: var(--tp-bg-dark) !important;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.2) !important;
+    width: 320px !important;
+}
+
+/* HIDE the giant standalone "SEARCH" button — the search field is enough.
+   Pressing Enter in the search field already triggers Search2(). */
+body.takepos-v2 .takepos-search-button {
+    display: none !important;
+}
+
+/* Magnifier icon overlaid on the search field via ::after pseudo on its
+   container (the .login_block_other). Position: trailing edge in LTR (right),
+   leading edge in RTL (left). Pure decoration — clicks pass through. */
+body.takepos-v2 .login_block_other.takepos::after {
+    content: '\f002'; /* Font Awesome magnifier */
+    font-family: "Font Awesome 5 Free", "FontAwesome";
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #94a3b8;
+    pointer-events: none;
+    right: 10px;
+    left: auto;
+}
+body.takepos-v2.tp-rtl .login_block_other.takepos::after,
+body.takepos-v2[dir="rtl"] .login_block_other.takepos::after {
+    right: auto;
+    left: 10px;
+}
+
+/* "/" keyboard shortcut hint chip on the leading edge of the search field */
+body.takepos-v2 .login_block_other.takepos::before {
+    content: '/';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 10px;
+    right: auto;
+    font-family: var(--tp-font-num);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #64748b;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid #334155;
+    border-radius: 4px;
+    padding: 1px 6px;
+    line-height: 1;
+    pointer-events: none;
+    letter-spacing: 0;
+}
+body.takepos-v2.tp-rtl .login_block_other.takepos::before,
+body.takepos-v2[dir="rtl"] .login_block_other.takepos::before {
+    left: auto;
+    right: 10px;
+}
+/* When the search field has the keyboard shortcut chip on the LEFT we need to
+   shift padding accordingly */
+body.takepos-v2 #search,
+body.takepos-v2 #topnav-right input[type="text"]#search {
+    padding-left: 32px !important;
+}
+body.takepos-v2.tp-rtl #search,
+body.takepos-v2.tp-rtl #topnav-right input[type="text"]#search,
+body.takepos-v2[dir="rtl"] #search,
+body.takepos-v2[dir="rtl"] #topnav-right input[type="text"]#search {
+    padding-left: 12px !important;
+    padding-right: 32px !important;
+}
+
+/* Search clear (X) button — small icon-only */
+body.takepos-v2 .takepos-search-clear {
+    color: #94a3b8 !important;
+    background: transparent !important;
+    padding: 4px 6px !important;
+    height: 28px !important;
+    width: 28px !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+body.takepos-v2 .takepos-search-clear:hover {
+    background: var(--tp-bg-dark-soft) !important;
+    color: #fff !important;
+}
+
+/* User avatar block (right side, leftmost in LTR) — compact pill */
+body.takepos-v2 .login_block_user .userimg.atoplogin,
+body.takepos-v2 .login_block_user a.atoplogin {
+    background: var(--tp-bg-dark-soft) !important;
+    border-radius: 999px !important;
+    padding: 3px 12px 3px 3px !important;
+    color: var(--tp-text-on-dark) !important;
+    transition: background 0.15s !important;
+    height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 11.5px !important;
+    line-height: 1 !important;
+    box-sizing: border-box !important;
+    border: 1px solid #334155 !important;
+}
+body.takepos-v2.tp-rtl .login_block_user .userimg.atoplogin,
+body.takepos-v2.tp-rtl .login_block_user a.atoplogin,
+body.takepos-v2[dir="rtl"] .login_block_user .userimg.atoplogin,
+body.takepos-v2[dir="rtl"] .login_block_user a.atoplogin {
+    padding: 3px 3px 3px 12px !important;
+}
+body.takepos-v2 .login_block_user .userimg.atoplogin:hover,
+body.takepos-v2 .login_block_user a.atoplogin:hover {
+    background: #334155 !important;
+}
+body.takepos-v2 .login_block_user img.userphoto,
+body.takepos-v2 .login_block_user .photoaminuser,
+body.takepos-v2 .login_block_user img[class*="photo"] {
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: none !important;
+    flex-shrink: 0 !important;
+}
+/* Hide the dropdown caret arrow next to the avatar (mockup omits it) */
+body.takepos-v2 .login_block_user .atoplogin .caret,
+body.takepos-v2 .login_block_user .atoplogin .fa-caret-down {
+    display: none !important;
+}
+
+/* Brand block: TakePOS + small TP square. We add this via the existing
+   ".login_block_user" container as a sibling of the avatar pill. Since we
+   can't add HTML, we add it as a ::before on .login_block_user. */
+body.takepos-v2 .login_block_user {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    height: 100% !important;
+    padding-left: 6px !important;
+    margin-left: 4px !important;
+    border-left: 1px solid #1e293b !important;
+}
+body.takepos-v2.tp-rtl .login_block_user,
+body.takepos-v2[dir="rtl"] .login_block_user {
+    padding-left: 0 !important;
+    padding-right: 6px !important;
+    margin-left: 0 !important;
+    margin-right: 4px !important;
+    border-left: none !important;
+    border-right: 1px solid #1e293b !important;
+}
+
+/* ----- Misc topnav polishes ----- */
+/* Customer info ("Customer" with building icon) — in the LEFT side, dim if empty */
+body.takepos-v2 #customerandsales:empty,
+body.takepos-v2 #moreinfo:empty,
+body.takepos-v2 #shoppingcart:empty,
+body.takepos-v2 #infowarehouse:empty {
+    display: none !important;
+}
+body.takepos-v2 #customerandsales {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    height: 100% !important;
+}
+body.takepos-v2 #customerandsales a {
+    font-size: 12px !important;
+    padding: 4px 10px !important;
+}
+
+/* Hide all those text labels with class .hideonsmartphone in the LEFT side
+   of the topnav. The icons remain. (We want compact icon-only buttons.) */
+/* Actually NO — keep customer name visible because it's important. Restrict
+   to icon-only buttons we want compressed: the warehouse, shopping cart, etc. */
+body.takepos-v2 #infowarehouse .hideonsmartphone,
+body.takepos-v2 #shoppingcart .hideonsmartphone,
+body.takepos-v2 #moreinfo .hideonsmartphone {
+    /* keep these visible — they're useful info on the left */
+}
+
+/* Tighten the spacing between left-side info pills */
+body.takepos-v2 #topnav-left > div {
+    margin: 0 !important;
+}
+
+
+/* ============================================================================
+   STEP 4 — MAIN LAYOUT (3 column grid: cart | catalog | rail)
+   ============================================================================ */
+body.takepos-v2 #takepos-main-layout {
+    position: fixed !important;
+    top: var(--tp-appbar-h) !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    margin: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: var(--tp-cart-w) 1fr var(--tp-rail-w) !important;
+    grid-template-rows: auto 1fr !important;
+    grid-template-areas:
+        "cart catbar rail"
+        "cart products rail" !important;
+    background: var(--tp-bg-app) !important;
+    overflow: hidden !important;
+}
+
+/* In RTL: flip column order so cart sits on the right */
+body.takepos-v2.tp-rtl #takepos-main-layout,
+body.takepos-v2[dir="rtl"] #takepos-main-layout {
+    grid-template-columns: var(--tp-rail-w) 1fr var(--tp-cart-w) !important;
+    grid-template-areas:
+        "rail catbar cart"
+        "rail products cart" !important;
+}
+
+/* Flatten row wrappers so children become direct grid items */
+body.takepos-v2 #takepos-main-layout .row1,
+body.takepos-v2 #takepos-main-layout .row1withhead,
+body.takepos-v2 #takepos-main-layout .row2,
+body.takepos-v2 #takepos-main-layout .row2withhead {
+    display: contents !important;
+}
+
+
+/* ============================================================================
+   STEP 5 — CART PANEL (#poslines / .div1)
+   ============================================================================ */
+body.takepos-v2 #poslines.div1 {
+    grid-area: cart !important;
+    height: 100% !important;
+    width: 100% !important;
+    float: none !important;
+    background: var(--tp-bg-panel) !important;
+    border-right: 1px solid var(--tp-border) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    position: relative;
+}
+body.takepos-v2.tp-rtl #poslines.div1,
+body.takepos-v2[dir="rtl"] #poslines.div1 {
+    border-right: none !important;
+    border-left: 1px solid var(--tp-border) !important;
+}
+
+/* poslines itself is the outer flex shell — don't let it scroll,
+   scrolling happens inside .invoice > the table wrapper */
+body.takepos-v2 #poslines {
+    overflow: hidden !important;
+}
+body.takepos-v2 #poslines::-webkit-scrollbar { width: 6px; }
+body.takepos-v2 #poslines::-webkit-scrollbar-thumb {
+    background: var(--tp-border-strong);
+    border-radius: 3px;
+}
+
+/* The customer / refs row at top of the cart — make it stand out softly */
+body.takepos-v2 #poslines #customerandsales,
+body.takepos-v2 #poslines .customerandsales {
+    padding: 10px 16px !important;
+    background: var(--tp-primary-50) !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+    font-size: 12.5px !important;
+    color: var(--tp-text) !important;
+}
+
+/* Cart table — turn it into the airy mockup style */
+body.takepos-v2 #poslines table.postablelines {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    background: transparent !important;
+    margin: 0 !important;
+}
+body.takepos-v2 #poslines tr.liste_titre {
+    background: var(--tp-bg-soft) !important;
+    color: var(--tp-text-soft) !important;
+    text-transform: uppercase !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.5px !important;
+    font-weight: 700 !important;
+}
+body.takepos-v2 #poslines tr.liste_titre td {
+    padding: 6px 8px !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+    background: var(--tp-bg-soft) !important;
+    color: var(--tp-text-soft) !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+}
+/* Hide the big in-header grand-total that legacy invoice.php bakes into the
+   <tr class="liste_titre"> last cell. We render the grand total in the V2
+   footer (.tpv2-grand-total) so showing it here too is duplicated and steals
+   width from the column. */
+body.takepos-v2 #poslines tr.liste_titre #linecolht-span-total {
+    display: none !important;
+}
+/* Also hide the tiny currency-conversion "(X JOD)" line right below it */
+body.takepos-v2 #poslines tr.liste_titre td br + #linecolht-span-total {
+    display: none !important;
+}
+body.takepos-v2 #poslines tr.posinvoiceline td {
+    padding: 10px 12px !important;
+    border: none !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+    font-size: 13px !important;
+    height: auto !important;
+    background: var(--tp-bg-panel) !important;
+    color: var(--tp-text) !important;
+    line-height: 1.3 !important;
+    vertical-align: middle !important;
+}
+/* Description (first cell — product name).
+   We CANNOT change <td> display from table-cell, that breaks the column layout.
+   Instead we set a fixed max-height + overflow:hidden so long names get
+   visually truncated. Two lines of 13px text * 1.3 line-height = ~34px. */
+body.takepos-v2 #poslines tr.posinvoiceline td.left,
+body.takepos-v2 #poslines tr.posinvoiceline td:first-child {
+    width: 50% !important;
+    max-width: 0 !important;          /* with table-layout:auto, max-width:0 forces shrink */
+    word-break: break-word !important;
+    overflow: hidden !important;
+    /* Clamp visible height to roughly 2 lines so cells don't blow up. */
+    max-height: 38px !important;
+    /* Subtle gradient mask at the bottom to hint that text is truncated */
+    -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+}
+/* When the row is hovered/selected, show the full name (lift the height clamp).
+   This way cashiers can still read truncated names by hovering. */
+body.takepos-v2 #poslines tr.posinvoiceline:hover td.left,
+body.takepos-v2 #poslines tr.posinvoiceline:hover td:first-child,
+body.takepos-v2 #poslines tr.posinvoiceline.selected td.left,
+body.takepos-v2 #poslines tr.posinvoiceline.selected td:first-child {
+    max-height: none !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+}
+/* Compact the leading product icon image so it doesn't add height */
+body.takepos-v2 #poslines tr.posinvoiceline td.left img,
+body.takepos-v2 #poslines tr.posinvoiceline td:first-child img {
+    width: 14px !important;
+    height: 14px !important;
+    margin: 0 4px 0 0 !important;
+    vertical-align: -2px !important;
+}
+body.takepos-v2.tp-rtl #poslines tr.posinvoiceline td.left img,
+body.takepos-v2.tp-rtl #poslines tr.posinvoiceline td:first-child img,
+body.takepos-v2[dir="rtl"] #poslines tr.posinvoiceline td.left img,
+body.takepos-v2[dir="rtl"] #poslines tr.posinvoiceline td:first-child img {
+    margin: 0 0 0 4px !important;
+}
+/* Hide the tiny "info" tooltip icon (Dolibarr's textwithpicto helper output)
+   that adds a vertical-aligned span we don't need in a compact cart. */
+body.takepos-v2 #poslines tr.posinvoiceline td.left img.pictohelp,
+body.takepos-v2 #poslines tr.posinvoiceline td:first-child img.pictohelp,
+body.takepos-v2 #poslines tr.posinvoiceline td.left img[src*="info"],
+body.takepos-v2 #poslines tr.posinvoiceline td:first-child img[src*="info"] {
+    display: none !important;
+}
+/* The 10009 reference + label both share the same cell. Style the bold ref. */
+body.takepos-v2 #poslines tr.posinvoiceline td.left b,
+body.takepos-v2 #poslines tr.posinvoiceline td:first-child b {
+    font-weight: 700 !important;
+    color: var(--tp-text) !important;
+}
+/* Numeric cells should stay narrow */
+body.takepos-v2 #poslines tr.posinvoiceline td.right,
+body.takepos-v2 #poslines tr.posinvoiceline td:not(.left):not(:first-child) {
+    width: 1% !important;
+    white-space: nowrap !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+}
+/* Make the table use auto layout so columns shrink to fit content where possible */
+body.takepos-v2 #poslines table#tablelines {
+    table-layout: auto !important;
+}
+/* Constrain the entire row max-height too as a backstop */
+body.takepos-v2 #poslines tr.posinvoiceline {
+    max-height: 60px;
+}
+body.takepos-v2 #poslines tr.posinvoiceline {
+    cursor: pointer !important;
+    transition: background 0.12s;
+}
+body.takepos-v2 #poslines tr.posinvoiceline:hover td {
+    background: var(--tp-bg-soft) !important;
+}
+body.takepos-v2 #poslines tr.posinvoiceline.selected,
+body.takepos-v2 #poslines tr.posinvoiceline.selected td {
+    background: var(--tp-primary-50) !important;
+    position: relative;
+}
+body.takepos-v2 #poslines tr.posinvoiceline.selected td:first-child {
+    box-shadow: inset 3px 0 0 var(--tp-primary);
+}
+body.takepos-v2.tp-rtl #poslines tr.posinvoiceline.selected td:last-child,
+body.takepos-v2[dir="rtl"] #poslines tr.posinvoiceline.selected td:last-child {
+    box-shadow: inset -3px 0 0 var(--tp-primary);
+}
+
+/* Numeric columns — use the mockup's mono font */
+body.takepos-v2 #poslines td.linecolqty,
+body.takepos-v2 #poslines td.linecolht,
+body.takepos-v2 #poslines td.linecolttc,
+body.takepos-v2 #poslines td[align="right"] {
+    font-family: var(--tp-font-num) !important;
+    font-weight: 600 !important;
+    color: var(--tp-text) !important;
+    white-space: nowrap !important;
+}
+
+/* Totals area at the bottom of the cart */
+body.takepos-v2 #poslines tr.liste_total td,
+body.takepos-v2 #poslines tr.totalligne td,
+body.takepos-v2 #poslines td.linecoltotal,
+body.takepos-v2 #poslines #total,
+body.takepos-v2 #poslines #linecolht-span-total {
+    font-family: var(--tp-font-num) !important;
+    font-weight: 700 !important;
+}
+
+/* Make the grand total (#total) look like the dark "summary-total" pill in mockup */
+body.takepos-v2 #poslines #total {
+    display: inline-block;
+    background: var(--tp-bg-dark) !important;
+    color: #fff !important;
+    padding: 8px 14px !important;
+    border-radius: 8px !important;
+    font-size: 18px !important;
+    letter-spacing: -0.3px;
+    box-shadow: var(--tp-shadow-sm);
+}
+
+
+/* ============================================================================
+   STEP 6 — KEYPAD (.div2) — floating popup, opened by takepos-keypad-toggle
+   ============================================================================ */
+body.takepos-v2 #takepos-main-layout .div2 {
+    position: fixed !important;
+    bottom: 84px !important;
+    right: 16px !important;
+    width: 300px !important;
+    height: auto !important;
+    background: var(--tp-bg-panel) !important;
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 14px !important;
+    padding: 12px !important;
+    box-shadow: var(--tp-shadow-pop) !important;
+    z-index: 100 !important;
+    display: none !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 6px !important;
+    float: none !important;
+    top: auto !important;
+    left: auto !important;
+}
+/* Bug fix: in RTL the cart sits on the RIGHT (--tp-cart-w = 380px).
+   Anchor the keypad to the RIGHT edge offset by cart width so it
+   appears just to the left of the cart — never over the product grid. */
+body.takepos-v2.tp-rtl #takepos-main-layout .div2,
+body.takepos-v2[dir="rtl"] #takepos-main-layout .div2 {
+    right: calc(var(--tp-cart-w) + 12px) !important;
+    left: auto !important;
+}
+body.takepos-v2.takepos-keypad-open #takepos-main-layout .div2 {
+    display: grid !important;
+}
+
+body.takepos-v2 .div2 button.calcbutton,
+body.takepos-v2 .div2 button.calcbutton2 {
+    border: 1px solid var(--tp-border) !important;
+    background: var(--tp-bg-soft) !important;
+    border-radius: 8px !important;
+    color: var(--tp-text) !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    width: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    /* Hide the raw text node (digit after badge span) to prevent
+       Arabic-Indic conversion of Latin digits in RTL context */
+    font-size: 0 !important;
+    font-weight: 700 !important;
+    font-family: var(--tp-font-num) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    position: relative !important;
+    transition: all 0.1s;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+}
+body.takepos-v2 .div2 button.calcbutton:hover,
+body.takepos-v2 .div2 button.calcbutton2:hover {
+    background: var(--tp-bg-hover) !important;
+    border-color: var(--tp-border-strong) !important;
+}
+body.takepos-v2 .div2 button.calcbutton:active,
+body.takepos-v2 .div2 button.calcbutton2:active {
+    background: var(--tp-bg-active) !important;
+    transform: scale(0.96) !important;
+}
+body.takepos-v2 .div2 .takepos-pad-badge {
+    /* Badge IS the digit — display centered, large, clear */
+    position: static !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    font-family: var(--tp-font-num) !important;
+    background: transparent !important;
+    color: var(--tp-text) !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+}
+body.takepos-v2.tp-rtl .div2 .takepos-pad-badge,
+body.takepos-v2[dir="rtl"] .div2 .takepos-pad-badge {
+    left: auto !important;
+    right: auto !important;
+}
+
+/* Action button badges (F9/F10/F11) — small corner label, not centered digit */
+body.takepos-v2 .div2 button.takepos-pad-qty .takepos-pad-badge,
+body.takepos-v2 .div2 button.takepos-pad-price .takepos-pad-badge,
+body.takepos-v2 .div2 button.takepos-pad-discount .takepos-pad-badge {
+    position: absolute !important;
+    top: 3px !important;
+    left: 4px !important;
+    right: auto !important;
+    font-size: 8px !important;
+    padding: 1px 3px !important;
+    border-radius: 3px !important;
+}
+
+/* Action keys in the keypad — qty/price/discount/delete */
+body.takepos-v2 .div2 button.takepos-pad-qty {
+    background: var(--tp-primary) !important;
+    color: #fff !important;
+    border-color: var(--tp-primary) !important;
+    font-size: 13px !important;
+    font-family: var(--tp-font-ar) !important;
+    height: auto !important;
+    min-height: 54px !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    padding: 6px 4px !important;
+    text-align: center !important;
+    direction: rtl !important;
+    unicode-bidi: isolate !important;
+}
+body.takepos-v2 .div2 button.takepos-pad-qty .takepos-pad-badge {
+    background: rgba(255,255,255,0.18) !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+body.takepos-v2 .div2 button.takepos-pad-price {
+    background: #7c3aed !important;
+    color: #fff !important;
+    border-color: #7c3aed !important;
+    font-size: 13px !important;
+    font-family: var(--tp-font-ar) !important;
+    height: auto !important;
+    min-height: 54px !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    padding: 6px 4px !important;
+    text-align: center !important;
+    direction: rtl !important;
+    unicode-bidi: isolate !important;
+}
+body.takepos-v2 .div2 button.takepos-pad-price .takepos-pad-badge {
+    background: rgba(255,255,255,0.18) !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+body.takepos-v2 .div2 button.takepos-pad-discount {
+    background: #ea580c !important;
+    color: #fff !important;
+    border-color: #ea580c !important;
+    font-size: 13px !important;
+    font-family: var(--tp-font-ar) !important;
+    height: auto !important;
+    min-height: 54px !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    padding: 6px 4px !important;
+    text-align: center !important;
+    direction: rtl !important;
+    unicode-bidi: isolate !important;
+}
+body.takepos-v2 .div2 button.takepos-pad-discount .takepos-pad-badge {
+    background: rgba(255,255,255,0.18) !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+body.takepos-v2 .div2 button.takepos-pad-qty:active,
+body.takepos-v2 .div2 button.takepos-pad-price:active,
+body.takepos-v2 .div2 button.takepos-pad-discount:active {
+    filter: brightness(0.88) !important;
+    color: #fff !important;
+}
+body.takepos-v2 .div2 button#delete.poscolordelete {
+    background: var(--tp-bg-panel) !important;
+    color: var(--tp-danger) !important;
+    border-color: #fecaca !important;
+}
+body.takepos-v2 .div2 button#delete.poscolordelete:hover {
+    background: var(--tp-danger-soft) !important;
+}
+body.takepos-v2 .div2 button.poscolorblue {
+    background: var(--tp-bg-panel) !important;
+    color: var(--tp-primary) !important;
+    border-color: var(--tp-border) !important;
+}
+
+
+/* ============================================================================
+   STEP 7 — ACTION RAIL (.div3) — narrow icon-button column (mockup-style)
+   ----------------------------------------------------------------------------
+   Mockup pattern:  width: 44–50px, gap:2px, button has F-chip top-left, icon
+   in middle (~16px), label below at 8.5px font, no wrap. Hover gets a soft
+   bg, danger items get red tint, success items get green tint.
+   ============================================================================ */
+body.takepos-v2 #takepos-main-layout .div3 {
+    grid-area: rail !important;
+    height: 100% !important;
+    width: 100% !important;
+    float: none !important;
+    background: var(--tp-bg-panel) !important;
+    border-left: 1px solid var(--tp-border) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 6px 3px !important;
+    gap: 1px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--tp-border-strong) transparent !important;
+}
+body.takepos-v2.tp-rtl #takepos-main-layout .div3,
+body.takepos-v2[dir="rtl"] #takepos-main-layout .div3 {
+    border-left: none !important;
+    border-right: 1px solid var(--tp-border) !important;
+}
+/* Show thin scrollbar so user knows they can scroll */
+body.takepos-v2 .div3::-webkit-scrollbar { width: 3px !important; }
+body.takepos-v2 .div3::-webkit-scrollbar-thumb {
+    background: var(--tp-border-strong) !important;
+    border-radius: 2px !important;
+}
+body.takepos-v2 .div3::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+/* The button itself — tight, single-column stack of [F-key][icon][label] */
+body.takepos-v2 .div3 button.actionbutton,
+body.takepos-v2 .div3 .actionbutton {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 44px !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 5px 3px !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: 8px !important;
+    color: var(--tp-text-muted) !important;
+    font-size: 8.5px !important;
+    font-weight: 600 !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.1px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    cursor: pointer !important;
+    position: relative !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    box-sizing: border-box !important;
+    transition: background 0.12s, color 0.12s, transform 0.08s !important;
+}
+/* Force the label text (and any inner span) to wrap instead of clipping */
+body.takepos-v2 .div3 button.actionbutton,
+body.takepos-v2 .div3 .actionbutton,
+body.takepos-v2 .div3 button.actionbutton > span:not(.takepos-shortcut-badge):not(.fa):not(.fas):not(.far),
+body.takepos-v2 .div3 .actionbutton > span:not(.takepos-shortcut-badge):not(.fa):not(.fas):not(.far) {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    max-width: 100% !important;
+}
+/* Dolibarr wraps custom shortcut labels in <div class="trunc"> which forces
+   white-space:nowrap → long labels (Exchange Desk, Free-text product) clip.
+   Override it so they wrap inside the rail. */
+body.takepos-v2 .div3 .actionbutton .trunc,
+body.takepos-v2 .div3 button.actionbutton div.trunc {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    line-height: 1.1 !important;
+}
+body.takepos-v2 .div3 button.actionbutton:hover {
+    background: var(--tp-bg-soft) !important;
+    color: var(--tp-text) !important;
+}
+body.takepos-v2 .div3 button.actionbutton:active {
+    background: var(--tp-bg-active) !important;
+    color: var(--tp-text) !important;
+    transform: scale(0.97) !important;
+}
+
+/* The Font Awesome icon span inside the button — sized like the mockup */
+body.takepos-v2 .div3 button.actionbutton .fa,
+body.takepos-v2 .div3 button.actionbutton .fas,
+body.takepos-v2 .div3 button.actionbutton .far,
+body.takepos-v2 .div3 button.actionbutton i.fa,
+body.takepos-v2 .div3 button.actionbutton i.fas {
+    font-size: 17px !important;
+    display: block !important;
+    margin: 0 0 1px 0 !important;
+    line-height: 1 !important;
+}
+
+/* Many Dolibarr action buttons render the F-key as plain text inside the
+   button. We can't position it as a chip without HTML access, but we CAN
+   shrink it and put it on its own line above the icon so it looks neat.
+   The browser already flexes children vertically. For F-key text we rely on
+   the natural text node ordering (F-key shows first because it's the first
+   text child). To make THAT line tiny, the trick is the `font-size-adjust`
+   and the fact that very short lines (1-3 chars) inherit from button. So we
+   keep the button font small overall: 8.5px label + 17px icon = good balance.
+*/
+
+/* The F-key chip — Dolibarr emits these as <span class="takepos-shortcut-badge">.
+   (Confirmed via partials/index_action_buttons.php.) Older code paths or
+   forks may use other names — we cover several for safety. In the rail
+   context (.div3) we want them to look like the markup's tiny corner chip,
+   NOT the chunky gray pill they currently render as. */
+body.takepos-v2 .div3 button.actionbutton .takepos-shortcut-badge,
+body.takepos-v2 .div3 .actionbutton .takepos-shortcut-badge,
+body.takepos-v2 .div3 button.actionbutton .takepos-pad-badge,
+body.takepos-v2 .div3 .actionbutton .takepos-pad-badge,
+body.takepos-v2 .div3 button.actionbutton .takepos-action-key,
+body.takepos-v2 .div3 button.actionbutton .actionkey,
+body.takepos-v2 .div3 button.actionbutton .key,
+body.takepos-v2 .div3 button.actionbutton .fkey {
+    /* Reset the chunky-pill legacy look that comes from the keypad styling */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    /* Make it a tiny floating chip in the top corner, mockup-style */
+    position: absolute !important;
+    top: 3px !important;
+    left: 3px !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 26px !important;
+
+    /* Subtle gray chip — barely visible, doesn't compete with the icon */
+    background: #f1f5f9 !important;
+    color: #94a3b8 !important;
+
+    /* Mono font, 7.5px, light weight */
+    font-family: var(--tp-font-num) !important;
+    font-size: 7.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2px !important;
+    line-height: 1 !important;
+
+    /* Compact rounded chip */
+    padding: 1px 4px !important;
+    border-radius: 3px !important;
+
+    /* Don't let it inherit any flex/transform properties from the button */
+    transform: none !important;
+    margin: 0 !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+
+    /* Make sure it sits above the icon visually */
+    z-index: 2 !important;
+
+    /* No text wrapping inside the chip */
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    display: inline-block !important;
+}
+body.takepos-v2.tp-rtl .div3 button.actionbutton .takepos-shortcut-badge,
+body.takepos-v2.tp-rtl .div3 .actionbutton .takepos-shortcut-badge,
+body.takepos-v2.tp-rtl .div3 button.actionbutton .takepos-pad-badge,
+body.takepos-v2.tp-rtl .div3 .actionbutton .takepos-pad-badge,
+body.takepos-v2.tp-rtl .div3 button.actionbutton .takepos-action-key,
+body.takepos-v2.tp-rtl .div3 button.actionbutton .actionkey,
+body.takepos-v2.tp-rtl .div3 button.actionbutton .key,
+body.takepos-v2.tp-rtl .div3 button.actionbutton .fkey,
+body.takepos-v2[dir="rtl"] .div3 button.actionbutton .takepos-shortcut-badge,
+body.takepos-v2[dir="rtl"] .div3 .actionbutton .takepos-shortcut-badge,
+body.takepos-v2[dir="rtl"] .div3 button.actionbutton .takepos-pad-badge,
+body.takepos-v2[dir="rtl"] .div3 .actionbutton .takepos-pad-badge,
+body.takepos-v2[dir="rtl"] .div3 button.actionbutton .takepos-action-key,
+body.takepos-v2[dir="rtl"] .div3 button.actionbutton .actionkey,
+body.takepos-v2[dir="rtl"] .div3 button.actionbutton .key,
+body.takepos-v2[dir="rtl"] .div3 button.actionbutton .fkey {
+    left: auto !important;
+    right: 3px !important;
+}
+body.takepos-v2 .div3 button.actionbutton:hover .takepos-shortcut-badge,
+body.takepos-v2 .div3 .actionbutton:hover .takepos-shortcut-badge,
+body.takepos-v2 .div3 button.actionbutton:hover .takepos-pad-badge,
+body.takepos-v2 .div3 .actionbutton:hover .takepos-pad-badge,
+body.takepos-v2 .div3 button.actionbutton:hover .takepos-action-key,
+body.takepos-v2 .div3 button.actionbutton:hover .actionkey,
+body.takepos-v2 .div3 button.actionbutton:hover .key,
+body.takepos-v2 .div3 button.actionbutton:hover .fkey {
+    background: #e2e8f0 !important;
+    color: #64748b !important;
+}
+
+/* When the badge sits on the green Pay button, use a translucent white chip */
+body.takepos-v2 #takepos-action-payment.actionbutton .takepos-shortcut-badge,
+body.takepos-v2 #takepos-action-payment.actionbutton .takepos-pad-badge,
+body.takepos-v2 .div3 button.actionbutton.poscolorgreen .takepos-shortcut-badge,
+body.takepos-v2 .div3 button.actionbutton.poscolorgreen .takepos-pad-badge {
+    background: rgba(255,255,255,0.20) !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+
+/* If your live buttons have the F-key as a leading text node ("F1\n<icon>\nNew"),
+   we shrink the FIRST line via @supports trick. Use ::first-line so only the
+   first line of the button content is small. Note: many browsers honor this
+   only on block-level boxes, but our flex column treats each child line as a
+   pseudo-line, so this is best-effort. */
+body.takepos-v2 .div3 button.actionbutton::first-line {
+    font-size: 7.5px !important;
+    color: var(--tp-text-soft) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2px !important;
+}
+
+/* ----- Color variants by class (legacy classes, plus a few inferred ones) ----- */
+/* Green (success) — Paid In, money in */
+body.takepos-v2 .div3 button.actionbutton.poscolorgreen {
+    color: #047857 !important;
+}
+body.takepos-v2 .div3 button.actionbutton.poscolorgreen .fa,
+body.takepos-v2 .div3 button.actionbutton.poscolorgreen .fas {
+    color: #047857 !important;
+}
+body.takepos-v2 .div3 button.actionbutton.poscolorgreen:hover {
+    background: var(--tp-success-soft) !important;
+    color: #047857 !important;
+}
+
+/* Red (danger) — Hold/Cancel/Refund/Delete */
+body.takepos-v2 .div3 button.actionbutton.poscolordelete,
+body.takepos-v2 .div3 button.actionbutton.poscolorred {
+    color: var(--tp-danger) !important;
+}
+body.takepos-v2 .div3 button.actionbutton.poscolordelete .fa,
+body.takepos-v2 .div3 button.actionbutton.poscolordelete .fas,
+body.takepos-v2 .div3 button.actionbutton.poscolorred .fa,
+body.takepos-v2 .div3 button.actionbutton.poscolorred .fas {
+    color: var(--tp-danger) !important;
+}
+body.takepos-v2 .div3 button.actionbutton.poscolordelete:hover,
+body.takepos-v2 .div3 button.actionbutton.poscolorred:hover {
+    background: var(--tp-danger-soft) !important;
+    color: var(--tp-danger) !important;
+}
+
+/* Amber (warning) — Discount, manual override */
+body.takepos-v2 .div3 button.actionbutton.poscolorblue {
+    color: var(--tp-primary) !important;
+}
+body.takepos-v2 .div3 button.actionbutton.poscolorblue .fa,
+body.takepos-v2 .div3 button.actionbutton.poscolorblue .fas {
+    color: var(--tp-primary) !important;
+}
+body.takepos-v2 .div3 button.actionbutton.poscolorblue:hover {
+    background: var(--tp-primary-soft) !important;
+    color: var(--tp-primary) !important;
+}
+
+/* ----- Color tinting by Font Awesome icon (defensive: works even when the
+   button has no .poscolor* class). Any rail button whose icon matches gets a
+   matching color. */
+body.takepos-v2 .div3 button.actionbutton:has(.fa-pause),
+body.takepos-v2 .div3 button.actionbutton:has(.fa-trash-alt),
+body.takepos-v2 .div3 button.actionbutton:has(.fa-trash) {
+    color: var(--tp-danger) !important;
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-pause) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-pause) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-trash-alt) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-trash-alt) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-trash) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-trash) .fas {
+    color: var(--tp-danger) !important;
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-arrow-down) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-arrow-down) .fas {
+    color: #047857 !important;
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-arrow-up) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-arrow-up) .fas {
+    color: var(--tp-primary) !important;
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-percent) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-percent) .fas {
+    color: #b45309 !important;   /* amber for discount */
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-coins) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-coins) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-dollar-sign) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-dollar-sign) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-money-bill-wave) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-money-bill-wave) .fas {
+    color: #d97706 !important;   /* gold for money/price */
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-plus) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-plus) .fas {
+    color: var(--tp-primary) !important;
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-exchange-alt) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-exchange-alt) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-sync) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-sync) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-sync-alt) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-sync-alt) .fas {
+    color: #0e7490 !important;   /* cyan for exchange/refresh */
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-info-circle) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-info-circle) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-info) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-info) .fas {
+    color: var(--tp-primary) !important;
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-print) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-print) .fas {
+    color: var(--tp-text-muted) !important;
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-cog) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-cog) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-cogs) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-cogs) .fas {
+    color: var(--tp-text-soft) !important;
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-history) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-history) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-clock) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-clock) .fas {
+    color: #6d28d9 !important;   /* purple for history */
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-folder) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-folder) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-folder-open) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-folder-open) .fas {
+    color: #d97706 !important;   /* warm yellow for folder/held */
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-receipt) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-receipt) .fas,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-file-invoice) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-file-invoice) .fas {
+    color: var(--tp-text-muted) !important;
+}
+body.takepos-v2 .div3 button.actionbutton:has(.fa-user-clock) .fa,
+body.takepos-v2 .div3 button.actionbutton:has(.fa-user-clock) .fas {
+    color: #0e7490 !important;   /* cyan for shift desk */
+}
+
+/* The PRIMARY pay action — full-width green gradient (legacy) */
+body.takepos-v2 #takepos-action-payment.actionbutton {
+    background: linear-gradient(180deg, #16a34a, #15803d) !important;
+    color: #fff !important;
+    border-color: #15803d !important;
+    box-shadow: 0 3px 10px rgba(21,128,61,0.20), inset 0 1px 0 rgba(255,255,255,0.15) !important;
+    min-height: 60px !important;
+    font-weight: 700 !important;
+    font-size: 9px !important;
+}
+body.takepos-v2 #takepos-action-payment.actionbutton .fa,
+body.takepos-v2 #takepos-action-payment.actionbutton .fas {
+    color: #fff !important;
+}
+body.takepos-v2 #takepos-action-payment.actionbutton:hover {
+    background: linear-gradient(180deg, #15803d, #166534) !important;
+    color: #fff !important;
+    box-shadow: 0 5px 14px rgba(21,128,61,0.30), inset 0 1px 0 rgba(255,255,255,0.20) !important;
+}
+body.takepos-v2 #takepos-action-payment.actionbutton::first-line {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+/* Adjust rail width to fit the new compact buttons */
+body.takepos-v2 {
+    --tp-rail-w: 56px;
+}
+@media (max-width: 1280px) {
+    body.takepos-v2 {
+        --tp-rail-w: 56px;
+    }
+}
+@media (max-width: 1024px) {
+    body.takepos-v2 {
+        --tp-rail-w: 46px;
+    }
+}
+
+
+
+/* ============================================================================
+   STEP 7B — RAIL ICONS (use data-id, not position number)
+   ----------------------------------------------------------------------------
+   Icons are mapped via [data-takepos-action-id] so they survive re-ordering.
+   Font Awesome icons from the button HTML are kept — we just ensure they show
+   correctly and size them properly.
+   ============================================================================ */
+
+/* Show FA icons properly — undo any hide */
+body.takepos-v2 .div3 button.actionbutton .fa,
+body.takepos-v2 .div3 button.actionbutton .fas,
+body.takepos-v2 .div3 button.actionbutton .far,
+body.takepos-v2 .div3 button.actionbutton .fab {
+    display: block !important;
+    font-size: 18px !important;
+    margin: 0 0 2px 0 !important;
+    line-height: 1 !important;
+}
+
+/* Remove old emoji injection */
+body.takepos-v2 .div3 button.actionbutton::before {
+    content: none !important;
+    display: none !important;
+}
+
+/* ── Per-button color by data-id ─────────────────────────────────────────── */
+
+/* دفع — أخضر */
+body.takepos-v2 .div3 [data-takepos-action-id="takepos-action-payment"] {
+    background: linear-gradient(180deg,#16a34a,#15803d) !important;
+    color: #fff !important;
+    border-color: #15803d !important;
+}
+body.takepos-v2 .div3 [data-takepos-action-id="takepos-action-payment"] .fa,
+body.takepos-v2 .div3 [data-takepos-action-id="takepos-action-payment"] .far {
+    color: #fff !important;
+}
+
+/* كاش مباشر — أخضر فاتح */
+body.takepos-v2 .div3 [data-takepos-action-id="takepos-action-direct-payment"] {
+    background: var(--tp-success-soft) !important;
+    color: #047857 !important;
+    border-color: rgba(4,120,87,0.25) !important;
+}
+
+/* فيزا — أزرق */
+body.takepos-v2 .div3 [data-takepos-action-id="takepos-action-direct-card-payment"] {
+    background: var(--tp-primary-soft) !important;
+    color: var(--tp-primary) !important;
+    border-color: rgba(30,64,175,0.25) !important;
+}
+
+/* هولد — برتقالي */
+body.takepos-v2 .div3 [data-takepos-action-id="takepos-action-hold"]:hover {
+    background: var(--tp-danger-soft) !important;
+    color: var(--tp-danger) !important;
+}
+
+/* خصم */
+body.takepos-v2 .div3 [data-takepos-action-id="takepos-action-reduction"]:hover {
+    background: #fff7ed !important;
+    color: #b45309 !important;
+}
+
+/* Language switcher button */
+body.takepos-v2 .div3 [data-takepos-action-id="takepos-lang-switch"] {
+    background: #f5f3ff !important;
+    color: #6d28d9 !important;
+    border-color: rgba(109,40,217,0.25) !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+}
+
+STEP 8 — CATEGORY BAR (.div4) — pill style strip across the top
+============================================================================ */
+body.takepos-v2 #takepos-main-layout .div4 {
+    grid-area: catbar !important;
+    height: auto !important;
+    min-height: 56px !important;
+    width: 100% !important;
+    float: none !important;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr)) !important;
+    grid-auto-rows: 44px !important;
+    grid-template-rows: 44px !important;     /* force single row always */
+    gap: 6px !important;
+    padding: 6px 10px !important;
+    align-items: stretch !important;
+    overflow: hidden !important;             /* clips any wrapping - ensures single line */
+    background: var(--tp-bg-panel) !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+    box-sizing: border-box !important;
+}
+body.takepos-v2 .div4::-webkit-scrollbar { display: none !important; }
+body.takepos-v2 .div4 div.wrapper {
+    /* Each pill stretches to fill its equal grid column */
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 44px !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 10px !important;
+    background: var(--tp-bg-soft) !important;
+    box-shadow: var(--tp-shadow-xs) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    transition: all 0.15s;
+}
+body.takepos-v2 .div4 div.wrapper:hover {
+    background: var(--tp-bg-hover) !important;
+    border-color: var(--tp-border-strong) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--tp-shadow-sm) !important;
+}
+/* Active category pill — dark background like the mockup */
+body.takepos-v2 .div4 div.wrapper.tpv2-cat-active {
+    background: var(--tp-bg-dark) !important;
+    border-color: var(--tp-bg-dark) !important;
+    box-shadow: var(--tp-shadow-sm) !important;
+    transform: none !important;
+}
+body.takepos-v2 .div4 div.wrapper.tpv2-cat-active .description_content {
+    color: #fff !important;
+}
+body.takepos-v2 .div4 div.wrapper.tpv2-cat-active .fa-chevron-left,
+body.takepos-v2 .div4 div.wrapper.tpv2-cat-active .fa-chevron-right {
+    color: #fff !important;
+}
+/* Arrow navigation pills — hidden and removed from grid flow since all
+   categories are visible at once in the equal-width grid layout */
+body.takepos-v2 .div4 div.wrapper:has(.fa-chevron-left),
+body.takepos-v2 .div4 div.wrapper:has(.fa-chevron-right) {
+    display: none !important;
+}
+body.takepos-v2 .div4 div.wrapper .fa-chevron-left,
+body.takepos-v2 .div4 div.wrapper .fa-chevron-right {
+    font-size: 14px !important;
+    color: var(--tp-text-muted) !important;
+}
+
+/* hide the underlying category image; we only want the label as a pill */
+body.takepos-v2 .div4 img.imgwrapper { display: none !important; }
+body.takepos-v2 .div4 div.description {
+    position: static !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    background: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+body.takepos-v2 .div4 div.description_content {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    padding: 0 !important;
+    text-transform: none !important;
+    color: var(--tp-text) !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 200px !important;
+    letter-spacing: 0 !important;
+}
+body.takepos-v2 .div4 div.catwatermark { display: none !important; }
+
+
+/* ============================================================================
+   STEP 9 — PRODUCT GRID (.div5) — card style with price badge
+   ============================================================================ */
+body.takepos-v2 #takepos-main-layout .div5 {
+    grid-area: products !important;
+    height: 100% !important;
+    width: 100% !important;
+    float: none !important;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+    grid-auto-rows: 240px !important;
+    gap: 10px !important;
+    padding: 14px 18px 14px !important;
+    align-content: start !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: var(--tp-bg-app) !important;
+    box-sizing: border-box !important;
+}
+body.takepos-v2 .div5::-webkit-scrollbar { width: 6px; }
+body.takepos-v2 .div5::-webkit-scrollbar-thumb {
+    background: var(--tp-border-strong);
+    border-radius: 4px;
+}
+
+/* ---- Regular product card ---- */
+body.takepos-v2 .div5 div.wrapper2 {
+    float: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 12px !important;
+    background: var(--tp-bg-panel) !important;
+    box-shadow: var(--tp-shadow-xs) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+body.takepos-v2 .div5 div.wrapper2:hover {
+    box-shadow: var(--tp-shadow) !important;
+    border-color: var(--tp-primary) !important;
+    transform: translateY(-2px);
+}
+body.takepos-v2 .div5 div.wrapper2:active {
+    transform: translateY(0);
+}
+body.takepos-v2 .div5 div.wrapper2.divempty {
+    visibility: hidden !important;
+    pointer-events: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+    background: transparent !important;
+}
+
+/* ---- Arrow tiles: span full row, become centered pagination bar ---- */
+body.takepos-v2 .div5 div.wrapper2.arrow {
+    grid-column: 1 / -1 !important;
+    height: 52px !important;
+    align-self: start !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    transform: none !important;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow.takepos-page-disabled {
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow .fa-chevron-left,
+body.takepos-v2 .div5 div.wrapper2.arrow .fa-chevron-right {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--tp-border) !important;
+    background: var(--tp-bg-panel) !important;
+    color: var(--tp-text) !important;
+    font-size: 14px !important;
+    box-shadow: var(--tp-shadow-xs) !important;
+    transition: all 0.15s;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow:hover .fa-chevron-left,
+body.takepos-v2 .div5 div.wrapper2.arrow:hover .fa-chevron-right {
+    background: var(--tp-bg-dark) !important;
+    border-color: var(--tp-bg-dark) !important;
+    color: #fff !important;
+}
+
+/* ---- Product image area ---- */
+body.takepos-v2 .div5 img.imgwrapper {
+    display: block !important;
+    width: 100% !important;
+    height: 160px !important;
+    max-width: 100% !important;
+    max-height: 160px !important;
+    object-fit: contain !important;
+    padding: 14px !important;
+    flex: 0 0 160px !important;
+    box-sizing: border-box !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+}
+
+/* Pastel gradient backgrounds — rotates through 6 tints */
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+1) img.imgwrapper {
+    background: linear-gradient(160deg, #b2f5ea, #e6fffa) !important;
+}
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+2) img.imgwrapper {
+    background: linear-gradient(160deg, #fed7b0, #fff1e6) !important;
+}
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+3) img.imgwrapper {
+    background: linear-gradient(160deg, #fbb6ce, #ffeef7) !important;
+}
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+4) img.imgwrapper {
+    background: linear-gradient(160deg, #a3bffa, #eef3ff) !important;
+}
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+5) img.imgwrapper {
+    background: linear-gradient(160deg, #c4b5fd, #f5edff) !important;
+}
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n) img.imgwrapper {
+    background: linear-gradient(160deg, #fde68a, #fffbeb) !important;
+}
+
+/* Depth overlay on image */
+body.takepos-v2 .div5 div.wrapper2::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 160px;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.05));
+    z-index: 1;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow::before { display: none; }
+
+/* ---- Product info area (below image) ---- */
+body.takepos-v2 .div5 div.description {
+    position: static !important;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    background: var(--tp-bg-panel) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    border-top: 1px solid var(--tp-border) !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+body.takepos-v2 .div5 div.description_content {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    padding: 8px 10px 6px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    word-break: break-word !important;
+    color: var(--tp-text) !important;
+    text-align: left !important;
+}
+body.takepos-v2.tp-rtl .div5 div.description_content,
+body.takepos-v2[dir="rtl"] .div5 div.description_content {
+    text-align: right !important;
+}
+/* Ref number inside description (the <b> tag Dolibarr renders) */
+body.takepos-v2 .div5 div.description_content b {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: var(--tp-text-soft) !important;
+    font-family: var(--tp-font-num) !important;
+    display: block !important;
+    margin-bottom: 2px !important;
+}
+
+/* ---- Stock badge (catwatermark repurposed) ---- */
+body.takepos-v2 .div5 div.catwatermark {
+    display: none !important;
+}
+body.takepos-v2 .div5 div.catwatermark[style*="display: block"],
+body.takepos-v2 .div5 div.catwatermark[style*="display:block"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    left: auto !important;
+    width: auto !important;
+    min-width: 26px !important;
+    height: 22px !important;
+    padding: 0 7px !important;
+    background: rgba(255,255,255,0.92) !important;
+    color: var(--tp-success) !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    font-family: var(--tp-font-num) !important;
+    border-radius: 999px !important;
+    box-shadow: var(--tp-shadow-xs) !important;
+    z-index: 4 !important;
+    backdrop-filter: blur(4px) !important;
+    text-align: center !important;
+    line-height: 1 !important;
+}
+
+/* ---- Price badge (top-left / top-right in RTL) ---- */
+body.takepos-v2 .div5 .productprice {
+    position: absolute !important;
+    top: 8px !important;
+    left: 8px !important;
+    right: auto !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    background: var(--tp-bg-dark) !important;
+    color: #fff !important;
+    padding: 3px 9px !important;
+    border-radius: 6px !important;
+    z-index: 3 !important;
+    white-space: nowrap !important;
+    font-family: var(--tp-font-num) !important;
+    box-shadow: var(--tp-shadow-sm) !important;
+    letter-spacing: -0.2px;
+}
+body.takepos-v2.tp-rtl .div5 .productprice,
+body.takepos-v2[dir="rtl"] .div5 .productprice {
+    left: auto !important;
+    right: 8px !important;
+}
+
+/* ---- Missing image badge ---- */
+body.takepos-v2 .div5 .takepos-missing-product-image-badge {
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    background: rgba(255,255,255,0.95) !important;
+    color: var(--tp-warning) !important;
+    width: 22px !important;
+    height: 22px !important;
+    border-radius: 50% !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    box-shadow: var(--tp-shadow-xs) !important;
+    z-index: 2 !important;
+}
+body.takepos-v2 .div5 .takepos-missing-product-image .takepos-missing-product-image-badge {
+    display: flex !important;
+}
+
+
+
+/* ============================================================================
+   STEP 9b — PAGINATION ROW (.tpv2-pagination-row)
+   Fixed at the bottom of the products column (between cart and rail)
+   ============================================================================ */
+body.takepos-v2 .tpv2-pagination-row {
+    position: fixed !important;
+    bottom: 0 !important;
+    /* LTR: between cart (left) and rail (right) */
+    left: var(--tp-cart-w) !important;
+    right: var(--tp-rail-w) !important;
+    height: 52px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 16px !important;
+    background: var(--tp-bg-panel) !important;
+    border-top: 1px solid var(--tp-border) !important;
+    z-index: 10 !important;
+    direction: rtl !important;
+}
+/* RTL: cart is on the right, rail on the left */
+body.takepos-v2.tp-rtl .tpv2-pagination-row,
+body.takepos-v2[dir="rtl"] .tpv2-pagination-row {
+    left: var(--tp-rail-w) !important;
+    right: var(--tp-cart-w) !important;
+}
+/* Add bottom padding to products grid so last row isn't hidden behind pagination */
+body.takepos-v2 #takepos-main-layout .div5 {
+    padding-bottom: 60px !important;
+}
+body.takepos-v2 .tpv2-page-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 38px !important;
+    height: 38px !important;
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 8px !important;
+    background: var(--tp-bg-soft) !important;
+    color: var(--tp-text) !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    transition: all 0.15s !important;
+}
+body.takepos-v2 .tpv2-page-btn:hover:not(:disabled) {
+    background: var(--tp-primary) !important;
+    border-color: var(--tp-primary) !important;
+    color: #fff !important;
+}
+body.takepos-v2 .tpv2-page-btn:disabled {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+}
+body.takepos-v2 .tpv2-page-btn-next {
+    background: var(--tp-primary) !important;
+    border-color: var(--tp-primary) !important;
+    color: #fff !important;
+}
+body.takepos-v2 .tpv2-page-btn-next:disabled {
+    background: var(--tp-bg-soft) !important;
+    border-color: var(--tp-border) !important;
+    color: var(--tp-text-muted) !important;
+}
+body.takepos-v2 .tpv2-page-info {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: var(--tp-text) !important;
+    font-family: var(--tp-font-num) !important;
+    min-width: 60px !important;
+    text-align: center !important;
+    direction: ltr !important;
+}
+
+/* Hide the old broken arrow divs visually but keep them clickable for JS */
+body.takepos-v2 .div5 div.wrapper2.arrow {
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    pointer-events: auto !important;
+}
+
+
+
+/* ============================================================================
+   STEP 10 — FLOATING KEYPAD TOGGLE BUTTON
+   ============================================================================ */
+body.takepos-v2 #takepos-keypad-toggle {
+    position: fixed !important;
+    bottom: 16px !important;
+    right: 16px !important;
+    width: 52px !important;
+    height: 52px !important;
+    background: var(--tp-bg-dark) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 50% !important;
+    box-shadow: var(--tp-shadow-lg) !important;
+    cursor: pointer !important;
+    z-index: 99 !important;
+    font-size: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s;
+}
+body.takepos-v2 #takepos-keypad-toggle:hover {
+    background: var(--tp-primary) !important;
+    transform: scale(1.06);
+}
+body.takepos-v2.tp-rtl #takepos-keypad-toggle,
+body.takepos-v2[dir="rtl"] #takepos-keypad-toggle {
+    right: auto !important;
+    left: calc(var(--tp-cart-w) + 12px) !important;
+}
+body.takepos-v2.takepos-keypad-open #takepos-keypad-toggle {
+    display: none !important;
+}
+
+body.takepos-v2 #takepos-keypad-close {
+    position: fixed !important;
+    /* Exact top/left/right/bottom set by JS positionCloseBtn() at runtime */
+    width: 26px !important;
+    height: 26px !important;
+    border: none !important;
+    border-radius: 50% !important;
+    background: rgba(15,23,42,0.88) !important;
+    color: #fff !important;
+    z-index: 102 !important;
+    cursor: pointer !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35) !important;
+    line-height: 1 !important;
+    transition: background 0.15s;
+}
+body.takepos-v2 #takepos-keypad-close:hover {
+    background: var(--tp-danger, #dc2626) !important;
+}
+body.takepos-v2.takepos-keypad-open #takepos-keypad-close {
+    display: flex !important;
+}
+/* RTL fallback (in case JS hasn't run yet) */
+body.takepos-v2.tp-rtl #takepos-keypad-close,
+body.takepos-v2[dir="rtl"] #takepos-keypad-close {
+    right: auto !important;
+}
+
+
+/* ============================================================================
+   STEP 11 — SHORTCUTS LAUNCHER + DRAWER
+   Exact DOM from partials/shortcuts_drawer.php:
+     #takepos-shortcuts-drawer
+       .takepos-shortcuts-head
+         .takepos-shortcuts-title          ← just text, no icon span
+         #takepos-shortcuts-close
+       #takepos-shortcuts-panel
+         .takepos-shortcut-section[#takepos-shortcut-section-{code}]
+           .takepos-shortcut-header        ← button: span(label) + span.fa.chevron
+           .takepos-shortcut-body
+             a.takepos-shortcut-link
+               .takepos-shortcut-icon > span.fa-*
+               .takepos-shortcut-text
+   ============================================================================ */
+
+/* ---- LAUNCHER ---- */
+body.takepos-v2 #takepos-shortcuts-launcher {
+    position: fixed !important;
+    top: 50% !important;
+    bottom: auto !important;
+    transform: translateY(-50%) !important;
+    right: var(--tp-rail-w) !important;
+    left: auto !important;
+    border-radius: 10px 0 0 10px !important;
+    box-shadow: -4px 0 16px rgba(15,23,42,0.20) !important;
+    width: 26px !important;
+    height: 120px !important;
+    padding: 0 !important;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    color: #fff !important;
+    border: none !important;
+    writing-mode: vertical-rl !important;
+    text-orientation: mixed !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    cursor: pointer !important;
+    z-index: 90 !important;
+    transition: width 0.2s ease, background 0.2s ease !important;
+}
+body.takepos-v2 #takepos-shortcuts-launcher:hover {
+    width: 30px !important;
+    background: linear-gradient(180deg, var(--tp-primary) 0%, var(--tp-primary-hover) 100%) !important;
+}
+body.takepos-v2 #takepos-shortcuts-launcher .fa {
+    writing-mode: horizontal-tb !important;
+    font-size: 12px !important;
+    color: #93c5fd !important;
+    flex-shrink: 0 !important;
+}
+body.takepos-v2 #takepos-shortcuts-launcher > span:not(.fa) {
+    display: none !important; /* hide text label, keep icon */
+}
+body.takepos-v2.tp-rtl #takepos-shortcuts-launcher,
+body.takepos-v2[dir="rtl"] #takepos-shortcuts-launcher {
+    left: var(--tp-rail-w) !important;
+    right: auto !important;
+    border-radius: 0 10px 10px 0 !important;
+    box-shadow: 4px 0 16px rgba(15,23,42,0.20) !important;
+}
+body.takepos-v2.takepos-shortcuts-open #takepos-shortcuts-launcher {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* ---- DRAWER PANEL ---- */
+body.takepos-v2 #takepos-shortcuts-drawer {
+    position: fixed !important;
+    top: var(--tp-appbar-h) !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+    width: 380px !important;
+    max-width: 92vw !important;
+    height: calc(100vh - var(--tp-appbar-h)) !important;
+    max-height: none !important;
+    background: #f7f8fc !important;
+    border: none !important;
+    border-left: 1px solid var(--tp-border) !important;
+    border-top: none !important;
+    border-radius: 0 !important;
+    box-shadow: -8px 0 40px rgba(15,23,42,0.18) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    z-index: 201 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transform: translateX(100%) !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+    transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1) !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer.is-open {
+    transform: translateX(0) !important;
+    pointer-events: auto !important;
+}
+body.takepos-v2.tp-rtl #takepos-shortcuts-drawer,
+body.takepos-v2[dir="rtl"] #takepos-shortcuts-drawer {
+    left: 0 !important; right: auto !important;
+    border-left: none !important;
+    border-right: 1px solid var(--tp-border) !important;
+    box-shadow: 8px 0 40px rgba(15,23,42,0.18) !important;
+    transform: translateX(-100%) !important;
+}
+body.takepos-v2.tp-rtl #takepos-shortcuts-drawer.is-open,
+body.takepos-v2[dir="rtl"] #takepos-shortcuts-drawer.is-open {
+    transform: translateX(0) !important;
+}
+body.takepos-v2.takepos-shortcuts-open #takepos-main-layout {
+    right: 380px !important; left: 0 !important;
+    width: auto !important; margin: 0 !important;
+}
+body.takepos-v2.tp-rtl.takepos-shortcuts-open #takepos-main-layout,
+body.takepos-v2[dir="rtl"].takepos-shortcuts-open #takepos-main-layout {
+    left: 380px !important; right: 0 !important;
+    width: auto !important; margin: 0 !important;
+}
+
+/* ---- HEADER (dark bar) ---- */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcuts-head {
+    background: var(--tp-bg-dark) !important;
+    color: #fff !important;
+    padding: 14px 18px !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-shrink: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    gap: 12px !important;
+}
+/* Blue icon square — synthetic via ::before on title */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcuts-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    flex: 1 !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcuts-title::before {
+    content: '' !important;
+    display: inline-flex !important;
+    width: 32px !important; height: 32px !important;
+    flex-shrink: 0 !important;
+    border-radius: 8px !important;
+    background: linear-gradient(135deg, #3b82f6, #1e40af) !important;
+}
+body.takepos-v2 #takepos-shortcuts-close {
+    width: 30px !important; height: 30px !important;
+    background: rgba(255,255,255,0.10) !important;
+    border: none !important; border-radius: 6px !important;
+    color: #fff !important; font-size: 18px !important;
+    cursor: pointer !important;
+    display: inline-flex !important; align-items: center !important; justify-content: center !important;
+    flex-shrink: 0 !important; padding: 0 !important; line-height: 1 !important;
+    transition: background 0.15s !important;
+    z-index: 5 !important; position: relative !important;
+}
+body.takepos-v2 #takepos-shortcuts-close:hover {
+    background: rgba(255,255,255,0.22) !important;
+}
+
+/* ---- SCROLLABLE PANEL ---- */
+body.takepos-v2 #takepos-shortcuts-drawer #takepos-shortcuts-panel {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 8px 12px 18px !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--tp-border-strong) transparent !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer #takepos-shortcuts-panel::-webkit-scrollbar { width: 6px !important; }
+body.takepos-v2 #takepos-shortcuts-drawer #takepos-shortcuts-panel::-webkit-scrollbar-thumb {
+    background: var(--tp-border-strong) !important; border-radius: 3px !important;
+}
+
+/* ---- SECTION CARD ---- */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-section {
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 10px !important;
+    background: var(--tp-bg-panel) !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+}
+
+/* ---- SECTION HEADER BUTTON ---- */
+/* DOM: <button.takepos-shortcut-header>
+     <span>Section Label</span>
+     <span.fa.fa-chevron-down.chevron>
+   </button>
+   We add a colored icon square via ::before pseudo keyed by section ID */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-header {
+    width: 100% !important;
+    background: var(--tp-bg-soft) !important;
+    color: var(--tp-text) !important;
+    border: none !important;
+    padding: 11px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    cursor: pointer !important;
+    font-family: inherit !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    text-align: left !important;
+    gap: 10px !important;
+    transition: background 0.15s !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-header:hover {
+    background: var(--tp-bg-hover) !important;
+}
+/* Colored icon square injected before section label via ::before */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-header::before {
+    content: '' !important;
+    display: inline-flex !important;
+    width: 24px !important; height: 24px !important;
+    flex-shrink: 0 !important;
+    border-radius: 6px !important;
+    background: linear-gradient(135deg, #3b82f6, #1e40af) !important; /* default: blue */
+    order: -1 !important;
+}
+/* First child span (the label text) gets flex:1 to push chevron right */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-header > span:first-child {
+    flex: 1 !important;
+    text-align: left !important;
+}
+body.takepos-v2.tp-rtl #takepos-shortcuts-drawer .takepos-shortcut-header > span:first-child,
+body.takepos-v2[dir="rtl"] #takepos-shortcuts-drawer .takepos-shortcut-header > span:first-child {
+    text-align: right !important;
+}
+/* Chevron span */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-header .chevron {
+    color: var(--tp-text-soft) !important;
+    font-size: 11px !important;
+    transition: transform 0.2s !important;
+    flex-shrink: 0 !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-section.is-collapsed .chevron {
+    transform: rotate(-90deg) !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-section.is-collapsed .takepos-shortcut-header {
+    border-radius: 10px !important;
+}
+
+/* Section-specific icon colors — keyed by section wrapper ID */
+body.takepos-v2 #takepos-shortcut-section-catalog_inventory .takepos-shortcut-header::before {
+    background: linear-gradient(135deg, #3b82f6, #1e40af) !important;
+}
+body.takepos-v2 #takepos-shortcut-section-sales_operations .takepos-shortcut-header::before {
+    background: linear-gradient(135deg, #10b981, #047857) !important;
+}
+body.takepos-v2 #takepos-shortcut-section-analytics .takepos-shortcut-header::before {
+    background: linear-gradient(135deg, #f59e0b, #b45309) !important;
+}
+body.takepos-v2 #takepos-shortcut-section-pos_configuration .takepos-shortcut-header::before {
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9) !important;
+}
+body.takepos-v2 #takepos-shortcut-section-governance_access .takepos-shortcut-header::before {
+    background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+}
+
+/* ---- SECTION BODY — 2 col grid ---- */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-body {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    padding: 10px !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-section.is-collapsed .takepos-shortcut-body {
+    display: none !important;
+}
+
+/* ---- SHORTCUT TILE (a.takepos-shortcut-link) ---- */
+/* DOM: <a.takepos-shortcut-link>
+     <span.takepos-shortcut-icon><span.fa-xxx></span></span>
+     <span.takepos-shortcut-text>Label</span>
+   </a> */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-link {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 9px !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 9px 10px !important;
+    margin: 0 !important;
+    margin-left: 0 !important;
+    background: var(--tp-bg-soft) !important;
+    background-image: none !important;
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 8px !important;
+    color: var(--tp-text) !important;
+    text-align: left !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    transition: all 0.15s !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    box-sizing: border-box !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-link:hover {
+    background: var(--tp-bg-panel) !important;
+    background-image: none !important;
+    border-color: var(--tp-primary) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--tp-shadow-sm) !important;
+    color: var(--tp-text) !important;
+}
+
+/* ---- ICON CIRCLE (span.takepos-shortcut-icon) ---- */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-icon {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    min-height: 28px !important;
+    max-height: 28px !important;
+    flex: 0 0 28px !important;
+    border-radius: 6px !important;
+    background: var(--tp-primary-soft) !important;
+    border: 1px solid rgba(30,64,175,0.15) !important;
+    color: var(--tp-primary) !important;
+    font-size: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.15s !important;
+}
+/* Inner FA icon */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-icon .fa,
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-icon [class*="fa-"] {
+    font-size: 12px !important;
+    line-height: 1 !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-link:hover .takepos-shortcut-icon {
+    background: var(--tp-primary) !important;
+    color: #fff !important;
+    border-color: var(--tp-primary) !important;
+}
+
+/* Section-colored icons */
+body.takepos-v2 #takepos-shortcut-section-sales_operations .takepos-shortcut-icon {
+    color: #047857 !important; background: #ecfdf5 !important; border-color: rgba(4,120,87,0.15) !important;
+}
+body.takepos-v2 #takepos-shortcut-section-sales_operations .takepos-shortcut-link:hover .takepos-shortcut-icon {
+    background: #047857 !important; color: #fff !important; border-color: #047857 !important;
+}
+body.takepos-v2 #takepos-shortcut-section-analytics .takepos-shortcut-icon {
+    color: #b45309 !important; background: #fffbeb !important; border-color: rgba(180,83,9,0.15) !important;
+}
+body.takepos-v2 #takepos-shortcut-section-analytics .takepos-shortcut-link:hover .takepos-shortcut-icon {
+    background: #b45309 !important; color: #fff !important; border-color: #b45309 !important;
+}
+body.takepos-v2 #takepos-shortcut-section-pos_configuration .takepos-shortcut-icon {
+    color: #6d28d9 !important; background: #f5f3ff !important; border-color: rgba(109,40,217,0.15) !important;
+}
+body.takepos-v2 #takepos-shortcut-section-pos_configuration .takepos-shortcut-link:hover .takepos-shortcut-icon {
+    background: #6d28d9 !important; color: #fff !important; border-color: #6d28d9 !important;
+}
+body.takepos-v2 #takepos-shortcut-section-governance_access .takepos-shortcut-icon {
+    color: #b91c1c !important; background: #fef2f2 !important; border-color: rgba(185,28,28,0.15) !important;
+}
+body.takepos-v2 #takepos-shortcut-section-governance_access .takepos-shortcut-link:hover .takepos-shortcut-icon {
+    background: #b91c1c !important; color: #fff !important; border-color: #b91c1c !important;
+}
+
+/* ---- TILE LABEL (span.takepos-shortcut-text) ---- */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-text {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    color: var(--tp-text) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    word-break: normal !important;
+    text-align: inherit !important;
+    display: block !important;
+}
+
+STEP 12 — MODALS (terminal select, currency, hold, manager-override, etc.)
+============================================================================ */
+body.takepos-v2 .modal {
+    background: rgba(15,23,42,0.5) !important;
+    backdrop-filter: blur(4px);
+}
+body.takepos-v2 .modal-content {
+    background: var(--tp-bg-panel) !important;
+    border-radius: var(--tp-radius-lg) !important;
+    border: 1px solid var(--tp-border) !important;
+    box-shadow: var(--tp-shadow-pop) !important;
+    overflow: hidden;
+}
+body.takepos-v2 .modal-header {
+    background: var(--tp-bg-dark) !important;
+    color: #fff !important;
+    padding: 16px 20px !important;
+    border-bottom: none !important;
+}
+body.takepos-v2 .modal-header h3 {
+    color: #fff !important;
+    margin: 0 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+body.takepos-v2 .modal-header .close {
+    color: #fff !important;
+    background: rgba(255,255,255,0.08) !important;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 18px !important;
+    text-shadow: none !important;
+    opacity: 1 !important;
+    line-height: 1 !important;
+    transition: background 0.15s;
+}
+body.takepos-v2 .modal-header .close:hover {
+    background: rgba(255,255,255,0.18) !important;
+}
+body.takepos-v2 .modal-body {
+    padding: 18px 20px !important;
+    color: var(--tp-text) !important;
+}
+body.takepos-v2 .modal-body input.block,
+body.takepos-v2 .modal-body input[type="text"].block,
+body.takepos-v2 .modal-body input[type="password"].block {
+    width: 100% !important;
+    height: 42px !important;
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 8px !important;
+    padding: 0 14px !important;
+    background: var(--tp-bg-soft) !important;
+    font-size: 14px !important;
+    margin: 6px 0 !important;
+    box-sizing: border-box !important;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+body.takepos-v2 .modal-body input.block:focus {
+    border-color: var(--tp-primary) !important;
+    background: #fff !important;
+    box-shadow: 0 0 0 3px var(--tp-primary-soft) !important;
+    /* FIX (I01): outline managed by *:focus-visible rule above */
+    outline: 2px solid transparent;
+}
+body.takepos-v2 .modal-body button.block {
+    width: 100% !important;
+    height: 44px !important;
+    border-radius: 8px !important;
+    background: var(--tp-primary) !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    border: none !important;
+    cursor: pointer !important;
+    margin: 6px 0 !important;
+    transition: background 0.15s;
+}
+body.takepos-v2 .modal-body button.block:hover {
+    background: var(--tp-primary-hover) !important;
+}
+body.takepos-v2 .modal-body button.block:nth-child(even),
+body.takepos-v2 .modal-body button.block + button.block {
+    /* Secondary buttons get muted style */
+    background: var(--tp-bg-soft) !important;
+    color: var(--tp-text) !important;
+    border: 1px solid var(--tp-border) !important;
+}
+body.takepos-v2 .modal-body button.block:nth-child(even):hover,
+body.takepos-v2 .modal-body button.block + button.block:hover {
+    background: var(--tp-bg-hover) !important;
+}
+
+
+/* ============================================================================
+   STEP 13 — FEEDBACK BAR / TOAST (#takepos-feedback-bar and #takepos-toast)
+   ============================================================================ */
+body.takepos-v2 .takepos-feedback-bar {
+    position: fixed !important;
+    top: 64px !important;
+    left: 50% !important;
+    bottom: auto !important;
+    transform: translateX(-50%) !important;
+    z-index: 400 !important;
+    padding: 10px 18px !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    box-shadow: var(--tp-shadow-lg) !important;
+    white-space: nowrap !important;
+    color: #fff !important;
+    background: var(--tp-bg-dark) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+body.takepos-v2 .takepos-feedback-success { background: var(--tp-success) !important; }
+body.takepos-v2 .takepos-feedback-error   { background: var(--tp-danger) !important; }
+body.takepos-v2 .takepos-feedback-warning { background: var(--tp-warning) !important; }
+body.takepos-v2 .takepos-feedback-info    { background: var(--tp-bg-dark) !important; }
+
+body.takepos-v2 #takepos-toast {
+    position: fixed;
+    top: 64px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--tp-bg-dark);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: var(--tp-shadow-lg);
+    z-index: 400;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, top 0.25s;
+}
+body.takepos-v2 #takepos-toast.is-show {
+    opacity: 1;
+    top: 72px;
+}
+body.takepos-v2 #takepos-toast .icon-circle {
+    width: 22px;
+    height: 22px;
+    background: var(--tp-success);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+}
+body.takepos-v2 #takepos-toast.is-error .icon-circle { background: var(--tp-danger); }
+body.takepos-v2 #takepos-toast.is-warning .icon-circle { background: var(--tp-warning); }
+
+
+/* ============================================================================
+   STEP 14 — V2 ACTIVE BADGE — make less obnoxious (it's already there)
+   ============================================================================ */
+body.takepos-v2 #takepos-v2-indicator {
+    background: var(--tp-bg-dark) !important;
+    box-shadow: var(--tp-shadow) !important;
+    font-weight: 600 !important;
+}
+
+
+/* ============================================================================
+   STEP 15 — RESPONSIVE: tighten the layout on smaller laptop screens
+   ============================================================================ */
+@media (max-width: 1280px) {
+    body.takepos-v2 {
+        --tp-cart-w: 340px;
+    }
+    body.takepos-v2 .div5 {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+        grid-auto-rows: 200px !important;
+    }
+    body.takepos-v2 .div5 img.imgwrapper {
+        height: 134px !important;
+        max-height: 134px !important;
+        flex: 0 0 134px !important;
+    }
+    body.takepos-v2 .div5 div.wrapper2::before {
+        height: 134px;
+    }
+}
+
+@media (max-width: 1024px) {
+    body.takepos-v2 {
+        --tp-cart-w: 300px;
+        --tp-rail-w: 56px;
+    }
+    body.takepos-v2 #search,
+    body.takepos-v2 #topnav-right input[type="text"]#search {
+        width: 180px !important;
+    }
+}
+
+@media (max-width: 820px) {
+    /* On a tablet, collapse to two rows: cart on top, catalog below.
+       Action rail becomes a horizontal strip at the very bottom. */
+    body.takepos-v2 #takepos-main-layout {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: 40vh auto 1fr 56px !important;
+        grid-template-areas:
+            "cart"
+            "catbar"
+            "products"
+            "rail" !important;
+    }
+    body.takepos-v2 #takepos-main-layout .div3 {
+        flex-direction: row !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-top: 1px solid var(--tp-border) !important;
+        padding: 4px 8px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+    }
+    body.takepos-v2 .div3 button.actionbutton {
+        min-width: 70px !important;
+        flex: 0 0 auto !important;
+    }
+}
+
+
+/* ============================================================================
+   STEP 16 — Tiny polish: scrollbars, focus rings, selection colors
+   ============================================================================ */
+/* FIX (I01): Replaced outline:none with a brand-colour focus ring.
+   The previous rule broke all keyboard navigation and violated WCAG 2.1 AA.
+   The ring adapts to any future colour theme via --tp-primary. */
+body.takepos-v2 *:focus-visible {
+    outline: 2px solid var(--tp-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px var(--tp-primary-soft), 0 0 0 1px var(--tp-primary);
+    border-color: var(--tp-primary);
+    border-radius: 6px;
+}
+body.takepos-v2 ::selection {
+    background: var(--tp-primary);
+    color: #fff;
+}
+
+/* Click animation on product tiles (replaces the legacy .takepos-product-flash JS animation) */
+@keyframes tpProductFlash {
+    0%   { background-color: var(--tp-primary-soft); }
+    100% { background-color: transparent; }
+}
+body.takepos-v2 .takepos-product-flash {
+    animation: tpProductFlash 200ms ease-out;
+    filter: none !important;
+}
+
+/* Drag-and-drop cues, more refined than the legacy outline */
+body.takepos-v2 div[id^="prodiv"].takepos-dragging {
+    opacity: 0.5;
+    transform: scale(0.96);
+    border-color: var(--tp-primary) !important;
+}
+body.takepos-v2 #poslines.takepos-dropzone-active {
+    background: var(--tp-primary-soft) !important;
+    outline: 2px dashed var(--tp-primary) !important;
+    outline-offset: -6px !important;
+}
+
+/* Add-to-cart progress bar at top of cart */
+body.takepos-v2 .takepos-add-progress {
+    background: transparent !important;
+}
+body.takepos-v2 .takepos-add-progress.is-active::before {
+    background: linear-gradient(90deg, transparent, var(--tp-primary), transparent) !important;
+}
+
+
+/* ============================================================================
+   STEP 17 — V2 CART STRUCTURE (the new cart layout from invoice.php)
+   ----------------------------------------------------------------------------
+   These rules style the new `tpv2-*` elements that invoice.php now emits:
+     • Cart header row (title + invoice badge + action chips)
+     • Customer card row (avatar + name + label)
+     • Quantity stepper inside each line
+     • Cart footer (summary rows + grand-total bar + action buttons)
+   ============================================================================ */
+
+/* ---------- Cart header row (invoice ref + chips) ---------- */
+body.takepos-v2 .tpv2-cart-header-row > td.tpv2-cart-header-cell {
+    padding: 0 !important;
+    border: none !important;
+    background: linear-gradient(180deg, #fafbfd, var(--tp-bg-panel)) !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+}
+body.takepos-v2 .tpv2-cart-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    padding: 12px 16px 10px !important;
+    flex-wrap: wrap !important;
+}
+body.takepos-v2 .tpv2-cart-title {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: var(--tp-text) !important;
+    letter-spacing: -0.2px !important;
+    margin: 0 !important;
+}
+body.takepos-v2 .tpv2-invoice-badge {
+    font-family: var(--tp-font-num) !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: var(--tp-text-muted) !important;
+    background: var(--tp-bg-soft) !important;
+    padding: 3px 9px !important;
+    border-radius: 4px !important;
+    border: 1px solid var(--tp-border) !important;
+    letter-spacing: 0.3px !important;
+}
+body.takepos-v2 .tpv2-cart-header-actions {
+    display: flex !important;
+    gap: 4px !important;
+    margin-left: auto !important;
+}
+body.takepos-v2.tp-rtl .tpv2-cart-header-actions,
+body.takepos-v2[dir="rtl"] .tpv2-cart-header-actions {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+body.takepos-v2 .tpv2-icon-btn {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    color: var(--tp-text-muted) !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    transition: all 0.15s !important;
+    padding: 0 !important;
+}
+body.takepos-v2 .tpv2-icon-btn:hover {
+    background: var(--tp-bg-soft) !important;
+    color: var(--tp-text) !important;
+    border-color: var(--tp-border) !important;
+}
+body.takepos-v2 .tpv2-icon-btn:active {
+    transform: scale(0.95);
+}
+
+/* ---------- Customer card row ---------- */
+body.takepos-v2 .tpv2-customer-row > td.tpv2-customer-cell {
+    padding: 0 !important;
+    border: none !important;
+    background: var(--tp-primary-50) !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+}
+body.takepos-v2 .tpv2-customer {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 10px 16px !important;
+    cursor: pointer !important;
+    transition: background 0.15s !important;
+}
+body.takepos-v2 .tpv2-customer:hover {
+    background: rgba(30,64,175,0.06) !important;
+}
+body.takepos-v2 .tpv2-customer-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    flex: 0 0 32px !important;
+    background: linear-gradient(135deg, var(--tp-primary), var(--tp-primary-hover)) !important;
+    color: #fff !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    box-shadow: var(--tp-shadow-xs) !important;
+}
+body.takepos-v2 .tpv2-customer-text {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1px !important;
+    min-width: 0 !important;
+}
+body.takepos-v2 .tpv2-customer-label {
+    font-size: 11px !important;
+    color: var(--tp-text-muted) !important;
+    line-height: 1 !important;
+}
+body.takepos-v2 .tpv2-customer-name {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: var(--tp-text) !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* ---------- Quantity stepper (inside each line's qty cell) ---------- */
+body.takepos-v2 #poslines td.tpv2-qty-cell {
+    padding: 8px 6px !important;
+    text-align: center !important;
+}
+body.takepos-v2 .tpv2-qty-stepper {
+    display: inline-flex !important;
+    align-items: center !important;
+    background: var(--tp-bg-soft) !important;
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    height: 28px !important;
+    line-height: 1 !important;
+}
+body.takepos-v2 .tpv2-qty-btn {
+    width: 24px !important;
+    height: 26px !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: var(--tp-text-muted) !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background 0.12s, color 0.12s !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+}
+body.takepos-v2 .tpv2-qty-btn:hover {
+    background: var(--tp-bg-hover) !important;
+    color: var(--tp-text) !important;
+}
+body.takepos-v2 .tpv2-qty-btn:active {
+    background: var(--tp-bg-active) !important;
+}
+body.takepos-v2 .tpv2-qty-value {
+    min-width: 28px !important;
+    text-align: center !important;
+    font-family: var(--tp-font-num) !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    color: var(--tp-text) !important;
+    padding: 0 4px !important;
+    background: var(--tp-bg-panel) !important;
+    height: 100% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-left: 1px solid var(--tp-border) !important;
+    border-right: 1px solid var(--tp-border) !important;
+}
+
+/* ---------- Cart footer (summary + actions) ---------- */
+body.takepos-v2 .tpv2-cart-footer {
+    margin-top: auto !important;
+    background: var(--tp-bg-panel) !important;
+    border-top: 1px solid var(--tp-border) !important;
+    flex-shrink: 0 !important;
+}
+body.takepos-v2 .tpv2-summary {
+    padding: 10px 16px 6px !important;
+    background: var(--tp-bg-soft) !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+}
+body.takepos-v2 .tpv2-summary-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 3px 0 !important;
+    font-size: 12.5px !important;
+    color: var(--tp-text-muted) !important;
+}
+body.takepos-v2 .tpv2-summary-row .tpv2-summary-value {
+    font-family: var(--tp-font-num) !important;
+    font-weight: 600 !important;
+    color: var(--tp-text) !important;
+}
+body.takepos-v2 .tpv2-summary-row.tpv2-summary-discount .tpv2-summary-value {
+    color: var(--tp-warning) !important;
+}
+
+body.takepos-v2 .tpv2-grand-total {
+    margin: 8px 16px 0 !important;
+    padding: 12px 16px !important;
+    background: var(--tp-bg-dark) !important;
+    color: #fff !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    box-shadow: var(--tp-shadow-sm) !important;
+}
+body.takepos-v2 .tpv2-grand-total-label {
+    font-size: 13px !important;
+    color: #94a3b8 !important;
+    font-weight: 500 !important;
+}
+body.takepos-v2 .tpv2-grand-total-value {
+    font-family: var(--tp-font-num) !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px !important;
+    color: #fff !important;
+}
+
+body.takepos-v2 .tpv2-cart-actions {
+    padding: 10px 16px 14px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+}
+body.takepos-v2 .tpv2-btn {
+    height: 40px !important;
+    border-radius: 8px !important;
+    border: 1px solid transparent !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    transition: all 0.15s !important;
+    position: relative !important;
+    padding: 0 12px !important;
+    font-family: inherit !important;
+}
+body.takepos-v2 .tpv2-btn .tpv2-btn-key {
+    position: absolute !important;
+    top: 4px !important;
+    left: 5px !important;
+    font-size: 9px !important;
+    background: rgba(255,255,255,0.20) !important;
+    padding: 1px 5px !important;
+    border-radius: 3px !important;
+    font-family: var(--tp-font-num) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
+    color: rgba(255,255,255,0.95) !important;
+    line-height: 1 !important;
+}
+body.takepos-v2.tp-rtl .tpv2-btn .tpv2-btn-key,
+body.takepos-v2[dir="rtl"] .tpv2-btn .tpv2-btn-key {
+    left: auto !important;
+    right: 5px !important;
+}
+
+/* Cancel — light pink/red outline */
+body.takepos-v2 .tpv2-btn.tpv2-btn-cancel {
+    background: var(--tp-bg-panel) !important;
+    color: var(--tp-danger) !important;
+    border-color: #fecaca !important;
+}
+body.takepos-v2 .tpv2-btn.tpv2-btn-cancel:hover {
+    background: var(--tp-danger-soft) !important;
+}
+body.takepos-v2 .tpv2-btn.tpv2-btn-cancel .tpv2-btn-key {
+    background: var(--tp-danger-soft) !important;
+    color: var(--tp-danger) !important;
+}
+
+/* Hold — gentle gray */
+body.takepos-v2 .tpv2-btn.tpv2-btn-hold {
+    background: var(--tp-bg-soft) !important;
+    color: var(--tp-text) !important;
+    border-color: var(--tp-border) !important;
+}
+body.takepos-v2 .tpv2-btn.tpv2-btn-hold:hover {
+    background: var(--tp-bg-hover) !important;
+    border-color: var(--tp-border-strong) !important;
+}
+body.takepos-v2 .tpv2-btn.tpv2-btn-hold .tpv2-btn-key {
+    background: var(--tp-bg-app) !important;
+    color: var(--tp-text-muted) !important;
+}
+
+/* Pay — full-width green gradient (spans both columns) */
+body.takepos-v2 .tpv2-btn.tpv2-btn-pay {
+    grid-column: 1 / -1 !important;
+    height: 52px !important;
+    background: linear-gradient(180deg, #16a34a, #15803d) !important;
+    color: #fff !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(21,128,61,0.25), inset 0 1px 0 rgba(255,255,255,0.20) !important;
+    letter-spacing: -0.2px !important;
+    border: none !important;
+}
+body.takepos-v2 .tpv2-btn.tpv2-btn-pay:hover {
+    background: linear-gradient(180deg, #15803d, #166534) !important;
+    box-shadow: 0 6px 16px rgba(21,128,61,0.35), inset 0 1px 0 rgba(255,255,255,0.20) !important;
+}
+body.takepos-v2 .tpv2-btn.tpv2-btn-pay:active {
+    transform: translateY(1px);
+}
+body.takepos-v2 .tpv2-btn.tpv2-btn-pay .tpv2-btn-key {
+    background: rgba(0,0,0,0.20) !important;
+    color: #fff !important;
+}
+
+/* The .invoice wrapper inside #poslines now hosts the cart footer at the
+   bottom. Make it a flex column so the table grows but the footer pins. */
+body.takepos-v2 #poslines .invoice {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+}
+/* Scrollable area = everything before .tpv2-cart-footer.
+   We wrap the table in a flex-1 div by targeting the table's parent. */
+body.takepos-v2 #poslines table#tablelines.postablelines {
+    flex: 0 0 auto !important;   /* table sizes to content, NOT stretched */
+    width: 100% !important;
+    margin: 0 !important;
+    height: auto !important;
+}
+/* The div that contains the table (between header rows and footer) scrolls */
+body.takepos-v2 #poslines #tablelines {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    min-height: 0 !important;
+    scrollbar-width: thin !important;
+}
+body.takepos-v2 #poslines #tablelines::-webkit-scrollbar { width: 5px; }
+body.takepos-v2 #poslines #tablelines::-webkit-scrollbar-thumb {
+    background: var(--tp-border-strong);
+    border-radius: 3px;
+}
+/* Footer always pinned at the bottom */
+body.takepos-v2 #poslines .tpv2-cart-footer {
+    flex: 0 0 auto !important;
+    margin-top: 0 !important;
+}
+/* ============================================================================
+   PATCH — Cart panel: closer match to mockup
+   ============================================================================ */
+
+/* Cart header: title size, gradient, spacing */
+body.takepos-v2 .tpv2-cart-header {
+    background: linear-gradient(180deg, #fafbfd 0%, var(--tp-bg-panel) 100%) !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+    padding: 12px 16px 11px !important;
+    flex-wrap: nowrap !important;
+}
+
+/* Cart title — bigger & bolder like mockup */
+body.takepos-v2 .tpv2-cart-title {
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.3px !important;
+    white-space: nowrap !important;
+}
+
+/* Invoice badge — pill style */
+body.takepos-v2 .tpv2-invoice-badge {
+    background: var(--tp-bg-soft) !important;
+    border: 1px solid var(--tp-border) !important;
+    color: var(--tp-text-muted) !important;
+    font-size: 11px !important;
+    padding: 3px 10px !important;
+    border-radius: 5px !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+}
+
+/* Customer row: softer blue bg, tighter spacing */
+body.takepos-v2 .tpv2-customer-row > td.tpv2-customer-cell {
+    background: #f0f7ff !important;
+}
+body.takepos-v2 .tpv2-customer {
+    padding: 9px 16px !important;
+    gap: 10px !important;
+}
+body.takepos-v2 .tpv2-customer-name {
+    font-size: 13.5px !important;
+}
+
+/* Grand-total bar — match mockup dark slate */
+body.takepos-v2 .tpv2-grand-total {
+    background: var(--tp-bg-dark) !important;
+    margin: 8px 16px 0 !important;
+    padding: 12px 16px !important;
+    border-radius: 10px !important;
+}
+body.takepos-v2 .tpv2-grand-total-value {
+    font-size: 22px !important;
+    letter-spacing: -0.5px !important;
+}
+
+/* Action buttons area: 2-col grid + full-width pay */
+body.takepos-v2 .tpv2-cart-actions {
+    padding: 10px 16px 14px !important;
+    gap: 6px !important;
+    background: var(--tp-bg-panel) !important;
+    border-top: 1px solid var(--tp-border) !important;
+}
+body.takepos-v2 .tpv2-btn.tpv2-btn-pay {
+    height: 50px !important;
+    font-size: 15px !important;
+    letter-spacing: -0.2px !important;
+}
+
+/* Summary section — compact */
+body.takepos-v2 .tpv2-summary {
+    padding: 10px 16px 8px !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+}
+body.takepos-v2 .tpv2-summary-row {
+    padding: 3px 0 !important;
+    font-size: 12.5px !important;
+}
+
+/* Line items: selected row highlight */
+body.takepos-v2 #poslines tr.posinvoiceline.selected td,
+body.takepos-v2 #poslines tr.posinvoiceline.activelineselect td {
+    background: var(--tp-primary-50) !important;
+}
+body.takepos-v2 #poslines tr.posinvoiceline.selected {
+    position: relative;
+}
+
+/* (old patch blocks merged into STEP 8 above) */
+
+/* ============================================================================
+   FORCE OVERRIDE — shortcut tile compact height (maximum specificity)
+   Counters the inline PHP .takepos-shortcut-icon { width:42px; height:42px }
+   ============================================================================ */
+body.takepos-v2 #takepos-shortcuts-drawer #takepos-shortcuts-panel .takepos-shortcut-icon,
+body.takepos-v2 #takepos-shortcuts-drawer #takepos-shortcuts-body .takepos-shortcut-icon,
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-body .takepos-shortcut-icon {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    min-height: 28px !important;
+    max-height: 28px !important;
+    flex: 0 0 28px !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+body.takepos-v2 #takepos-shortcuts-drawer #takepos-shortcuts-panel .takepos-shortcut-link,
+body.takepos-v2 #takepos-shortcuts-drawer #takepos-shortcuts-body .takepos-shortcut-link,
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-body .takepos-shortcut-link {
+    flex-direction: row !important;
+    align-items: center !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 9px 10px !important;
+    gap: 9px !important;
+    background: var(--tp-bg-soft) !important;
+    background-image: none !important;
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: var(--tp-text) !important;
+    text-align: left !important;
+    text-decoration: none !important;
+    display: flex !important;
+}
+
+body.takepos-v2 #takepos-shortcuts-drawer #takepos-shortcuts-panel .takepos-shortcut-text,
+body.takepos-v2 #takepos-shortcuts-drawer #takepos-shortcuts-body .takepos-shortcut-text,
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-body .takepos-shortcut-text {
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: auto !important;
+    flex: 1 !important;
+    display: block !important;
+    color: var(--tp-text) !important;
+    word-break: normal !important;
+    line-height: 1.2 !important;
+    text-align: inherit !important;
+}
+
+/* ============================================================================
+   SHORTCUTS SEARCH BAR
+   Styles the .takepos-shortcuts-search div that must be added to
+   partials/shortcuts_drawer.php after .takepos-shortcuts-head
+   ============================================================================ */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcuts-search {
+    padding: 10px 14px !important;
+    border-bottom: 1px solid var(--tp-border) !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    background: #f7f8fc !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcuts-search input {
+    width: 100% !important;
+    height: 36px !important;
+    padding: 0 36px 0 12px !important;
+    border: 1px solid var(--tp-border) !important;
+    border-radius: 8px !important;
+    background: var(--tp-bg-soft) !important;
+    font-size: 13px !important;
+    /* FIX (I01): outline managed by *:focus-visible rule above */
+    outline: 2px solid transparent;
+    color: var(--tp-text) !important;
+    box-sizing: border-box !important;
+    font-family: inherit !important;
+    transition: all 0.15s !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcuts-search input:focus {
+    background: #fff !important;
+    border-color: var(--tp-primary) !important;
+    box-shadow: 0 0 0 3px var(--tp-primary-soft) !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcuts-search input::placeholder {
+    color: var(--tp-text-soft) !important;
+}
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcuts-search-icon {
+    position: absolute !important;
+    right: 24px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    color: var(--tp-text-soft) !important;
+    font-size: 13px !important;
+    pointer-events: none !important;
+}
+/* RTL: flip icon side */
+body.takepos-v2.tp-rtl #takepos-shortcuts-drawer .takepos-shortcuts-search input,
+body.takepos-v2[dir="rtl"] #takepos-shortcuts-drawer .takepos-shortcuts-search input {
+    padding: 0 12px 0 36px !important;
+}
+body.takepos-v2.tp-rtl #takepos-shortcuts-drawer .takepos-shortcuts-search-icon,
+body.takepos-v2[dir="rtl"] #takepos-shortcuts-drawer .takepos-shortcuts-search-icon {
+    right: auto !important;
+    left: 24px !important;
+}
+/* Hide tiles when filtered out by JS */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-link.tpv2-hidden {
+    display: none !important;
+}
+/* Empty section message */
+body.takepos-v2 #takepos-shortcuts-drawer .tpv2-no-results {
+    grid-column: 1 / -1 !important;
+    text-align: center !important;
+    padding: 10px !important;
+    font-size: 12px !important;
+    color: var(--tp-text-soft) !important;
+}
+/* Hide entire section when all tiles filtered */
+body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-section.tpv2-section-hidden {
+    display: none !important;
+}
+
+/* ============================================================================
+   FIX — Drawer accordion: all section titles always visible, one open at a time
+   ============================================================================ */
+
+/* Remove the containing-block trap */
+html body.takepos-v2 #takepos-main-layout {
+    overflow: visible !important;
+}
+html body.takepos-v2 .div5,
+html body.takepos-v2 #takepos-products-panel {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Drawer: full-height flex column */
+html body.takepos-v2 #takepos-shortcuts-drawer {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    width: 340px !important;
+    max-width: 96vw !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    overflow-y: hidden !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    z-index: 9999 !important;
+}
+html body.takepos-v2.tp-rtl #takepos-shortcuts-drawer,
+html body.takepos-v2[dir="rtl"] #takepos-shortcuts-drawer {
+    right: auto !important;
+    left: 0 !important;
+}
+
+/* Head: fixed, never shrinks */
+html body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcuts-head {
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Search: fixed, never shrinks */
+html body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcuts-search {
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
+}
+
+/* Panel: takes all remaining height, scrolls internally */
+html body.takepos-v2 #takepos-shortcuts-drawer #takepos-shortcuts-panel {
+    flex: 1 1 0% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    padding: 0 !important;
+}
+
+/* Each section header always visible (flex-shrink:0 = never compressed) */
+html body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-section {
+    flex-shrink: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    margin-bottom: 0 !important;
+}
+
+/* Collapsed section body: hidden */
+html body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-section.is-collapsed .takepos-shortcut-body {
+    display: none !important;
+}
+
+/* Open section body: grid, fully visible — no height cap */
+html body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-body {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    padding: 10px 12px 14px !important;
+    overflow: visible !important;
+}
+
+/* Chevron: point down when open, right when collapsed */
+html body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-section:not(.is-collapsed) .takepos-shortcut-header .chevron {
+    transform: rotate(180deg) !important;
+}
+html body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-section.is-collapsed .takepos-shortcut-header .chevron {
+    transform: rotate(0deg) !important;
+}
+
+/* Hidden by search filter */
+html body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-link.tpv2-hidden { display: none !important; }
+html body.takepos-v2 #takepos-shortcuts-drawer .takepos-shortcut-section.tpv2-section-hidden { display: none !important; }
+
+/* Launcher */
+html body.takepos-v2 #takepos-shortcuts-launcher { z-index: 9998 !important; }

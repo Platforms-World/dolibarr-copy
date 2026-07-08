@@ -1,0 +1,750 @@
+/* ============================================================================
+   TakePOS — Professional Redesign Overrides v3
+   ----------------------------------------------------------------------------
+   هذا الملف يستخدم specificity عالية (html body.bodytakepos)
+   ليفوز على CSS المضمّن داخل <style> في index.php.
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+:root {
+  --tpx-bg-app: #f1f4f9;
+  --tpx-bg-panel: #ffffff;
+  --tpx-bg-soft: #f6f8fc;
+  --tpx-bg-hover: #eef2f8;
+  --tpx-bg-dark: #0f172a;
+  --tpx-bg-dark-soft: #1e293b;
+  --tpx-border: #e2e8f0;
+  --tpx-border-strong: #cbd5e1;
+  --tpx-text: #0f172a;
+  --tpx-text-muted: #475569;
+  --tpx-text-soft: #94a3b8;
+  --tpx-primary: #1e40af;
+  --tpx-primary-hover: #1e3a8a;
+  --tpx-primary-soft: #eff6ff;
+  --tpx-success: #047857;
+  --tpx-warning: #b45309;
+  --tpx-danger: #b91c1c;
+  --tpx-shadow-xs: 0 1px 2px rgba(15,23,42,.05);
+  --tpx-shadow-sm: 0 2px 6px rgba(15,23,42,.08);
+  --tpx-shadow: 0 6px 16px rgba(15,23,42,.10);
+  --tpx-shadow-lg: 0 12px 32px rgba(15,23,42,.14);
+  --tpx-font-ar: "IBM Plex Sans Arabic", "Cairo", "Tajawal", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ============================================================
+   الجسم العام
+   ============================================================ */
+html body.bodytakepos {
+  background: var(--tpx-bg-app) !important;
+  font-family: var(--tpx-font-ar) !important;
+  -webkit-font-smoothing: antialiased !important;
+  color: var(--tpx-text) !important;
+}
+html body.bodytakepos input,
+html body.bodytakepos button,
+html body.bodytakepos select,
+html body.bodytakepos textarea,
+html body.bodytakepos a {
+  font-family: var(--tpx-font-ar) !important;
+}
+
+/* ============================================================
+   1) الشريط العلوي - داكن احترافي
+   ============================================================ */
+html body.bodytakepos #topnav,
+html body.bodytakepos div.topnav,
+html body.bodytakepos .header {
+  background: var(--tpx-bg-dark) !important;
+  border-bottom: 1px solid #334155 !important;
+}
+html body.bodytakepos #topnav-left,
+html body.bodytakepos #topnav-right,
+html body.bodytakepos .topnav-left,
+html body.bodytakepos .topnav-right {
+  background: transparent !important;
+}
+html body.bodytakepos #topnav a,
+html body.bodytakepos #topnav .topnav-terminalhour,
+html body.bodytakepos #topnav-left a,
+html body.bodytakepos #topnav-right a,
+html body.bodytakepos .topnav-right .login_block_other a,
+html body.bodytakepos .topnav-right .login_block_user a {
+  color: #e2e8f0 !important;
+  border-radius: 6px !important;
+  transition: background 0.15s, color 0.15s !important;
+  padding: 6px 10px !important;
+}
+html body.bodytakepos #topnav a:hover {
+  background: rgba(255,255,255,0.08) !important;
+  color: #fff !important;
+}
+html body.bodytakepos #topnav .fa,
+html body.bodytakepos #topnav .fas,
+html body.bodytakepos #topnav-right .fa,
+html body.bodytakepos #topnav-right .fas {
+  color: #94a3b8 !important;
+}
+html body.bodytakepos #topnav a:hover .fa,
+html body.bodytakepos #topnav a:hover .fas {
+  color: #fff !important;
+}
+
+/* حقل البحث */
+html body.bodytakepos #topnav input#search,
+html body.bodytakepos #topnav input[name="search"] {
+  background: #1e293b !important;
+  color: #fff !important;
+  border: 1px solid #334155 !important;
+  border-radius: 6px !important;
+  height: 34px !important;
+  padding: 0 12px !important;
+  transition: all 0.15s !important;
+}
+html body.bodytakepos #topnav input#search::placeholder {
+  color: #64748b !important;
+}
+html body.bodytakepos #topnav input#search:focus {
+  border-color: #3b82f6 !important;
+  background: #0f172a !important;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.2) !important;
+  outline: none !important;
+}
+html body.bodytakepos .takepos-search-button {
+  background: var(--tpx-primary) !important;
+  color: #fff !important;
+  border: 1px solid var(--tpx-primary) !important;
+  border-radius: 6px !important;
+  padding: 0 14px !important;
+  height: 34px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+html body.bodytakepos .takepos-search-button:hover {
+  background: var(--tpx-primary-hover) !important;
+}
+html body.bodytakepos .takepos-search-clear {
+  color: #94a3b8 !important;
+  border-radius: 6px !important;
+}
+html body.bodytakepos .takepos-search-clear:hover {
+  background: rgba(255,255,255,0.08) !important;
+  color: #fff !important;
+}
+
+/* ============================================================
+   2) منطقة سلة المبيعات
+   ============================================================ */
+html body.bodytakepos #poslines {
+  background: var(--tpx-bg-panel) !important;
+  border-radius: 10px !important;
+  margin: 8px !important;
+  box-shadow: var(--tpx-shadow-xs) !important;
+  border: 1px solid var(--tpx-border) !important;
+  position: relative !important;
+}
+html body.bodytakepos #tablelines tr.liste_titre {
+  background: var(--tpx-bg-soft) !important;
+  color: var(--tpx-text-muted) !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+html body.bodytakepos #tablelines tr.posinvoiceline:hover,
+html body.bodytakepos #tablelines tr.drag.drop.oddeven:hover {
+  background: var(--tpx-bg-soft) !important;
+}
+
+/* ============================================================
+   3) لوحة الأرقام
+   ============================================================ */
+html body.bodytakepos button.calcbutton,
+html body.bodytakepos button.calcbutton2 {
+  border-radius: 10px !important;
+  border: 1px solid var(--tpx-border) !important;
+  font-weight: 700 !important;
+  transition: all 0.1s !important;
+  box-shadow: var(--tpx-shadow-xs) !important;
+}
+html body.bodytakepos button.calcbutton:hover,
+html body.bodytakepos button.calcbutton2:hover {
+  filter: brightness(1.05) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--tpx-shadow-sm) !important;
+}
+html body.bodytakepos button.calcbutton:active,
+html body.bodytakepos button.calcbutton2:active {
+  transform: translateY(0) !important;
+  filter: brightness(0.95) !important;
+}
+
+/* ============================================================
+   4) أزرار الإجراءات (F1-F12)
+   ============================================================ */
+html body.bodytakepos button.actionbutton {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  transition: all 0.15s !important;
+  box-shadow: var(--tpx-shadow-xs) !important;
+}
+html body.bodytakepos button.actionbutton:hover {
+  filter: brightness(1.04) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--tpx-shadow-sm) !important;
+}
+html body.bodytakepos button.actionbutton:active {
+  transform: translateY(0) !important;
+}
+html body.bodytakepos .takepos-shortcut-badge {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.3px !important;
+  background: rgba(15,23,42,0.10) !important;
+  color: rgba(15,23,42,0.7) !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  margin-bottom: 4px !important;
+  display: inline-block !important;
+}
+
+/* ============================================================
+   5) كروت الفئات
+   ============================================================ */
+html body.bodytakepos .div4 .wrapper {
+  border-radius: 12px !important;
+  border: 1px solid var(--tpx-border) !important;
+  background: var(--tpx-bg-panel) !important;
+  box-shadow: var(--tpx-shadow-xs) !important;
+  transition: all 0.15s ease !important;
+  overflow: hidden !important;
+}
+html body.bodytakepos .div4 .wrapper:not(.divempty):hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--tpx-shadow) !important;
+  border-color: var(--tpx-primary) !important;
+}
+
+/* ============================================================
+   6) كروت المنتجات
+   ============================================================ */
+html body.bodytakepos .div5 .wrapper2 {
+  border-radius: 12px !important;
+  border: 1px solid var(--tpx-border) !important;
+  background: var(--tpx-bg-panel) !important;
+  box-shadow: var(--tpx-shadow-xs) !important;
+  transition: all 0.15s ease !important;
+  overflow: visible !important;
+  position: relative !important;
+}
+html body.bodytakepos .div5 .wrapper2:not(.divempty):not(.arrow):hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--tpx-shadow) !important;
+  border-color: var(--tpx-primary) !important;
+}
+html body.bodytakepos .div5 .wrapper2.divempty {
+  border: 1px dashed var(--tpx-border) !important;
+  background: var(--tpx-bg-soft) !important;
+  box-shadow: none !important;
+}
+html body.bodytakepos .div5 .wrapper2 .productprice {
+  background: var(--tpx-bg-dark) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  border-radius: 6px !important;
+  padding: 3px 8px !important;
+  letter-spacing: -0.3px !important;
+  box-shadow: var(--tpx-shadow-sm) !important;
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  font-size: 12px !important;
+  z-index: 2 !important;
+}
+html body.bodytakepos .div5 .wrapper2.arrow {
+  background: var(--tpx-bg-panel) !important;
+  border: 1px solid var(--tpx-border) !important;
+}
+html body.bodytakepos .div5 .wrapper2.arrow:hover {
+  background: var(--tpx-primary-soft) !important;
+  border-color: var(--tpx-primary) !important;
+}
+html body.bodytakepos .div5 .wrapper2.arrow .fa {
+  color: var(--tpx-primary) !important;
+}
+
+/* ============================================================
+   7) Shortcuts Launcher - زر عمودي نحيف
+   ============================================================ */
+html body.bodytakepos #takepos-shortcuts-launcher {
+  position: fixed !important;
+  top: 50% !important;
+  right: 0 !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  max-width: 38px !important;
+  height: auto !important;
+  min-height: 130px !important;
+  border: none !important;
+  border-radius: 12px 0 0 12px !important;
+  padding: 14px 6px !important;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+  color: #fff !important;
+  font-family: var(--tpx-font-ar) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow: -4px 0 16px rgba(15,23,42,0.18), inset 1px 0 0 rgba(255,255,255,0.05) !important;
+  z-index: 95 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: width 0.2s ease, background 0.2s ease, box-shadow 0.2s ease !important;
+}
+html body.bodytakepos #takepos-shortcuts-launcher > span:not(.fa):not(.fas) {
+  writing-mode: vertical-rl !important;
+  text-orientation: mixed !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+}
+html body.bodytakepos #takepos-shortcuts-launcher .fa,
+html body.bodytakepos #takepos-shortcuts-launcher .fas {
+  font-size: 16px !important;
+  color: #94a3b8 !important;
+  transition: color 0.2s ease !important;
+}
+html body.bodytakepos #takepos-shortcuts-launcher:hover {
+  width: 42px !important;
+  min-width: 42px !important;
+  max-width: 42px !important;
+  background: linear-gradient(180deg, var(--tpx-primary) 0%, var(--tpx-primary-hover) 100%) !important;
+  box-shadow: -6px 0 20px rgba(30,64,175,0.30), inset 1px 0 0 rgba(255,255,255,0.1) !important;
+}
+html body.bodytakepos #takepos-shortcuts-launcher:hover .fa,
+html body.bodytakepos #takepos-shortcuts-launcher:hover .fas {
+  color: #fff !important;
+}
+html body.bodytakepos.tp-rtl #takepos-shortcuts-launcher {
+  right: auto !important;
+  left: 0 !important;
+  border-radius: 0 12px 12px 0 !important;
+  box-shadow: 4px 0 16px rgba(15,23,42,0.18), inset -1px 0 0 rgba(255,255,255,0.05) !important;
+}
+html body.bodytakepos.tp-rtl #takepos-shortcuts-launcher:hover {
+  box-shadow: 6px 0 20px rgba(30,64,175,0.30), inset -1px 0 0 rgba(255,255,255,0.1) !important;
+}
+html body.bodytakepos.takepos-shortcuts-open #takepos-shortcuts-launcher {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-50%) translateX(20px) !important;
+}
+html body.bodytakepos.tp-rtl.takepos-shortcuts-open #takepos-shortcuts-launcher {
+  transform: translateY(-50%) translateX(-20px) !important;
+}
+
+/* ============================================================
+   8) Shortcuts Drawer
+   ============================================================ */
+html body.bodytakepos #takepos-shortcuts-drawer {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  left: auto !important;
+  height: 100vh !important;
+  width: 400px !important;
+  max-width: 92vw !important;
+  max-height: 100vh !important;
+  background: var(--tpx-bg-panel) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: -8px 0 40px rgba(15,23,42,0.25) !important;
+  padding: 0 !important;
+  z-index: 201 !important;
+  transform: translateX(calc(100% + 16px)) !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
+}
+html body.bodytakepos #takepos-shortcuts-drawer.is-open {
+  transform: translateX(0) !important;
+  pointer-events: auto !important;
+}
+html body.bodytakepos.tp-rtl #takepos-shortcuts-drawer {
+  right: auto !important;
+  left: 0 !important;
+  box-shadow: 8px 0 40px rgba(15,23,42,0.25) !important;
+  transform: translateX(calc(-100% - 16px)) !important;
+}
+html body.bodytakepos.tp-rtl #takepos-shortcuts-drawer.is-open {
+  transform: translateX(0) !important;
+}
+
+/* لا نقلّص الـ main-layout عند الفتح */
+html body.bodytakepos.takepos-shortcuts-open #takepos-main-layout {
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+html body.bodytakepos.tp-rtl.takepos-shortcuts-open #takepos-main-layout {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* رأس الـ drawer */
+html body.bodytakepos #takepos-shortcuts-drawer .takepos-shortcuts-head {
+  padding: 14px 18px !important;
+  background: var(--tpx-bg-dark) !important;
+  color: #fff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  gap: 10px !important;
+  border-bottom: none !important;
+}
+html body.bodytakepos #takepos-shortcuts-drawer .takepos-shortcuts-title {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  letter-spacing: -0.2px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 0 !important;
+}
+html body.bodytakepos #takepos-shortcuts-drawer .takepos-shortcuts-title::before {
+  content: '\f5fd';
+  font-family: 'Font Awesome 5 Free', 'FontAwesome' !important;
+  font-weight: 900 !important;
+  width: 32px !important;
+  height: 32px !important;
+  background: linear-gradient(135deg, #3b82f6, #1e40af) !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+  flex-shrink: 0 !important;
+}
+html body.bodytakepos #takepos-shortcuts-close {
+  width: 30px !important;
+  height: 30px !important;
+  background: rgba(255,255,255,0.08) !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  transition: background 0.15s !important;
+}
+html body.bodytakepos #takepos-shortcuts-close:hover {
+  background: rgba(255,255,255,0.18) !important;
+}
+
+/* جسم الـ drawer */
+html body.bodytakepos #takepos-shortcuts-panel {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 12px 14px 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  background: var(--tpx-bg-panel) !important;
+}
+html body.bodytakepos #takepos-shortcuts-panel::-webkit-scrollbar {
+  width: 6px !important;
+}
+html body.bodytakepos #takepos-shortcuts-panel::-webkit-scrollbar-thumb {
+  background: var(--tpx-border-strong) !important;
+  border-radius: 3px !important;
+  border: none !important;
+}
+
+/* الأقسام */
+html body.bodytakepos .takepos-shortcut-section {
+  border: 1px solid var(--tpx-border) !important;
+  border-radius: 12px !important;
+  background: var(--tpx-bg-panel) !important;
+  box-shadow: var(--tpx-shadow-xs) !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+}
+html body.bodytakepos .takepos-shortcut-header {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  background: var(--tpx-bg-soft) !important;
+  border: none !important;
+  color: var(--tpx-text) !important;
+  cursor: pointer !important;
+  font-family: var(--tpx-font-ar) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 11px 14px !important;
+  text-align: right !important;
+  transition: background 0.15s !important;
+}
+html body.bodytakepos .takepos-shortcut-header:hover {
+  background: var(--tpx-bg-hover) !important;
+}
+html body.bodytakepos .takepos-shortcut-header > span:first-child {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex: 1 !important;
+}
+html body.bodytakepos .takepos-shortcut-header > span:first-child::before {
+  content: '' !important;
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 7px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #fff !important;
+  font-family: 'Font Awesome 5 Free', 'FontAwesome' !important;
+  font-weight: 900 !important;
+  font-size: 12px !important;
+  flex-shrink: 0 !important;
+}
+html body.bodytakepos #takepos-shortcut-section-catalog_inventory .takepos-shortcut-header > span:first-child::before {
+  content: '\f466' !important;
+  background: linear-gradient(135deg, #3b82f6, #1e40af) !important;
+}
+html body.bodytakepos #takepos-shortcut-section-sales_operations .takepos-shortcut-header > span:first-child::before {
+  content: '\f155' !important;
+  background: linear-gradient(135deg, #10b981, #047857) !important;
+}
+html body.bodytakepos #takepos-shortcut-section-analytics .takepos-shortcut-header > span:first-child::before {
+  content: '\f201' !important;
+  background: linear-gradient(135deg, #f59e0b, #b45309) !important;
+}
+html body.bodytakepos #takepos-shortcut-section-pos_configuration .takepos-shortcut-header > span:first-child::before {
+  content: '\f013' !important;
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9) !important;
+}
+html body.bodytakepos #takepos-shortcut-section-governance_access .takepos-shortcut-header > span:first-child::before {
+  content: '\f084' !important;
+  background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+}
+html body.bodytakepos .takepos-shortcut-header .chevron {
+  color: var(--tpx-text-soft) !important;
+  font-size: 11px !important;
+  transition: transform 0.2s !important;
+}
+html body.bodytakepos .takepos-shortcut-section.is-collapsed .takepos-shortcut-header .chevron {
+  transform: rotate(-90deg) !important;
+}
+
+/* جسم القسم */
+html body.bodytakepos .takepos-shortcut-body {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+  padding: 10px !important;
+  background: var(--tpx-bg-panel) !important;
+}
+
+/* رابط الاختصار */
+html body.bodytakepos .takepos-shortcut-link {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 9px !important;
+  min-height: auto !important;
+  padding: 9px 10px !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--tpx-border) !important;
+  background: var(--tpx-bg-soft) !important;
+  color: var(--tpx-text) !important;
+  text-align: right !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  transition: all 0.15s !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+html body.bodytakepos .takepos-shortcut-link:hover {
+  background: var(--tpx-bg-panel) !important;
+  border-color: var(--tpx-primary) !important;
+  color: var(--tpx-text) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--tpx-shadow-sm) !important;
+}
+html body.bodytakepos .takepos-shortcut-icon {
+  width: 28px !important;
+  height: 28px !important;
+  background: var(--tpx-bg-panel) !important;
+  border: 1px solid var(--tpx-border) !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--tpx-primary) !important;
+  font-size: 13px !important;
+  flex-shrink: 0 !important;
+  transition: all 0.15s !important;
+}
+html body.bodytakepos .takepos-shortcut-link:hover .takepos-shortcut-icon {
+  background: var(--tpx-primary) !important;
+  color: #fff !important;
+  border-color: var(--tpx-primary) !important;
+}
+html body.bodytakepos .takepos-shortcut-text {
+  display: block !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  font-family: var(--tpx-font-ar) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  color: var(--tpx-text) !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ============================================================
+   9) شريط البحث + عداد القسم
+   ============================================================ */
+html body.bodytakepos .takepos-shortcuts-search-wrap {
+  padding: 12px 14px !important;
+  border-bottom: 1px solid var(--tpx-border) !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  background: var(--tpx-bg-panel) !important;
+}
+html body.bodytakepos #takepos-shortcuts-search {
+  width: 100% !important;
+  height: 36px !important;
+  padding: 0 36px 0 12px !important;
+  border: 1px solid var(--tpx-border) !important;
+  border-radius: 8px !important;
+  background: var(--tpx-bg-soft) !important;
+  font-size: 13px !important;
+  font-family: var(--tpx-font-ar) !important;
+  outline: none !important;
+  transition: all 0.15s !important;
+  box-sizing: border-box !important;
+  color: var(--tpx-text) !important;
+}
+html body.bodytakepos #takepos-shortcuts-search:focus {
+  background: #fff !important;
+  border-color: var(--tpx-primary) !important;
+  box-shadow: 0 0 0 3px var(--tpx-primary-soft) !important;
+}
+html body.bodytakepos .takepos-shortcuts-search-wrap .search-icon {
+  position: absolute !important;
+  left: 24px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: var(--tpx-text-soft) !important;
+  font-size: 13px !important;
+  pointer-events: none !important;
+}
+html body.bodytakepos.tp-rtl .takepos-shortcuts-search-wrap .search-icon {
+  left: auto !important;
+  right: 24px !important;
+}
+html body.bodytakepos.tp-rtl #takepos-shortcuts-search {
+  padding: 0 12px 0 36px !important;
+}
+html body.bodytakepos .takepos-shortcut-header .section-count {
+  font-size: 11px !important;
+  color: var(--tpx-text-muted) !important;
+  background: var(--tpx-bg-panel) !important;
+  padding: 2px 8px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--tpx-border) !important;
+  font-weight: 700 !important;
+}
+
+/* ============================================================
+   10) overlay
+   ============================================================ */
+html body.bodytakepos #takepos-shortcuts-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(15,23,42,0.45) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+  backdrop-filter: blur(2px) !important;
+  z-index: 200 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.2s !important;
+}
+html body.bodytakepos #takepos-shortcuts-overlay.is-open {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* ============================================================
+   11) Feedback bar
+   ============================================================ */
+html body.bodytakepos .takepos-feedback-bar {
+  border-radius: 10px !important;
+  padding: 12px 16px !important;
+  font-weight: 600 !important;
+  margin: 8px !important;
+  box-shadow: var(--tpx-shadow-sm) !important;
+}
+
+/* ============================================================
+   استجابة الشاشات
+   ============================================================ */
+@media (max-width: 1280px) {
+  html body.bodytakepos #takepos-shortcuts-drawer {
+    width: 360px !important;
+  }
+}
+@media (max-width: 767px) {
+  html body.bodytakepos #takepos-shortcuts-drawer {
+    width: min(92vw, 360px) !important;
+  }
+  html body.bodytakepos .takepos-shortcut-body {
+    grid-template-columns: 1fr !important;
+  }
+  html body.bodytakepos #takepos-shortcuts-launcher {
+    top: auto !important;
+    bottom: 16px !important;
+    right: 16px !important;
+    width: 52px !important;
+    min-width: 52px !important;
+    max-width: 52px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    transform: none !important;
+    flex-direction: row !important;
+  }
+  html body.bodytakepos.tp-rtl #takepos-shortcuts-launcher {
+    right: auto !important;
+    left: 16px !important;
+  }
+  html body.bodytakepos #takepos-shortcuts-launcher > span:not(.fa):not(.fas) {
+    display: none !important;
+  }
+  html body.bodytakepos #takepos-shortcuts-launcher .fa,
+  html body.bodytakepos #takepos-shortcuts-launcher .fas {
+    font-size: 20px !important;
+    color: #fff !important;
+  }
+}

@@ -1,0 +1,21 @@
+CREATE TABLE llx_pos_terminal (
+  rowid INTEGER AUTO_INCREMENT PRIMARY KEY,
+  entity INTEGER NOT NULL DEFAULT 1,
+  ref VARCHAR(64) NOT NULL,
+  label VARCHAR(255) NOT NULL,
+  warehouse_id INTEGER DEFAULT NULL,
+  receipt_profile_id INTEGER DEFAULT NULL,
+  status SMALLINT NOT NULL DEFAULT 1,
+  is_default SMALLINT NOT NULL DEFAULT 0,
+  note_public TEXT DEFAULT NULL,
+  note_private TEXT DEFAULT NULL,
+  datec DATETIME NOT NULL,
+  tms TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  fk_user_creat INTEGER DEFAULT NULL,
+  fk_user_modif INTEGER DEFAULT NULL,
+  UNIQUE KEY uk_pos_terminal_entity_ref (entity, ref),
+  KEY idx_pos_terminal_entity (entity),
+  KEY idx_pos_terminal_status (status),
+  KEY idx_pos_terminal_warehouse (warehouse_id),
+  KEY idx_pos_terminal_receipt_profile (receipt_profile_id)
+) ENGINE=innodb;

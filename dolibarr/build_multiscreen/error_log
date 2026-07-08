@@ -1,0 +1,8 @@
+[08-Mar-2026 16:22:05 UTC] PHP Fatal error:  Uncaught Error: Class "TakeposSaasBridge" not found in /home/kafoerp/public_html/dolibarr/takepos/receipt.php:75
+Stack trace:
+#0 {main}
+  thrown in /home/kafoerp/public_html/dolibarr/takepos/receipt.php on line 75
+[08-Mar-2026 16:30:34 UTC] PHP Fatal error:  Uncaught Error: Class "TakeposSaasBridge" not found in /home/kafoerp/public_html/dolibarr/takepos/receipt.php:75
+Stack trace:
+#0 {main}
+  thrown in /home/kafoerp/public_html/dolibarr/takepos/receipt.php on line 75

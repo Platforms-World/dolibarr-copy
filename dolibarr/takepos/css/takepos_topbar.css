@@ -1,0 +1,355 @@
+/* =============================================================================
+ * TakePOS V2 — Custom Category Strip + Info Bar (v5)
+ * -----------------------------------------------------------------------------
+ * Replaces the broken empty .div4 with our own custom strip rendered from
+ * window.categories. Adds info bar above with breadcrumb, view toggle, and
+ * counter. Supports actual Grid/List view switching.
+ * =========================================================================== */
+
+/* -------------------------------------------------------------------------
+ * GRID LAYOUT — extend with rows for info bar + custom strip
+ * -----------------------------------------------------------------------*/
+body.takepos-v2 #takepos-main-layout:has(.tpv2-info-bar) {
+    grid-template-rows: auto auto 0 1fr !important;
+    grid-template-areas:
+        "cart infobar    rail"
+        "cart customstrip rail"
+        "cart catbar     rail"
+        "cart products   rail" !important;
+}
+body.takepos-v2.tp-rtl #takepos-main-layout:has(.tpv2-info-bar),
+body.takepos-v2[dir="rtl"] #takepos-main-layout:has(.tpv2-info-bar) {
+    grid-template-rows: auto auto 0 1fr !important;
+    grid-template-areas:
+        "rail infobar    cart"
+        "rail customstrip cart"
+        "rail catbar     cart"
+        "rail products   cart" !important;
+}
+
+/* Hide the original empty .div4 strip */
+body.takepos-v2 .div4.tpv2-strip-hidden {
+    height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+}
+
+/* -------------------------------------------------------------------------
+ * INFO BAR
+ * -----------------------------------------------------------------------*/
+body.takepos-v2 .tpv2-info-bar {
+    grid-area: infobar;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 14px;
+    background: var(--tp-bg-panel, #ffffff);
+    border-bottom: 1px solid var(--tp-border, #e2e8f0);
+    font-size: 12px;
+    color: var(--tp-text, #0f172a);
+    min-height: 36px;
+    box-sizing: border-box;
+    line-height: 1.2;
+    width: 100%;
+    overflow: hidden;
+}
+
+.tpv2-breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--tp-text-muted, #475569);
+    font-weight: 500;
+    flex-shrink: 0;
+    min-width: 0;
+}
+.tpv2-breadcrumb .tpv2-bc-home { font-size: 13px; line-height: 1; }
+.tpv2-breadcrumb .tpv2-bc-sep { color: var(--tp-text-soft, #94a3b8); font-size: 12px; }
+.tpv2-breadcrumb .tpv2-bc-current {
+    color: var(--tp-text, #0f172a);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 240px;
+}
+
+.tpv2-info-spacer { flex: 1 1 auto; min-width: 0; }
+
+.tpv2-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--tp-text-muted, #475569);
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+.tpv2-counter .tpv2-counter-num {
+    color: var(--tp-text, #0f172a);
+    font-weight: 700;
+}
+.tpv2-counter .tpv2-counter-sep {
+    color: var(--tp-text-soft, #94a3b8);
+    font-weight: 400;
+}
+
+/* View toggle (functional) */
+.tpv2-view-toggle {
+    display: inline-flex;
+    align-items: stretch;
+    background: var(--tp-bg-soft, #f6f8fc);
+    border: 1px solid var(--tp-border, #e2e8f0);
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    height: 26px;
+}
+.tpv2-view-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 0 8px;
+    font-size: 13px;
+    line-height: 1;
+    color: var(--tp-text-muted, #475569);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 100%;
+    font-family: inherit;
+}
+.tpv2-view-btn + .tpv2-view-btn {
+    border-inline-start: 1px solid var(--tp-border, #e2e8f0);
+}
+.tpv2-view-btn:hover {
+    background: var(--tp-bg-hover, #eef2f8);
+    color: var(--tp-text, #0f172a);
+}
+.tpv2-view-btn.is-active {
+    background: var(--tp-bg-dark, #0f172a);
+    color: #fff;
+}
+
+/* -------------------------------------------------------------------------
+ * CUSTOM CATEGORY STRIP
+ * -----------------------------------------------------------------------*/
+.tpv2-custom-strip {
+    grid-area: customstrip;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--tp-bg-panel, #ffffff);
+    border-bottom: 1px solid var(--tp-border, #e2e8f0);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 50px;
+}
+.tpv2-custom-strip::-webkit-scrollbar { height: 4px; }
+.tpv2-custom-strip::-webkit-scrollbar-thumb {
+    background: var(--tp-border-strong, #cbd5e1);
+    border-radius: 2px;
+}
+
+.tpv2-pill {
+    appearance: none;
+    -webkit-appearance: none;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 14px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--tp-bg-soft, #f6f8fc);
+    border: 1px solid var(--tp-border, #e2e8f0);
+    box-shadow: 0 1px 2px rgba(15,23,42,.04);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--tp-text, #0f172a);
+    line-height: 1;
+}
+.tpv2-pill:hover {
+    background: var(--tp-bg-hover, #eef2f8);
+    border-color: var(--tp-border-strong, #cbd5e1);
+    transform: translateY(-1px);
+}
+
+.tpv2-pill-icon {
+    font-size: 14px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+.tpv2-pill-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+}
+.tpv2-pill-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 18px;
+    padding: 0 6px;
+    border-radius: 9px;
+    background: rgba(15,23,42,0.07);
+    color: var(--tp-text-muted, #475569);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Active pill */
+.tpv2-pill.tpv2-pill-active {
+    background: var(--tp-bg-dark, #0f172a);
+    border-color: var(--tp-bg-dark, #0f172a);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(15,23,42,.15);
+}
+.tpv2-pill.tpv2-pill-active .tpv2-pill-count {
+    background: rgba(255,255,255,0.22);
+    color: #fff;
+}
+
+/* "All" pill — slightly bigger, always first */
+.tpv2-pill-all { font-weight: 700; }
+
+/* -------------------------------------------------------------------------
+ * LIST VIEW (working) — overrides .div5 grid for one-column rows
+ * -----------------------------------------------------------------------*/
+body.takepos-v2 .div5.tpv2-list-view {
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: 64px !important;
+    grid-template-rows: 64px !important;
+    gap: 6px !important;
+}
+body.takepos-v2 .div5.tpv2-list-view div.wrapper2:not(.arrow):not(.divempty) {
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+    display: grid !important;
+    grid-template-columns: 56px 1fr auto !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 0 14px !important;
+    background: var(--tp-bg-panel, #ffffff) !important;
+    border: 1px solid var(--tp-border, #e2e8f0) !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+/* Image — small thumbnail on the side */
+body.takepos-v2 .div5.tpv2-list-view div.wrapper2 img.imgwrapper {
+    width: 48px !important;
+    height: 48px !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    object-fit: contain !important;
+    grid-column: 1 !important;
+    margin: 0 !important;
+    border-radius: 6px !important;
+    background: var(--tp-bg-soft, #f6f8fc) !important;
+    padding: 4px !important;
+    box-sizing: border-box !important;
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+}
+/* Description — middle */
+body.takepos-v2 .div5.tpv2-list-view div.wrapper2 .description {
+    grid-column: 2 !important;
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    text-align: start !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    color: var(--tp-text, #0f172a) !important;
+}
+body.takepos-v2 .div5.tpv2-list-view div.wrapper2 .description_content {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: var(--tp-text, #0f172a) !important;
+    line-height: 1.3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    -webkit-line-clamp: unset !important;
+    max-height: none !important;
+    text-align: start !important;
+}
+/* Price — right */
+body.takepos-v2 .div5.tpv2-list-view div.wrapper2 .productprice {
+    grid-column: 3 !important;
+    position: static !important;
+    margin: 0 !important;
+    background: var(--tp-bg-dark, #0f172a) !important;
+    color: #fff !important;
+    padding: 5px 10px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+}
+/* Hide the watermark / counter overlays in list mode */
+body.takepos-v2 .div5.tpv2-list-view div.wrapper2 .catwatermark,
+body.takepos-v2 .div5.tpv2-list-view div.wrapper2 .prowatermark {
+    display: none !important;
+}
+/* Arrow tiles in list mode */
+body.takepos-v2 .div5.tpv2-list-view div.wrapper2.arrow {
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+}
+
+/* -------------------------------------------------------------------------
+ * Responsive
+ * -----------------------------------------------------------------------*/
+@media (max-width: 900px) {
+    body.takepos-v2 .tpv2-info-bar {
+        padding: 5px 10px;
+        min-height: 32px;
+        font-size: 11px;
+    }
+    .tpv2-breadcrumb .tpv2-bc-current { max-width: 140px; }
+    .tpv2-pill { height: 34px; padding: 0 10px; }
+    .tpv2-custom-strip { padding: 6px 10px; min-height: 46px; }
+}

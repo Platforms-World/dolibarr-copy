@@ -1,0 +1,255 @@
+/*
+ * TakePOS — Product Card WITH Image v3
+ * Uses CSS Grid on the card for precise row control:
+ *   Row 1: image (fixed height)
+ *   Row 2: name  (flexible)
+ *   Row 3: price + badges (fixed)
+ *
+ * HTML order inside .wrapper2:
+ *   #proprice{n}                      → CSS grid-row: 3
+ *   img.imgwrapper                    → CSS grid-row: 1
+ *   .takepos-missing-product-image-badge → CSS grid-row: 1
+ *   .description                      → CSS grid-row: 2
+ *   .catwatermark                     → hidden
+ */
+
+/* ━━━ PRODUCT GRID ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 #takepos-main-layout .div5 {
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)) !important;
+    grid-auto-rows: 220px !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+    align-content: start !important;
+}
+
+/* ━━━ CARD — CSS Grid layout ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty) {
+    float: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid var(--tp-border, #e2e8f0) !important;
+    border-radius: 12px !important;
+    background: var(--tp-bg-panel, #fff) !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.07) !important;
+    /* 3-row grid: image | name | price */
+    display: grid !important;
+    grid-template-rows: 120px 1fr auto !important;
+    grid-template-columns: 1fr !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    transition: box-shadow 0.15s, transform 0.12s !important;
+}
+
+/* ━━━ COLOR BAR ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty)::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important; left: 0 !important; right: 0 !important;
+    height: 3px !important;
+    z-index: 10 !important;
+    border-radius: 12px 12px 0 0 !important;
+    pointer-events: none !important;
+}
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+1)::before { background: linear-gradient(90deg,#38bdf8,#7dd3fc) !important; }
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+2)::before { background: linear-gradient(90deg,#f59e0b,#fbbf24) !important; }
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+3)::before { background: linear-gradient(90deg,#10b981,#34d399) !important; }
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+4)::before { background: linear-gradient(90deg,#8b5cf6,#a78bfa) !important; }
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n+5)::before { background: linear-gradient(90deg,#f43f5e,#fb7185) !important; }
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):nth-child(6n)::before   { background: linear-gradient(90deg,#ec4899,#f472b6) !important; }
+body.takepos-v2 .div5 div.wrapper2::after { display: none !important; }
+
+/* ━━━ IMAGE — row 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 img.imgwrapper {
+    grid-row: 1 !important;
+    grid-column: 1 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 120px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    border-radius: 0 !important;
+    align-self: stretch !important;
+}
+
+/* ━━━ MISSING IMAGE — absolute over image area ━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 .takepos-missing-product-image-badge {
+    position: absolute !important;
+    top: 0 !important; left: 0 !important; right: 0 !important;
+    height: 120px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+    color: #94a3b8 !important;
+    font-size: 26px !important;
+    z-index: 3 !important;
+    pointer-events: none !important;
+}
+/* Hide badge when image src is valid */
+body.takepos-v2 .div5 img.imgwrapper[src]:not([src=""]):not([src$="empty.png"]) ~ .takepos-missing-product-image-badge {
+    display: none !important;
+}
+
+/* ━━━ DESCRIPTION (name) — row 2 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.description,
+body.takepos-v2 .div5 div.description[style*="display"] {
+    grid-row: 2 !important;
+    grid-column: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: 5px 8px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    position: static !important;
+    background: transparent !important;
+    border-bottom: 1px solid var(--tp-border, #e2e8f0) !important;
+}
+body.takepos-v2 .div5 div.description.tp-hidden,
+body.takepos-v2 .div5 div.description[style*="display: none"],
+body.takepos-v2 .div5 div.description[style*="display:none"] {
+    display: none !important;
+}
+
+body.takepos-v2 .div5 div.description_content {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    color: var(--tp-text, #1e293b) !important;
+    overflow: hidden !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    word-break: break-word !important;
+    text-align: right !important;
+    padding: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+body.takepos-v2[dir="ltr"] .div5 div.description_content { text-align: left !important; }
+
+body.takepos-v2 .div5 div.description_content b {
+    font-size: 8px !important;
+    font-weight: 400 !important;
+    color: var(--tp-text-soft, #94a3b8) !important;
+    display: block !important;
+    margin-bottom: 2px !important;
+}
+
+/* ━━━ PRICE — row 3 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div[id^="proprice"] {
+    grid-row: 3 !important;
+    grid-column: 1 !important;
+    padding: 4px 8px 26px 8px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    position: static !important;
+}
+body.takepos-v2 .div5 .productprice {
+    position: static !important;
+    display: block !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--tp-text, #1e293b) !important;
+    font-family: var(--tp-font-num, monospace) !important;
+    white-space: nowrap !important;
+    background: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    top: auto !important; left: auto !important;
+    right: auto !important; bottom: auto !important;
+    z-index: auto !important;
+    text-align: right !important;
+}
+body.takepos-v2[dir="ltr"] .div5 .productprice { text-align: left !important; }
+
+/* ━━━ STOCK BADGES — absolute bottom ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 .tp-stock-badge-wrap {
+    position: absolute !important;
+    bottom: 0 !important; left: 0 !important; right: 0 !important;
+    padding: 3px 6px 5px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 3px !important;
+    flex-wrap: wrap !important;
+    z-index: 5 !important;
+    pointer-events: none !important;
+}
+body.takepos-v2 .div5 .tp-stock-badge {
+    font-size: 9px !important; font-weight: 600 !important;
+    padding: 2px 7px !important; border-radius: 20px !important; line-height: 1.4 !important;
+}
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-ok  { background:#ecfdf5 !important; color:#047857 !important; border:1px solid rgba(4,120,87,.2) !important; }
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-low { background:#fffbeb !important; color:#b45309 !important; border:1px solid rgba(180,83,9,.2) !important; }
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-out { background:#fef2f2 !important; color:#b91c1c !important; border:1px solid rgba(185,28,28,.2) !important; }
+body.takepos-v2 .div5 .tp-stock-badge.tp-stock-na  { background:#f1f5f9 !important; color:#64748b !important; border:1px solid rgba(100,116,139,.2) !important; }
+body.takepos-v2 .div5 [class*="kafo-expiry"] {
+    font-size: 9px !important; font-weight: 600 !important;
+    padding: 2px 7px !important; border-radius: 20px !important; line-height: 1.4 !important;
+}
+
+/* ━━━ CATWATERMARK ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.catwatermark { display: none !important; }
+
+/* ━━━ HOVER / ACTIVE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):hover {
+    box-shadow: 0 6px 20px rgba(15,23,42,0.13) !important;
+    transform: translateY(-2px) !important;
+    border-color: #cbd5e1 !important;
+}
+body.takepos-v2 .div5 div.wrapper2:not(.arrow):not(.divempty):active {
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.07) !important;
+}
+
+/* ━━━ ARROW / PAGINATION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.wrapper2.arrow {
+    grid-column: 1 / -1 !important;
+    grid-row: unset !important;
+    grid-template-rows: unset !important;
+    display: flex !important;
+    height: 48px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transform: none !important;
+    overflow: visible !important;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow::before,
+body.takepos-v2 .div5 div.wrapper2.arrow::after { display: none !important; }
+body.takepos-v2 .div5 div.wrapper2.arrow:hover { background:transparent !important; box-shadow:none !important; transform:none !important; }
+body.takepos-v2 .div5 div.wrapper2.arrow .fa-chevron-left,
+body.takepos-v2 .div5 div.wrapper2.arrow .fa-chevron-right {
+    display: inline-flex !important; align-items: center !important; justify-content: center !important;
+    width: 36px !important; height: 36px !important; border-radius: 8px !important;
+    border: 1px solid var(--tp-border,#e2e8f0) !important;
+    background: var(--tp-bg-panel,#fff) !important; color: var(--tp-text-muted,#64748b) !important;
+    font-size: 14px !important; transition: all 0.15s !important;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow:hover .fa-chevron-left,
+body.takepos-v2 .div5 div.wrapper2.arrow:hover .fa-chevron-right {
+    background: var(--tp-bg-dark,#1e293b) !important;
+    border-color: var(--tp-bg-dark,#1e293b) !important; color: #fff !important;
+}
+body.takepos-v2 .div5 div.wrapper2.arrow.takepos-page-disabled { visibility:hidden !important; pointer-events:none !important; }
+
+/* ━━━ EMPTY tiles ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body.takepos-v2 .div5 div.wrapper2.divempty {
+    visibility: hidden !important; pointer-events: none !important;
+    border: none !important; background: transparent !important; box-shadow: none !important;
+}
+
+/* tp-hidden: replaces jQuery .hide() */
+body.takepos-v2 .div5 div.description.tp-hidden { display: none !important; }

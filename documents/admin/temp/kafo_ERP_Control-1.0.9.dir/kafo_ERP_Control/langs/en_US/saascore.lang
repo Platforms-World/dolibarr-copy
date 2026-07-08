@@ -1,0 +1,12 @@
+﻿SaaSCoreSetup=kafo_ERP_Control
+SaaSCoreIntro=Central entitlement registry and tenant assignment layer for kafo_ERP_Control modules.
+ModulesCatalog=Modules Catalog
+FeaturesCatalog=Features Catalog
+LimitsCatalog=Limits Catalog
+PermissionsCatalog=Permissions Catalog
+BundlesCatalog=Bundles Catalog
+RolesCatalog=Roles Catalog
+TenantConfiguration=Tenant Configuration
+General=General
+
+

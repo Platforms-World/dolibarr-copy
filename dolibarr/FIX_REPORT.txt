@@ -1,0 +1,40 @@
+TakePOS package fixes - 2026-04-01
+
+Files changed:
+- takepos/index.php
+- takepos/workspace.php
+- takepos/stock_overview.php (new)
+- takepos/langs/ar_JO/takeposcustom.lang
+- takepos/langs/en_US/takeposcustom.lang
+
+What was fixed:
+1) Empty search no longer clears the product grid permanently.
+   - When the search box becomes empty, the POS now reloads categories and products.
+
+2) Stock overview shortcut no longer points to the core stock page inside iframe.
+   - Added a dedicated TakePOS page: /takepos/stock_overview.php
+   - Shows assigned warehouse for terminal, or a clear warning if no warehouse is linked.
+   - Displays a stock table instead of a blank modal.
+
+3) Improved Arabic/UI wording.
+   - Added/overrode translations for:
+     Calculator
+     PrintTicket
+     InvoiceDiscountShort
+     Logout
+     ConfirmDiscardOfThisPOSSale
+     ConfirmDeletionOfThisPOSSale
+   - Added user-friendly messages for calculator errors and multiple search matches.
+
+4) Hide common injected debug toolbars in the POS screen.
+   - Added CSS rules for common debug bar selectors like phpdebugbar / symfony toolbar.
+
+Validation performed:
+- php -l on modified files: PASSED
+- php -l on all PHP files in the package: PASSED
+
+Notes:
+- The root cause of the stock warning still depends on terminal setup.
+  To fully enable automatic stock deduction, assign a warehouse to the terminal in settings.
+- I could not perform a live end-to-end browser retest from this environment after packaging,
+  so runtime behavior that depends on the remote server configuration should still be verified on the target server.

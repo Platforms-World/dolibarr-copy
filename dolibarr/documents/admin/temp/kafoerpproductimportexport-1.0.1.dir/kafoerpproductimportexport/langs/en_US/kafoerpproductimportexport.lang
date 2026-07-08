@@ -1,0 +1,53 @@
+﻿# Kafo ERP Product Import Export
+
+Module106420Name=kafo-ERP Import Export Product
+Module106420Desc=Import products from ZIP packages and export CSV templates.
+KafoERPImportExportProductTitle=kafo-ERP Import Export Product
+KafoERPImportExportProductMenu=kafo-ERP Import/Export Product
+KafoERPImportExportProductSetup=kafo-ERP Import Export Product Setup
+KafoERPImportExportProductSetupHelp=Configure rights, then use the Products menu entry to export a template or import products.
+KafoERPImportExportProductRightRead=Read access: open import/export page and reports
+KafoERPImportExportProductRightImport=Import access: upload ZIP files and create products
+KafoERPImportExportProductRightExport=Export access: download CSV template
+
+KafoImportExportActions=Actions
+KafoDownloadCsvTemplate=Download CSV Template
+KafoImportProducts=Import Products
+KafoImportZip=ZIP Import
+KafoImportZipButton=Import ZIP
+KafoZipHelpTitle=Expected ZIP structure
+KafoCsvColumns=CSV columns
+KafoImportReport=Import Report
+KafoLine=Line
+
+KafoCreated=created
+KafoCreatedImageAttached=created, image attached
+KafoCreatedImageNotFound=created, image not found
+KafoCreatedImageCopyFailed=created, image copy failed
+KafoCreatedImageDirFailed=created, image directory not available
+KafoSkippedProductAlreadyExists=skipped, product already exists
+KafoInitialStockImport=Initial stock import
+
+KafoErrorZipFileMissing=Please select a ZIP file.
+KafoErrorZipUploadFailed=ZIP upload failed.
+KafoErrorZipOnlyAllowed=Only ZIP files are allowed.
+KafoErrorZipExtensionMissing=PHP ZIP extension is not available on this server.
+KafoErrorZipStoreFailed=Failed to store uploaded ZIP file.
+KafoErrorZipOpenFailed=Unable to open ZIP file.
+KafoErrorZipExtractFailed=Unable to extract ZIP file.
+KafoErrorTmpDirCreateFailed=Unable to create temporary import directory.
+KafoErrorProductsCsvMissing=products.csv file not found inside ZIP.
+KafoErrorProductsCsvOpenFailed=Unable to open products.csv.
+KafoErrorProductsCsvEmpty=products.csv is empty.
+KafoErrorCsvHeaderInvalid=Invalid CSV header. Expected:
+KafoErrorCsvRowInvalid=CSV row is invalid.
+KafoErrorRefLabelRequired=error, ref and label are required
+KafoErrorCategoryNotFound=error, category not found: %s
+KafoErrorWarehouseNotFound=error, warehouse not found: %s
+KafoErrorWarehouseRequiredForStock=error, warehouse_ref is required when qty > 0
+KafoErrorBarcodeAlreadyExists=error, barcode already exists
+KafoErrorProductCreateFailed=error, product create failed
+KafoErrorProductPriceUpdateFailed=error, product price update failed
+KafoErrorCategoryAssignFailed=error, category assign failed
+KafoErrorStockUpdateFailed=error, stock update failed
+KafoErrorImportLine=error

@@ -1,0 +1,34 @@
+TakePOS Arabic translation/mojibake fix report
+===========================================
+
+Issue addressed
+---------------
+Arabic text was appearing as mojibake like:
+ط§ظ„ظˆظ„ط§ط،
+
+Main fixes applied
+------------------
+1) Removed leading whitespace before the opening PHP tag in:
+   - takepos/index.php
+   This can break header handling before HTML output.
+
+2) Added UTF-8 output enforcement in:
+   - takepos/lib/takepos_lang.php
+   Added a helper that forces:
+   - Content-Type: text/html; charset=UTF-8
+   - default_charset = UTF-8
+   - mb_internal_encoding('UTF-8') when available
+   - mb_http_output('UTF-8') when available
+
+3) Removed the mojibake backup language artifact:
+   - takepos/langs/ar_JO/takeposcustom.lang.bak-utf8-fix-20260331
+   This avoids accidental deployment/use of the corrupted backup file.
+
+4) Fixed an additional existing PHP syntax issue found during final validation:
+   - takepos/public/auto_order.php
+
+Validation
+----------
+- Arabic lines in takepos/langs/ar_JO/takeposcustom.lang are valid UTF-8.
+- All PHP files pass: php -l
+- Package repacked as a ready-to-deploy zip.

@@ -1,0 +1,20 @@
+CREATE TABLE llx_pos_cashier (
+  rowid INTEGER AUTO_INCREMENT PRIMARY KEY,
+  entity INTEGER NOT NULL DEFAULT 1,
+  ref VARCHAR(64) NOT NULL,
+  label VARCHAR(255) NOT NULL,
+  user_id INTEGER DEFAULT NULL,
+  terminal_id INTEGER DEFAULT NULL,
+  status SMALLINT NOT NULL DEFAULT 1,
+  note_public TEXT DEFAULT NULL,
+  note_private TEXT DEFAULT NULL,
+  datec DATETIME NOT NULL,
+  tms TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  fk_user_creat INTEGER DEFAULT NULL,
+  fk_user_modif INTEGER DEFAULT NULL,
+  UNIQUE KEY uk_pos_cashier_entity_ref (entity, ref),
+  KEY idx_pos_cashier_entity (entity),
+  KEY idx_pos_cashier_user (user_id),
+  KEY idx_pos_cashier_terminal (terminal_id),
+  KEY idx_pos_cashier_status (status)
+) ENGINE=innodb;
