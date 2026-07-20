@@ -295,6 +295,7 @@
         var tiles = div5.querySelectorAll('.wrapper2:not(.arrow)');
         tiles.forEach(function(tile) {
             tile.setAttribute('data-rowid', ''); tile.setAttribute('data-iscat', '0');
+            if (window.jQuery) { jQuery(tile).data('rowid', ''); jQuery(tile).data('iscat', 0); }
             tile.classList.add('divempty'); tile.classList.remove('is-fav-tile');
             tile.style.removeProperty('display');
             var desc = tile.querySelector('.description_content, [id^="prodesc"]'); if (desc) desc.textContent = '';
@@ -311,10 +312,11 @@
             var tile = tileEls[i];
             var pid = String(prod.rowid || prod.id || ''); if (!pid) return;
             tile.setAttribute('data-rowid', pid); tile.setAttribute('data-iscat', '0'); tile.classList.remove('divempty');
+            if (window.jQuery) { jQuery(tile).data('rowid', pid); jQuery(tile).data('iscat', 0); }
             var price = tile.querySelector('[id^="proprice"]'); if (price) { price.className = 'productprice'; price.innerHTML = prod.price_ttc_formated || prod.price_formated || ''; }
             var img = tile.querySelector('img[id^="proimg"]'); if (img) { img.src = prod.img || prod.image_url || 'genimg/empty.png'; img.title = prod.ref || ''; }
-            var btnEl = tile.querySelector('[id^="probutton"]'); if (btnEl) { btnEl.textContent = prod.label || ''; btnEl.style.display = ''; }
-            var descDiv = tile.querySelector('[id^="prodivdesc"]'); if (descDiv) descDiv.style.display = '';
+            var btnEl = tile.querySelector('[id^="probutton"]'); if (btnEl) { btnEl.textContent = prod.label || ''; btnEl.style.display = 'none'; }
+            var descDiv = tile.querySelector('[id^="prodivdesc"]'); if (descDiv) { descDiv.style.display = ''; descDiv.classList.remove('tp-hidden'); }
             var desc = tile.querySelector('.description_content, [id^="prodesc"]'); if (desc) desc.textContent = prod.label || '';
             var heart = document.createElement('button');
             heart.type = 'button'; heart.className = 'tpv2-fav-heart-btn is-fav'; heart.textContent = '❤️'; heart.title = T.removeFav;
@@ -325,7 +327,15 @@
 
     function clearFavFilter() {
         var div5 = document.querySelector('#takepos-main-layout .div5'); if (!div5) return;
-        div5.querySelectorAll('.wrapper2').forEach(function(tile) { showTile(tile); });
+        var tiles = div5.querySelectorAll('.wrapper2:not(.arrow)');
+        tiles.forEach(function(tile) {
+            showTile(tile);
+            tile.classList.remove('divempty', 'is-fav-tile');
+            var price = tile.querySelector('[id^="proprice"]'); if (price) { price.className = 'productprice'; }
+            var btn = tile.querySelector('[id^="probutton"]'); if (btn) { btn.style.removeProperty('display'); }
+            var descDiv = tile.querySelector('[id^="prodivdesc"]'); if (descDiv) { descDiv.style.removeProperty('display'); descDiv.classList.remove('tp-hidden'); }
+            var heart = tile.querySelector('.tpv2-fav-heart-btn'); if (heart) heart.remove();
+        });
         div5.querySelectorAll('.tpv2-fav-remove-btn').forEach(function(b){ b.remove(); });
     }
 
@@ -350,7 +360,24 @@
         }
     }
 
+    function fixStuckDescriptionStyle() {
+        var div5 = document.querySelector('#takepos-main-layout .div5'); if (!div5) return;
+        div5.querySelectorAll('.wrapper2:not(.arrow):not(.divempty)').forEach(function(tile) {
+            var pid = tile.getAttribute('data-rowid') || '';
+            if (!pid || tile.getAttribute('data-iscat') === '1') return;
+            var descDiv = tile.querySelector('[id^="prodivdesc"]');
+            if (!descDiv) return;
+            if (descDiv.style && descDiv.style.display === 'none') {
+                descDiv.style.removeProperty('display');
+            }
+            if (descDiv.classList.contains('tp-hidden')) {
+                descDiv.classList.remove('tp-hidden');
+            }
+        });
+    }
+
     function addHeartButtons() {
+        fixStuckDescriptionStyle();
         var div5 = document.querySelector('#takepos-main-layout .div5'); if (!div5) return;
         div5.querySelectorAll('.wrapper2:not(.arrow):not(.divempty)').forEach(function(tile) {
             var pid = String(tile.getAttribute('data-rowid') || ''); if (!pid) return;
