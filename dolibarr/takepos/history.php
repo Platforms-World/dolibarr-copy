@@ -130,7 +130,7 @@ if ($page > $totalPages) {
 }
 $offset = ($page - 1) * $perPage;
 
-$sql = "SELECT f.rowid, f.ref, COALESCE(f.datef, f.datec) AS invoice_date, f.total_ttc, f.fk_statut, f.paye,";
+$sql = "SELECT f.rowid, f.ref, COALESCE(f.datef, f.datec) AS invoice_date, f.total_ttc, f.fk_statut, f.paye, f.note_public,";
 $sql .= " COALESCE(s.nom, '') AS customer_name,";
 $sql .= " COALESCE(NULLIF(CONCAT(COALESCE(u.firstname,''), ' ', COALESCE(u.lastname,'')), ' '), u.login, CONCAT('User#', f.fk_user_author)) AS cashier_name,";
 $sql .= " COALESCE(r.refund_count, 0) AS refund_count,";
@@ -252,21 +252,24 @@ print '<script>function takeposHideHistoryDebugBars(){var sels=["#php-debugbar",
             <table class="takepos-workspace-table">
                 <thead>
                 <tr>
+                    <th><?php echo dol_escape_htmltag(takeposTranslateWithFallback($langs, 'TakeposInvoiceNumber', 'رقم الفاتورة', 'Invoice #')); ?></th>
                     <th><a href="<?php echo dol_escape_htmltag(takeposHistorySortUrl($pageUrl, $baseQuery, 'date', $sort, $order)); ?>"><?php echo dol_escape_htmltag($langs->trans('TakeposExpenseDate')); ?></a></th>
                     <th><a href="<?php echo dol_escape_htmltag(takeposHistorySortUrl($pageUrl, $baseQuery, 'ref', $sort, $order)); ?>"><?php echo dol_escape_htmltag($langs->trans('TakeposExpenseRef')); ?></a></th>
                     <th><a href="<?php echo dol_escape_htmltag(takeposHistorySortUrl($pageUrl, $baseQuery, 'customer', $sort, $order)); ?>"><?php echo dol_escape_htmltag($langs->trans('Customer')); ?></a></th>
                     <th><?php echo dol_escape_htmltag($langs->trans('TakeposExpenseUser')); ?></th>
                     <th><a href="<?php echo dol_escape_htmltag(takeposHistorySortUrl($pageUrl, $baseQuery, 'total', $sort, $order)); ?>"><?php echo dol_escape_htmltag($langs->trans('TakeposHistoryTotalTtc')); ?></a></th>
                     <th><a href="<?php echo dol_escape_htmltag(takeposHistorySortUrl($pageUrl, $baseQuery, 'status', $sort, $order)); ?>"><?php echo dol_escape_htmltag($langs->trans('TakeposCommonStatus')); ?></a></th>
+                    <th><?php echo dol_escape_htmltag(takeposTranslateWithFallback($langs, 'TakeposSyncMode', 'أوفلاين / أونلاين', 'Offline / Online')); ?></th>
                     <th><?php echo dol_escape_htmltag($langs->trans('TakeposCommonActions')); ?></th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php if (empty($rows)) { ?>
-                    <tr><td colspan="7"><?php echo dol_escape_htmltag($langs->trans('TakeposHistoryNoData')); ?></td></tr>
+                    <tr><td colspan="9"><?php echo dol_escape_htmltag($langs->trans('TakeposHistoryNoData')); ?></td></tr>
                 <?php } ?>
                 <?php foreach ($rows as $row) { ?>
                     <tr>
+                        <td>#<?php echo (int) $row->rowid; ?></td>
                         <td><?php echo dol_escape_htmltag((string) $row->invoice_date); ?></td>
                         <td><?php echo dol_escape_htmltag((string) $row->ref); ?></td>
                         <td><?php echo dol_escape_htmltag((string) $row->customer_name); ?></td>
@@ -290,6 +293,13 @@ print '<script>function takeposHideHistoryDebugBars(){var sels=["#php-debugbar",
                                 <span style="<?php echo $badgeStyle; ?>"><?php echo dol_escape_htmltag($statusLabel); ?></span>
                             <?php } else { ?>
                                 <?php echo dol_escape_htmltag($statusLabel); ?>
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?php if (strpos((string) $row->note_public, 'KF_OFFLINE_SYNCED') !== false) { ?>
+                                <span style="display:inline-block;padding:2px 8px;border-radius:10px;background:#b45309;color:#fff;font-size:0.85em;font-weight:700;"><?php echo dol_escape_htmltag(takeposTranslateWithFallback($langs, 'TakeposOffline', 'أوفلاين', 'Offline')); ?></span>
+                            <?php } else { ?>
+                                <span style="display:inline-block;padding:2px 8px;border-radius:10px;background:#0f766e;color:#fff;font-size:0.85em;font-weight:700;"><?php echo dol_escape_htmltag(takeposTranslateWithFallback($langs, 'TakeposOnline', 'أونلاين', 'Online')); ?></span>
                             <?php } ?>
                         </td>
                         <td>

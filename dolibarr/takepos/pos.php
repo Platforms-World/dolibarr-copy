@@ -74,6 +74,7 @@ $logoutUrl   = DOL_URL_ROOT . '/user/logout.php?token=' . newToken() . '&urlfrom
 $faCss       = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
 $cssUrl      = DOL_URL_ROOT . '/takepos/css/pos_v3.css?v=1';
 $jsUrl       = DOL_URL_ROOT . '/takepos/js/pos_v3.js?v=1';
+$jsOfflineUrl = DOL_URL_ROOT . '/takepos/js/kf_offline.js?v=1';
 
 $userInitials = strtoupper(mb_substr(trim($user->firstname . $user->lastname) ?: $user->login, 0, 2));
 
@@ -256,7 +257,14 @@ header('Content-Type: text/html; charset=UTF-8');
         cardAcct:   <?php echo json_encode((string) $cardAcct); ?>,
         debug:      true
     };
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register(
+            <?php echo json_encode(DOL_URL_ROOT . '/takepos/kf_sw.js'); ?>,
+            { scope: <?php echo json_encode(DOL_URL_ROOT . '/takepos/'); ?> }
+        ).catch(function (e) { console.warn('[KFOffline] service worker registration failed:', e); });
+    }
 </script>
+<script src="<?php echo dol_escape_htmltag($jsOfflineUrl); ?>"></script>
 <script src="<?php echo dol_escape_htmltag($jsUrl); ?>"></script>
 </body>
 </html>

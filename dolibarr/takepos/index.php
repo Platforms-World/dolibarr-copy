@@ -1777,6 +1777,7 @@ if(localStorage.hasKeyboard) {
                     pos.html('<div class="error" style="padding:16px;font-size:14px;">' + takeposMsgLoadSaleTicketError + (code ? ' (HTTP ' + code + ')' : '') + '</div>');
                 } else {
                     takeposNormalizeUiLanguage(document);
+                    if (window.KFOfflineIndex) window.KFOfflineIndex.noteRealCartRendered();
                 }
                 if (typeof onDone === 'function') onDone(responseText, textStatus, xhr);
             });
@@ -1972,6 +1973,10 @@ if(localStorage.hasKeyboard) {
                 onAllowed();
                 return;
             }
+            if (window.KFOffline && !window.KFOffline.isOnline()) {
+                onAllowed();
+                return;
+            }
 
             fetch(takeposShiftEndpoint + '?action=check_payment&invoice_id=' + encodeURIComponent(invoiceId || 0), {
                 credentials: 'same-origin',
@@ -2053,6 +2058,12 @@ if(localStorage.hasKeyboard) {
 
         function ensureShiftForSale(invoiceId, onAllowed) {
             if (!takeposShiftFeatureEnabled) {
+                onAllowed();
+                return;
+            }
+            if (window.KFOffline && !window.KFOffline.isOnline()) {
+                // أوفلاين: ما فينا نتحقق من الوردية عالسيرفر — نسمح بالبيع، والتحقق
+                // الحقيقي بيصير وقت المزامنة (بدل ما يعلّق البرنامج للأبد على alert فاشل)
                 onAllowed();
                 return;
             }
@@ -2882,6 +2893,8 @@ if(localStorage.hasKeyboard) {
             window._takeposForceProductReload = false;
             window.takeposProductCache.fetchPage(_getProductsUrl, currentcat, _thirdpartyForCache, limit, 0, 1, _force).then(function (data) {
                 console.log("Call ajax.php (in LoadProducts) to get Products of category " + currentcat + " then loop on result to fill image thumbs");
+                if (window.KFOfflineIndex) window.KFOfflineIndex.setCatalog(data);
+                if (window.KFOffline) window.KFOffline.cacheCatalog(data);
                 //console.log(data);
 
                 while (ishow < maxproduct) {
@@ -3082,7 +3095,7 @@ if(localStorage.hasKeyboard) {
 
         function ClickProduct(position, qty = 1) {
             console.log("ClickProduct at position" + position);
-            if ($('#invoiceid').val() == "") {
+            if ($('#invoiceid').val() == "" && !(window.KFOffline && !window.KFOffline.isOnline())) {
                 invoiceid = $('#invoiceid').val();
                 Refresh();
             }
@@ -3187,6 +3200,11 @@ if(localStorage.hasKeyboard) {
          * Runs shift-check and stock-check IN PARALLEL (Promise.all) for lower latency.
          */
         function takeposDoAddProductToInvoice(idproduct, qty, targetInvoiceId, unitpriceTtc) {
+            if (window.KFOffline && !window.KFOffline.isOnline()) {
+                if (window.KFOfflineIndex) window.KFOfflineIndex.addProduct(idproduct, qty, unitpriceTtc);
+                takeposShowAddProgress(false);
+                return;
+            }
             // Wrap the two pre-checks as Promises so we can run them in parallel.
             var shiftCheck = new Promise(function (resolve) {
                 ensureShiftForSale(targetInvoiceId, function () {
@@ -3754,6 +3772,12 @@ if(localStorage.hasKeyboard) {
                 callback(true);
                 return;
             }
+            if (window.KFOffline && !window.KFOffline.isOnline()) {
+                // أوفلاين: ما فينا نتحقق من المخزون الحقيقي بالسيرفر — نسمح بالبيع
+                // (fail-open، نفس سلوك خطأ الشبكة تحت)، والتحقق الحقيقي بيصير وقت المزامنة
+                callback(true);
+                return;
+            }
             $.ajax({
                 url: takeposCheckStockEndpoint,
                 method: 'POST',
@@ -3951,6 +3975,14 @@ if(localStorage.hasKeyboard) {
 
         function takeposExecuteDirectPayment(paymentCode) {
             var mode = String(paymentCode || '').toUpperCase();
+            if (window.KFOffline && !window.KFOffline.isOnline()) {
+                if (!window.KFOfflineIndex || !window.KFOfflineIndex.isActive()) {
+                    alert(takeposUi.noOpenSale || "<?php echo dol_escape_js($tpMsgNoOpenSale); ?>");
+                    return false;
+                }
+                window.KFOfflineIndex.pay(mode);
+                return false;
+            }
             var directConfig = takeposDirectPaymentConfig[mode] || {accountId: 0, canDirect: true};
             var invoiceid = $("#invoiceid").val() || 0;
 
@@ -4079,6 +4111,16 @@ if(localStorage.hasKeyboard) {
             // UX: prevent double-click / multiple payment popups
             if (takeposPaymentInProgress) {
                 takeposFeedback('<?php echo dol_escape_js($langs->trans('TakeposUiPaymentAlreadyInProgress')); ?>', 'warning');
+                return;
+            }
+            if (window.KFOffline && !window.KFOffline.isOnline()) {
+                if (!window.KFOfflineIndex || !window.KFOfflineIndex.isActive()) {
+                    alert(takeposUi.noOpenSale || "<?php echo dol_escape_js($tpMsgNoOpenSale); ?>");
+                    return;
+                }
+                // أوفلاين: ما فينا نفتح نافذة pay.php (بتحتاج فاتورة حقيقية بالسيرفر) —
+                // استخدم أزرار الدفع بأسفل السلة (نقدي/بطاقة) لإتمام البيع محلياً.
+                takeposFeedback('استخدم زر "نقدي" أو "بطاقة" (F3/F4) لإتمام البيع أوفلاين', 'info');
                 return;
             }
             <?php
@@ -4226,6 +4268,21 @@ if(localStorage.hasKeyboard) {
             if (window.takeposPaymentWatchdog) {
                 clearTimeout(window.takeposPaymentWatchdog);
                 window.takeposPaymentWatchdog = null;
+            }
+
+            if (window.KFOffline && !window.KFOffline.isOnline()) {
+                // أوفلاين: ما فينا نتحقق من محتوى الفاتورة بالسيرفر (getInvoice) ولا نحذفها
+                // فعلياً بدون نت. منسأل تأكيد بسيط، ومنمسح العرض محلياً بس — الفاتورة
+                // الحقيقية (لو كانت موجودة) بتضل عالسيرفر متل ما هي لحد ما يرجع النت.
+                if (!confirm(<?php echo json_encode($place > 0 ? $tpConfirmDeleteSale : $tpConfirmDiscardSale, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>)) {
+                    return;
+                }
+                if (window.KFOfflineIndex) {
+                    window.KFOfflineIndex.cancelOffline();
+                }
+                ClearSearch(false);
+                $("#idcustomer").val("");
+                return;
             }
 
             console.log("New with place = <?php echo $place; ?>, js place=" + place + ", invoiceid=" + invoiceid);
@@ -6673,6 +6730,26 @@ if(localStorage.hasKeyboard) {
 
     <?php echo takeposHelpRender($langs, __FILE__); ?>
     <?php if ($takeposV2Enabled) { ?>
+        <script>
+            window.KAFO = window.KAFO || {
+                token: <?php echo json_encode(newToken()); ?>,
+                ajaxUrl: (typeof takeposAjaxUrl !== 'undefined' ? takeposAjaxUrl : <?php echo json_encode(DOL_URL_ROOT . '/takepos/ajax/ajax.php'); ?>),
+                invoiceUrl: <?php echo json_encode(DOL_URL_ROOT . '/takepos/invoice.php'); ?>,
+                place: (typeof place !== 'undefined' ? place : 0),
+                cashAcct: (typeof takeposDirectPaymentConfig !== 'undefined' && takeposDirectPaymentConfig.LIQ ? takeposDirectPaymentConfig.LIQ.accountId : 0),
+                cardAcct: (typeof takeposDirectPaymentConfig !== 'undefined' && takeposDirectPaymentConfig.CB ? takeposDirectPaymentConfig.CB.accountId : 0)
+            };
+        </script>
+        <script src="<?php echo DOL_URL_ROOT ?>/takepos/js/kf_offline.js"></script>
+        <script src="<?php echo DOL_URL_ROOT ?>/takepos/js/kf_offline_index.js"></script>
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register(
+                    <?php echo json_encode(DOL_URL_ROOT . '/takepos/kf_sw.js'); ?>,
+                    { scope: <?php echo json_encode(DOL_URL_ROOT . '/takepos/'); ?> }
+                ).catch(function (e) { console.warn('[KFOffline] service worker registration failed:', e); });
+            }
+        </script>
         <script src="<?php echo DOL_URL_ROOT ?>/takepos/js/takepos_v2_cat_active.js"></script>
         <script src="<?php echo DOL_URL_ROOT ?>/takepos/js/takepos_kafo_fixes.js"></script>
         <script src="<?php echo DOL_URL_ROOT ?>/takepos/js/takepos_v2_topbar.js?v=20260506e"></script>

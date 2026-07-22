@@ -37,6 +37,11 @@
 
   var currentCat = 0, currentInvoiceId = "0", searchTimer = null;
 
+  /* ---------- offline mode state (kf_offline.js integration) ---------- */
+  var inOfflineSale = false;      // true once cashier adds a product while offline
+  var offlineLines = [];          // [{idproduct, qty, label, price_ttc}]
+  var offlineCatalogCache = [];   // last catalog list loaded (online or cached), used for offline lookups/search
+
   /* generic fetch that always resolves with {ok,status,text} */
   function getText(url) {
     return fetch(url, { credentials: "same-origin" })
@@ -64,10 +69,24 @@
     console.log("[KAFO] products:", url);
     getText(url).then(function (res) {
       loading.classList.add("hide");
-      if (!res.ok) { showErr("Products HTTP " + res.status, snippet(res.text)); grid.innerHTML = errBlock("HTTP " + res.status, res.text); return; }
+      if (!res.ok) { return loadProductsOffline(); }
       var p = parseProducts(res.text);
-      if (!p.list) { showErr("Products not JSON", snippet(p.raw)); grid.innerHTML = errBlock("الخادم لم يُرجِع JSON", p.raw); return; }
+      if (!p.list) { return loadProductsOffline(); }
+      offlineCatalogCache = p.list;
+      if (window.KFOffline) window.KFOffline.cacheCatalog(p.list);
       renderProducts(p.list);
+    });
+  }
+
+  /* ---------- offline catalog fallback ---------- */
+  function loadProductsOffline() {
+    if (!window.KFOffline) { showErr("Products", "لا يوجد اتصال"); grid.innerHTML = errBlock("لا يوجد اتصال بالخادم", ""); return; }
+    window.KFOffline.getCachedCatalog().then(function (cached) {
+      loading.classList.add("hide");
+      if (!cached || !cached.length) { grid.innerHTML = errBlock("غير متصل، ولا توجد بيانات محفوظة بعد", "افتح الصفحة مرة وأنت متصل حتى يُحفظ الكتالوج"); return; }
+      var list = cached.map(function (c) { return { rowid: c.id, ref: c.ref, label: c.label, price_ttc: c.price_ttc, price: c.price_ht }; });
+      offlineCatalogCache = list;
+      renderProducts(list);
     });
   }
 
@@ -101,11 +120,19 @@
     var url = C.ajaxUrl + "?" + qs({ action: "search", token: C.token, term: C.term, search_term: term });
     getText(url).then(function (res) {
       loading.classList.add("hide");
-      if (!res.ok) { grid.innerHTML = errBlock("Search HTTP " + res.status, res.text); return; }
+      if (!res.ok) { return searchOffline(term); }
       var p = parseProducts(res.text);
-      if (!p.list) { grid.innerHTML = errBlock("بحث: ليس JSON", p.raw); return; }
+      if (!p.list) { return searchOffline(term); }
       renderProducts(p.list);
     });
+  }
+
+  function searchOffline(term) {
+    var t = String(term || "").toLowerCase();
+    var list = (offlineCatalogCache || []).filter(function (p) {
+      return (String(p.label || "").toLowerCase().indexOf(t) > -1) || (String(p.ref || "").toLowerCase().indexOf(t) > -1);
+    });
+    renderProducts(list);
   }
 
   /* ---------- cart (invoice.php) ---------- */
@@ -119,14 +146,100 @@
     getText(url).then(function (res) { applyCartResponse("Cart", res); });
   }
   function addProduct(idproduct, qty) {
+    if (window.KFOffline && !window.KFOffline.isOnline()) { addProductOffline(idproduct, qty); return; }
     var url = C.invoiceUrl + "?" + qs({ action: "addline", token: C.token, place: C.place, idproduct: idproduct, qty: qty || 1, invoiceid: currentInvoiceId });
     console.log("[KAFO] addline:", url);
     getText(url).then(function (res) { applyCartResponse("AddLine", res); });
   }
   function lineOp(action, idline, number) {
+    if (inOfflineSale) { offlineLineOp(action, idline, number); return; }
     var p = { action: action, token: C.token, place: C.place, idline: idline, invoiceid: currentInvoiceId };
     if (number != null) p.number = number;
     getText(C.invoiceUrl + "?" + qs(p)).then(function (res) { applyCartResponse(action, res); });
+  }
+
+  /* ---------- offline cart engine (no server calls until sync) ---------- */
+  function findCachedProduct(idproduct) {
+    for (var i = 0; i < offlineCatalogCache.length; i++) {
+      var p = offlineCatalogCache[i];
+      if (String(p.rowid != null ? p.rowid : p.id) === String(idproduct)) return p;
+    }
+    return null;
+  }
+  function addProductOffline(idproduct, qty) {
+    inOfflineSale = true;
+    qty = qty || 1;
+    var existing = null;
+    for (var i = 0; i < offlineLines.length; i++) {
+      if (String(offlineLines[i].idproduct) === String(idproduct)) { existing = offlineLines[i]; break; }
+    }
+    if (existing) { existing.qty += qty; }
+    else {
+      var p = findCachedProduct(idproduct) || {};
+      var price = p.price_ttc != null ? p.price_ttc : (p.price != null ? p.price : 0);
+      offlineLines.push({ idproduct: String(idproduct), qty: qty, label: p.label || ("#" + idproduct), price_ttc: parseFloat(price) || 0 });
+    }
+    renderOfflineCart();
+  }
+  function offlineLineOp(action, idlineIndex, number) {
+    var idx = parseInt(idlineIndex, 10);
+    if (isNaN(idx) || idx < 0 || idx >= offlineLines.length) return;
+    if (action === "deleteline") offlineLines.splice(idx, 1);
+    else if (action === "updateqty") offlineLines[idx].qty = Math.max(0.001, parseFloat(number) || 1);
+    renderOfflineCart();
+  }
+  function renderOfflineCart() {
+    if (!offlineLines.length) {
+      cartLines.innerHTML = '<div class="kf-empty"><i class="fa-solid fa-basket-shopping"></i><span>السلة فارغة</span></div>';
+      setTotal(""); invoiceLabel.textContent = "#—"; return;
+    }
+    var html = "", grand = 0;
+    offlineLines.forEach(function (l, idx) {
+      var lineTot = l.qty * l.price_ttc;
+      grand += lineTot;
+      html +=
+          '<div class="kf-line" data-line="' + idx + '">' +
+          '<div class="nm"><div class="box"><i class="fa-solid fa-box"></i></div>' +
+          '<div class="info"><b>' + esc(l.label) + '</b><small class="num">#' + esc(l.idproduct) + '</small></div></div>' +
+          '<div class="qty"><button data-act="dec">−</button><input class="num" value="' + esc(String(l.qty)) + '"><button data-act="inc">+</button></div>' +
+          '<div class="pr"><span class="num">' + fmt(lineTot) + '</span><a class="del" data-act="del"><i class="fa-solid fa-trash-can"></i></a></div>' +
+          '</div>';
+    });
+    cartLines.innerHTML = html;
+    bindOfflineCart();
+    setTotal(fmt(grand));
+    invoiceLabel.textContent = "#غير متصل (تقديري)";
+  }
+  function bindOfflineCart() {
+    $$(".kf-line", cartLines).forEach(function (line) {
+      var idx = line.getAttribute("data-line");
+      var input = line.querySelector(".qty input");
+      line.querySelectorAll("[data-act]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var act = b.getAttribute("data-act"), cur = parseFloat(input.value) || 1;
+          if (act === "inc") offlineLineOp("updateqty", idx, cur + 1);
+          else if (act === "dec") { cur <= 1 ? offlineLineOp("deleteline", idx) : offlineLineOp("updateqty", idx, cur - 1); }
+          else if (act === "del") offlineLineOp("deleteline", idx);
+        });
+      });
+      input.addEventListener("change", function () { offlineLineOp("updateqty", idx, parseFloat(input.value) || 1); });
+    });
+  }
+  function validateSaleOffline(mode) {
+    if (!offlineLines.length) { toast("السلة فارغة"); return; }
+    var sale = {
+      lines: offlineLines.map(function (l) { return { idproduct: l.idproduct, qty: l.qty }; }),
+      payment: { method: mode },
+      estimated_total: offlineLines.reduce(function (s, l) { return s + l.qty * l.price_ttc; }, 0),
+      term: C.term
+    };
+    window.KFOffline.queueSale(sale).then(function () {
+      toast("تم حفظ الفاتورة محلياً — ستُزامَن عند عودة الاتصال ✓");
+      closePay();
+      offlineLines = [];
+      inOfflineSale = false;
+      renderOfflineCart();
+    }).catch(function (e) { showErr("Offline queue", String((e && e.message) || e)); });
   }
 
   function dbg(label, res, extra) {
@@ -221,7 +334,11 @@
     searchTimer = setTimeout(function () { doSearch(v); }, 250);
   });
   var cancelBtn = $("#kfCancel");
-  if (cancelBtn) cancelBtn.addEventListener("click", function () { if (confirm("إلغاء السلة الحالية؟")) { lineOp("delete", 0); setTimeout(function(){ currentInvoiceId="0"; }, 400); } });
+  if (cancelBtn) cancelBtn.addEventListener("click", function () {
+    if (!confirm("إلغاء السلة الحالية؟")) return;
+    if (inOfflineSale) { offlineLines = []; inOfflineSale = false; renderOfflineCart(); return; }
+    lineOp("delete", 0); setTimeout(function(){ currentInvoiceId="0"; }, 400);
+  });
 
   // payment open
   var payBtn = $("#kfPay"), railPay = $("#kfRailPay");
@@ -269,7 +386,8 @@
     if (b.querySelector(".fa-credit-card")) b.addEventListener("click", function () { directPay("CB"); });
   });
   function directPay(mode) {
-    if (!currentInvoiceId || currentInvoiceId === "0") { toast("السلة فارغة"); return; }
+    if (inOfflineSale) { if (!offlineLines.length) { toast("السلة فارغة"); return; } }
+    else if (!currentInvoiceId || currentInvoiceId === "0") { toast("السلة فارغة"); return; }
     if (!confirm(mode === "CB" ? "دفع بالبطاقة؟" : "دفع نقدي؟")) return;    validateSale(mode);
   }
 
@@ -282,7 +400,8 @@
     return parseFloat(t) || 0;
   }
   function openPay() {
-    if (!currentInvoiceId || currentInvoiceId === "0") { toast("السلة فارغة"); return; }
+    if (inOfflineSale) { if (!offlineLines.length) { toast("السلة فارغة"); return; } }
+    else if (!currentInvoiceId || currentInvoiceId === "0") { toast("السلة فارغة"); return; }
     var due = curTotalNum();
     if (due <= 0) { toast("لا يوجد مبلغ مستحق"); return; }
     payMethod = "LIQ";
@@ -303,6 +422,7 @@
     $("#kfPayConfirmAmt").textContent = due.toFixed(2);
   }
   function validateSale(mode) {
+    if (inOfflineSale) { validateSaleOffline(mode); return; }
     if (!currentInvoiceId || currentInvoiceId === "0") { toast("السلة فارغة"); return; }
     var acct = (mode === "CB") ? (C.cardAcct || 0) : (C.cashAcct || 0);    var url = C.invoiceUrl + "?" + qs({
       place: C.place, action: "valid", token: C.token,
@@ -445,6 +565,7 @@
   }
 
   function newSale() {    currentInvoiceId = "0";
+    offlineLines = []; inOfflineSale = false;
     cartLines.innerHTML = '<div class="kf-empty"><i class="fa-solid fa-basket-shopping"></i><span>السلة فارغة</span></div>';
     invoiceLabel.textContent = "#—";
     setTotal("");
